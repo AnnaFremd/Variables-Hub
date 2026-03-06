@@ -1,0 +1,926 @@
+[
+  {
+    "Colors 26": {
+      "modes": {
+        "Mode 1": {
+          "general": {
+            "primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Black 26.500}"
+            },
+            "secondary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Black 26.300}"
+            },
+            "ghost": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Navy 26.600}"
+            },
+            "disable": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Navy 26.400}"
+            },
+            "brand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Brand 26.500}"
+            },
+            "brand_hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Brand 26.600}"
+            },
+            "danger": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Red 26.500}"
+            },
+            "warning": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Orange 26.500}"
+            },
+            "success": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Green 26.500}"
+            },
+            "invert": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Feild 26.cover}"
+            }
+          },
+          "border": {
+            "menu": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Navy 26.100}"
+            },
+            "primary": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Navy 26.300}"
+            },
+            "hover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Navy 26.500}"
+            },
+            "select": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Brand 26.500}"
+            },
+            "danger": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Red 26.500}"
+            },
+            "success": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Green 26.500}"
+            }
+          },
+          "background": {
+            "base": {
+              "cover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Feild 26.cover}"
+              },
+              "core": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Feild 26.core}"
+              },
+              "primary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Black 26.500}"
+              },
+              "primary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Black 26.400}"
+              },
+              "primary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Black 26.300}"
+              },
+              "secondary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.200}"
+              },
+              "secondary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.300}"
+              },
+              "secondary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.400}"
+              },
+              "ghost_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.100}"
+              },
+              "ghost_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.200}"
+              },
+              "disable": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.100}"
+              },
+              "ghost_select 2": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Navy 26.300}"
+              }
+            },
+            "white": {
+              "ghost_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{White transparent 26.200}"
+              }
+            },
+            "brand": {
+              "primary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.500}"
+              },
+              "primary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.600}"
+              },
+              "primary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.700}"
+              },
+              "secondary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.200}"
+              },
+              "secondary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.300}"
+              },
+              "secondary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.400}"
+              },
+              "ghost_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.200}"
+              },
+              "ghost_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Brand 26.300}"
+              }
+            },
+            "danger": {
+              "primary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.500}"
+              },
+              "primary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.600}"
+              },
+              "primary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.700}"
+              },
+              "secondary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.200}"
+              },
+              "secondary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.300}"
+              },
+              "secondary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.400}"
+              },
+              "ghost_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.200}"
+              },
+              "ghost_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Red 26.300}"
+              }
+            },
+            "warning": {
+              "primary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.500}"
+              },
+              "primary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.600}"
+              },
+              "primary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.700}"
+              },
+              "secondary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.200}"
+              },
+              "secondary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.300}"
+              },
+              "secondary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.400}"
+              },
+              "ghost_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.200}"
+              },
+              "ghost_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Orange 26.300}"
+              }
+            },
+            "success": {
+              "primary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.500}"
+              },
+              "primary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.600}"
+              },
+              "primary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.700}"
+              },
+              "secondary": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.200}"
+              },
+              "secondary_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.300}"
+              },
+              "secondary_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.400}"
+              },
+              "ghost_hover": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.200}"
+              },
+              "ghost_select": {
+                "$scopes": [
+                  "ALL_SCOPES"
+                ],
+                "$type": "color",
+                "$libraryName": "",
+                "$collectionName": "Palette 26",
+                "$value": "{Green 26.300}"
+              }
+            }
+          },
+          "toast": {
+            "warning": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Feild 26.toastWarning}"
+            },
+            "brand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Feild 26.toastBrand}"
+            },
+            "danger": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Feild 26.toastDanger}"
+            },
+            "success": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$libraryName": "",
+              "$collectionName": "Palette 26",
+              "$value": "{Feild 26.toastsuccess}"
+            }
+          }
+        }
+      }
+    }
+  },
+  {
+    "Palette 26": {
+      "modes": {
+        "Mode 1": {
+          "Feild 26": {
+            "cover": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#ffffff"
+            },
+            "core": {
+              "$scopes": [
+                "TEXT_FILL"
+              ],
+              "$type": "color",
+              "$value": "#f6f7f9"
+            },
+            "toastDanger": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#fdf0ef"
+            },
+            "toastWarning": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#fff5ed"
+            },
+            "toastsuccess": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#eff8ef"
+            },
+            "toastBrand": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#ebf5ff"
+            }
+          },
+          "White transparent 26": {
+            "200": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(255, 255, 255, 0.08)"
+            }
+          },
+          "Black 26": {
+            "300": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(37, 52, 71, 0.84)"
+            },
+            "400": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#3e4756"
+            },
+            "500": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#222934"
+            }
+          },
+          "Navy 26": {
+            "100": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(13, 45, 94, 0.04)"
+            },
+            "200": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(13, 45, 94, 0.08)"
+            },
+            "300": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(13, 45, 94, 0.16)"
+            },
+            "400": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(13, 45, 94, 0.28)"
+            },
+            "500": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(13, 45, 94, 0.4)"
+            },
+            "600": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(13, 45, 94, 0.56)"
+            }
+          },
+          "Brand 26": {
+            "100": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(0, 127, 255, 0.03)"
+            },
+            "200": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(0, 127, 255, 0.08)"
+            },
+            "300": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(0, 127, 255, 0.16)"
+            },
+            "400": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(0, 127, 255, 0.28)"
+            },
+            "500": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#007fff"
+            },
+            "600": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#0070e1"
+            },
+            "700": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#0066ce"
+            }
+          },
+          "Red 26": {
+            "200": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(236, 63, 57, 0.08)"
+            },
+            "300": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(236, 63, 57, 0.16)"
+            },
+            "400": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(236, 63, 57, 0.28)"
+            },
+            "500": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#ec3f39"
+            },
+            "600": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#de3b36"
+            },
+            "700": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#d13833"
+            }
+          },
+          "Orange 26": {
+            "200": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(255, 133, 25, 0.08)"
+            },
+            "300": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(255, 133, 25, 0.16)"
+            },
+            "400": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(255, 133, 25, 0.28)"
+            },
+            "500": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#ff8519"
+            },
+            "600": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#f27e18"
+            },
+            "700": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#e57817"
+            }
+          },
+          "Green 26": {
+            "200": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(60, 170, 60, 0.08)"
+            },
+            "300": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(60, 170, 60, 0.16)"
+            },
+            "400": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "rgba(60, 170, 60, 0.28)"
+            },
+            "500": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#3caa3c"
+            },
+            "600": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#349d34"
+            },
+            "700": {
+              "$scopes": [
+                "ALL_SCOPES"
+              ],
+              "$type": "color",
+              "$value": "#2c942c"
+            }
+          }
+        }
+      }
+    }
+  }
+]

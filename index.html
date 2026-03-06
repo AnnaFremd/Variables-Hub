@@ -1,0 +1,2024 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QUOTCAT ONE • Variables Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f8f9;
+      --text: #0f172a;
+      --muted: #667085;
+      --soft: #ffffff;
+      --soft-2: #f5f7fb;
+      --brand: #007fff;
+      --brand-ink: #005cc0;
+      --ok: #15803d;
+      --bad: #b42318;
+      --grid-gap: 14px;
+      --section-gap: 32px;
+      --content-indent: 16px; /* ▸ 10px + gap 6px = align content with summary text */
+      --group-indent: 22px; /* ▸ 12px + gap 10px = align subgroup with main group title */
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+      padding-bottom: 28px;
+    }
+    .mono { font-family: "JetBrains Mono", ui-monospace, monospace; }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px 44px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 30;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand img { width: 92px; height: 24px; display: block; }
+    .verified { display: none; }
+    .hero { margin: 14px 0 26px; text-align: center; }
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 9.2vw, 78px);
+      line-height: .98;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      text-wrap: balance;
+    }
+    .health {
+      margin-top: 6px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #0f172a;
+      opacity: .6;
+      white-space: nowrap;
+    }
+
+    .bento-section {
+      margin: 0 0 var(--section-gap);
+      scroll-margin-top: 30px;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 10px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 30px;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: var(--grid-gap);
+    }
+    .bento-card {
+      grid-column: span 12;
+      background: linear-gradient(180deg, #ffffff, #fcfdff);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow: none;
+      min-height: 180px;
+    }
+    .bento-card.wide { grid-column: span 12; }
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .card-title {
+      margin: 0;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: #667085;
+      font-weight: 700;
+    }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .overview-card {
+      grid-column: span 3;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px;
+    }
+    .overview-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: #667085;
+      margin-bottom: 6px;
+    }
+    .overview-value {
+      font-size: 26px;
+      line-height: 1;
+      font-weight: 800;
+      color: #101828;
+    }
+    .overview-note {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #667085;
+    }
+    .count {
+      font-size: 11px;
+      color: #98a2b3;
+      font-weight: 600;
+    }
+    .token-item.parent-start {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .token-item {
+      margin: 0;
+      border-radius: 0;
+      overflow: visible;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      transition: background-color .16s ease;
+    }
+    .token-item.open {
+      background: rgba(248, 250, 252, 0.65);
+      box-shadow: none;
+    }
+    .token-head {
+      display: grid;
+      grid-template-columns: 40px minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      cursor: pointer;
+      position: relative;
+    }
+    .token-head::after {
+      content: "▾";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%) rotate(-90deg);
+      color: #7d8aa0;
+      font-size: 12px;
+      transition: transform .14s ease;
+    }
+    .token-item.open .token-head::after {
+      transform: translateY(-50%) rotate(0deg);
+      color: var(--brand-ink);
+    }
+    .swatch {
+      position: relative;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      background:
+        linear-gradient(45deg, #f5f6f8 25%, transparent 25%),
+        linear-gradient(-45deg, #f5f6f8 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f5f6f8 75%),
+        linear-gradient(-45deg, transparent 75%, #f5f6f8 75%),
+        #fff;
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+    }
+    .swatch-fill { position: absolute; inset: 0; }
+    .token-meta {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+    }
+    .token-mainline {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+      padding-right: 18px;
+    }
+    .token-name {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .token-ref {
+      font-size: 10px;
+      color: #8b95a5;
+      white-space: nowrap;
+      flex: 0 0 auto;
+    }
+    .token-path {
+      font-size: 10px;
+      color: #7f8a9b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 18px;
+    }
+    .token-body {
+      display: none;
+      padding: 8px 0 12px 52px;
+      background: transparent;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+    }
+    .token-item.open .token-body { display: block; }
+    .token-body-grid {
+      display: grid;
+      grid-template-columns: minmax(200px, 1fr) 170px;
+      gap: 10px;
+      align-items: start;
+    }
+    .formats { display: grid; gap: 5px; }
+    .copy {
+      display: inline-block;
+      font-size: 10px;
+      color: #475467;
+      border-radius: 6px;
+      padding: 2px 4px;
+      cursor: pointer;
+      width: fit-content;
+    }
+    .copy:hover { background: #eef2f7; }
+    .right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      text-align: right;
+    }
+    .contrast {
+      color: #98a2b3;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 3px 7px;
+      width: fit-content;
+    }
+    .pass { background: #ecfdf3; color: #15803d; }
+    .fail { background: #fef2f2; color: #b42318; }
+    .na { background: #f2f4f7; color: #667085; }
+    .typo { background: #fff4cc; color: #7a4e00; }
+
+    .audit-list {
+      font-size: 12px;
+      color: #475467;
+      line-height: 1.6;
+    }
+    .audit-list .mono { font-size: 11px; }
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .mapping-item {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+    .mapping-head {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .mapping-swatch {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background:
+        linear-gradient(45deg, #f5f6f8 25%, transparent 25%),
+        linear-gradient(-45deg, #f5f6f8 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f5f6f8 75%),
+        linear-gradient(-45deg, transparent 75%, #f5f6f8 75%),
+        #fff;
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+    }
+    .mapping-swatch-fill { position: absolute; inset: 0; }
+    .mapping-parent {
+      font-size: 11px;
+      color: #344054;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+    }
+    .mapping-meta {
+      font-size: 10px;
+      color: #667085;
+      margin-top: 2px;
+    }
+    .mapping-tokens {
+      display: grid;
+      gap: 3px;
+      border-top: 1px solid rgba(15, 23, 42, 0.06);
+      padding-top: 8px;
+    }
+    .mapping-token-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 11px;
+      color: #475467;
+    }
+    .mapping-token-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mapping-token-alpha {
+      color: #98a2b3;
+      flex: 0 0 auto;
+    }
+    .mapping-details {
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      padding-top: 8px;
+      margin-top: 6px;
+    }
+    .mapping-details > summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+      font-size: 11px;
+      color: #667085;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .mapping-details > summary::-webkit-details-marker { display: none; }
+    .mapping-details > summary::before {
+      content: "▸";
+      font-size: 10px;
+      color: #98a2b3;
+      transform: translateY(-1px);
+      transition: transform .15s ease;
+    }
+    .mapping-details[open] > summary::before {
+      transform: rotate(90deg) translateX(1px);
+    }
+    .mapping-content {
+      margin-top: 10px;
+    }
+    .comparison-wrap {
+      overflow-x: auto;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 14px;
+      background: #fff;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 980px;
+      font-size: 12px;
+      color: #344054;
+      table-layout: fixed;
+    }
+    .comparison-table th,
+    .comparison-table td {
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      padding: 9px 10px;
+      text-align: left;
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+    .comparison-table th {
+      font-size: 11px;
+      color: #667085;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: #fbfcfe;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    .comparison-group-row td {
+      background: #f8fafc;
+      color: #475467;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .status-pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      line-height: 1.35;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .status-exact { background: #ecfdf3; color: #15803d; }
+    .status-alias { background: #eff8ff; color: #175cd3; }
+    .status-missing { background: #fef2f2; color: #b42318; }
+    .compare-stack {
+      display: grid;
+      gap: 10px;
+    }
+    .compare-group {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .compare-group > summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #344054;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .compare-group > summary::-webkit-details-marker { display: none; }
+    .compare-group > summary::before {
+      content: "▸";
+      font-size: 10px;
+      color: #98a2b3;
+      transition: transform .15s ease;
+    }
+    .compare-group[open] > summary::before { transform: rotate(90deg); }
+    .compare-group-content {
+      padding: 10px;
+      display: grid;
+      gap: 10px;
+    }
+    .compare-parent-card {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      border-radius: 10px;
+      background: #fcfdff;
+      overflow: hidden;
+    }
+    .compare-parent-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+      background: #f8fafc;
+    }
+    .compare-parent-title {
+      font-size: 11px;
+      color: #344054;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 700;
+    }
+    .compare-parent-meta {
+      font-size: 10px;
+      color: #667085;
+      white-space: nowrap;
+    }
+    .comparison-table.compact {
+      min-width: 0;
+      font-size: 11px;
+    }
+    .comparison-table.compact th,
+    .comparison-table.compact td {
+      padding: 7px 8px;
+    }
+    .compare-class-cell {
+      vertical-align: top;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      color: #344054;
+      white-space: nowrap;
+      background: rgba(248, 250, 252, 0.7);
+    }
+    .family-cell {
+      vertical-align: top;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+      color: #344054;
+      white-space: nowrap;
+      background: rgba(248, 250, 252, 0.7);
+    }
+    .mini-swatch {
+      position: relative;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(15, 23, 42, 0.14);
+      vertical-align: middle;
+      background:
+        linear-gradient(45deg, #f5f6f8 25%, transparent 25%),
+        linear-gradient(-45deg, #f5f6f8 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f5f6f8 75%),
+        linear-gradient(-45deg, transparent 75%, #f5f6f8 75%),
+        #fff;
+      background-size: 8px 8px;
+      background-position: 0 0, 0 4px, 4px -4px, -4px 0;
+    }
+    .mini-swatch-fill { position: absolute; inset: 0; }
+    .collapse-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 60px;
+    }
+    .collapse-card {
+      padding: 0;
+      display: grid;
+      gap: 8px;
+      align-items: start;
+    }
+    .collapse-anchor {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 0;
+    }
+    .collapse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 1px;
+      margin-top: 8px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(15, 23, 42, 0.14);
+    }
+    .collapse-anchor-body {
+      min-width: 0;
+    }
+    .collapse-parent {
+      font-size: 18px;
+      line-height: 1.2;
+      color: #111827;
+      font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .collapse-anchor-line {
+      width: 24px;
+      height: 0;
+      border-top: 0.5px solid #000;
+      margin-top: 6px;
+    }
+    .collapse-list {
+      display: grid;
+      gap: 2px;
+      font-size: 11px;
+      color: #666666;
+      line-height: 1.22;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .collapse-token {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .strategy-roadmap {
+      display: grid;
+      gap: 0;
+      color: #111111;
+    }
+    .strategy-head {
+      margin-bottom: 10px;
+    }
+    .strategy-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+      color: #111111;
+    }
+    .strategy-item {
+      display: grid;
+      grid-template-columns: 170px minmax(230px, 1.1fr) 1fr minmax(240px, 1fr);
+      gap: 24px;
+      align-items: start;
+      padding: 48px 0;
+      border-top: 0.5px solid #000;
+    }
+    .strategy-status {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #333333;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      white-space: nowrap;
+      padding-top: 4px;
+    }
+    .strategy-action {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: #111111;
+      font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+    }
+    .strategy-value {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: #222222;
+    }
+    .strategy-target {
+      margin: 0;
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #f4f4f4;
+      padding: 8px 10px;
+      font-size: 11px;
+      line-height: 1.35;
+      color: #4a4a4a;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    #comparison .section-head { display: none; }
+    #comparison .bento-grid {
+      display: grid;
+      gap: var(--grid-gap);
+    }
+    #comparison .bento-card {
+      background: transparent;
+      border-radius: 0;
+      padding: 0;
+      box-shadow: none;
+      min-height: 0;
+    }
+    #comparison .compare-group {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    #comparison .compare-group > summary {
+      padding: 6px 0 10px;
+      font-size: clamp(34px, 5vw, 52px);
+      line-height: .95;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #111827;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.12);
+      gap: 10px;
+    }
+    #comparison .compare-group > summary::before {
+      font-size: 12px;
+      transform: translateY(1px);
+    }
+    #comparison .compare-group-content {
+      padding: 12px 0 4px;
+      padding-left: var(--group-indent);
+    }
+    .compare-subgroup {
+      border-top: 1px solid rgba(15, 23, 42, 0.08);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .compare-group-content > .compare-subgroup:first-child {
+      border-top: 0;
+      padding-top: 0;
+      margin-top: 0;
+    }
+    .compare-subgroup > summary {
+      list-style: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      font-family: "Inter Tight", "Inter", system-ui, sans-serif;
+      color: #111111;
+      padding: 4px 0 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .compare-subgroup > summary::-webkit-details-marker { display: none; }
+    .compare-subgroup > summary::before {
+      content: "▸";
+      font-size: 10px;
+      color: #98a2b3;
+      transition: transform .15s ease;
+    }
+    .compare-subgroup[open] > summary::before { transform: rotate(90deg); }
+    .compare-subgroup-content {
+      padding: 4px 0 6px;
+      padding-left: var(--content-indent);
+    }
+    #comparison .comparison-wrap {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    #comparison .comparison-table {
+      border: 0;
+      min-width: 0;
+      background: transparent;
+    }
+    #comparison .comparison-table th {
+      background: transparent;
+      position: static;
+      border-bottom: 1px solid rgba(15, 23, 42, 0.1);
+    }
+    #comparison .impact-card,
+    #comparison .collapse-card {
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+
+    .footer-signature {
+      margin-top: 24px;
+      color: #0f172a;
+      opacity: .6;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      text-align: right;
+    }
+    .footer-signature::before {
+      content: none;
+    }
+
+    .toast {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      background: #111827;
+      color: #fff;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .16s ease;
+      z-index: 60;
+    }
+    .toast.show { opacity: 1; }
+
+    @media (max-width: 980px) {
+      .brand img { width: 76px; height: 20px; }
+      h1 { font-size: clamp(38px, 12vw, 62px); }
+      .bento-card { grid-column: span 12; }
+      .mapping-grid { grid-template-columns: 1fr; }
+      .overview-card { grid-column: span 6; }
+      .collapse-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; }
+      .strategy-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 28px 0;
+      }
+      .token-body {
+        padding-left: 10px;
+      }
+      .token-body-grid {
+        grid-template-columns: 1fr;
+      }
+      .right {
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+    @media (max-width: 1200px) {
+      .collapse-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .collapse-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <img src="./quotcat-logo.svg" alt="Quotcat logo" />
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1>Variables Hub</h1>
+      <div id="systemHealth" class="health">...</div>
+    </section>
+
+    <main id="app"></main>
+
+    <footer class="footer-signature">Curated & Architected by Anna Fremd</footer>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const app = document.getElementById("app");
+    const toast = document.getElementById("toast");
+    const systemHealth = document.getElementById("systemHealth");
+
+    const SECTION_TITLES = {
+      general: "Text and Icons",
+      border: "Borders",
+      backgrounds: "Surfaces and Backgrounds",
+      toast: "Toasts"
+    };
+    const BACKGROUND_SUBGROUPS = ["base", "white", "brand", "danger", "warning", "success", "other"];
+    const SUBGROUP_TITLES = {
+      general: { "text-icons": "General" },
+      border: { all: "Border" },
+      backgrounds: {
+        base: "Base",
+        white: "White",
+        brand: "Brand",
+        danger: "Danger",
+        warning: "Warning",
+        success: "Success",
+        other: "Other"
+      },
+      toast: { opaque: "Toast" }
+    };
+    const COLOR_COMPARE_ORDER = ["General", "Text Aliases", "Border", "Background", "Toast", "Frontend-only"];
+    const FRONT_COLOR_VARS = new Set([
+      "--general-primary", "--general-invert", "--general-secondary", "--general-ghost", "--general-disable", "--general-brand", "--general-brand-hover", "--general-danger", "--general-warning", "--general-success", "--general-white",
+      "--text-primary", "--text-secondary", "--text-ghost",
+      "--border-menu", "--border-secondary", "--border-primary", "--border-hover", "--border-select", "--border-danger", "--border-succsess",
+      "--bg-base-cover", "--bg-base-core", "--bg-base-primary", "--bg-base-primary-hover", "--bg-base-primary-select", "--bg-base-secondary", "--bg-base-secondary-hover", "--bg-base-secondary-select", "--bg-base-ghost-hover", "--bg-base-ghost-select", "--bg-base-disable",
+      "--bg-brand-primary", "--bg-brand-primary-hover", "--bg-brand-primary-select", "--bg-brand-secondary", "--bg-brand-secondary-hover", "--bg-brand-secondary-select", "--bg-brand-ghost-hover", "--bg-brand-ghost-select",
+      "--bg-danger-primary", "--bg-danger-primary-hover", "--bg-danger-primary-select", "--bg-danger-secondary", "--bg-danger-secondary-hover", "--bg-danger-secondary-select", "--bg-danger-ghost-hover", "--bg-danger-ghost-select",
+      "--bg-warning-primary", "--bg-warning-primary-hover", "--bg-warning-primary-select", "--bg-warning-secondary", "--bg-warning-secondary-hover", "--bg-warning-secondary-select", "--bg-warning-ghost-hover", "--bg-warning-ghost-select",
+      "--bg-success-primary", "--bg-success-primary-hover", "--bg-success-primary-select", "--bg-success-secondary", "--bg-success-secondary-hover", "--bg-success-secondary-select", "--bg-success-ghost-hover", "--bg-success-ghost-select",
+      "--bg-toast-danger", "--bg-toast-warning", "--bg-toast-success", "--bg-toast-brand", "--bg-toast-info"
+    ]);
+    const FOUNDATION_COMPARE_ROWS = [
+      { category: "Radius", figma: "radius-XS = 4", frontend: "--radius-xs: 4px", status: "exact", note: "" },
+      { category: "Radius", figma: "radius-S = 6", frontend: "--radius-s: 6px", status: "exact", note: "" },
+      { category: "Radius", figma: "radius-M = 8", frontend: "--radius-m: 8px", status: "exact", note: "" },
+      { category: "Radius", figma: "radius-L = 12", frontend: "--radius-l: 12px", status: "exact", note: "" },
+      { category: "Radius", figma: "radius-XL = 16", frontend: "--radius-xl: 16px", status: "exact", note: "" },
+      { category: "Radius", figma: "radius-XXL = 24", frontend: "--radius-xxl: 24px", status: "exact", note: "" },
+
+      { category: "Space", figma: "All/space-none = 0", frontend: "n/a", status: "missing", note: "No explicit --padding-none on frontend." },
+      { category: "Space", figma: "All/space-XS = 2", frontend: "--padding-xs: 2px", status: "exact", note: "" },
+      { category: "Space", figma: "All/space-S = 4", frontend: "--padding-s: 4px", status: "exact", note: "" },
+      { category: "Space", figma: "All/space-M = 8", frontend: "--padding-m: 8px", status: "exact", note: "" },
+      { category: "Space", figma: "All/space-L = 12", frontend: "--padding-l: 12px", status: "exact", note: "" },
+      { category: "Space", figma: "All/space-XL = 16", frontend: "--padding-xl: 16px", status: "exact", note: "" },
+      { category: "Space", figma: "All/space-XXL = 24", frontend: "--padding-xxl: 24px", status: "exact", note: "" },
+      { category: "Space", figma: "All/space-3XL = 32", frontend: "--padding-3xl: 32px", status: "exact", note: "" },
+
+      { category: "Text Size", figma: "size-S = 12", frontend: "--text-size-s: 12px", status: "exact", note: "" },
+      { category: "Text Size", figma: "size-M = 14", frontend: "--text-size-m: 14px", status: "exact", note: "" },
+      { category: "Text Size", figma: "size-L = 16", frontend: "--text-size-l: 16px", status: "exact", note: "" },
+      { category: "Text Size", figma: "size-XL = 20", frontend: "--text-size-xl: 20px", status: "exact", note: "" },
+      { category: "Text Weight", figma: "weight-S = 400", frontend: "--text-weight-s: 400", status: "exact", note: "" },
+      { category: "Text Weight", figma: "weight-M = 500", frontend: "--text-weight-m: 500", status: "exact", note: "" },
+      { category: "Text Weight", figma: "weight-L = 700", frontend: "--text-weight-l: 700", status: "exact", note: "" },
+
+      { category: "Dialog Size", figma: "Size/dialog-S = 520", frontend: "--dialog-s: 520px", status: "exact", note: "" },
+      { category: "Dialog Size", figma: "Size/dialog-M = 640", frontend: "--dialog-m: 640px", status: "exact", note: "" },
+      { category: "Dialog Size", figma: "Size/dialog-L = 816", frontend: "--dialog-l: 816px", status: "exact", note: "" },
+      { category: "Dialog Size", figma: "n/a", frontend: "--dialog-xl: 958px", status: "missing", note: "Frontend extension, absent in initial Figma export." },
+
+      { category: "Effects", figma: "shadowGeneral", frontend: "--shadow-general", status: "exact", note: "Value semantics are aligned (2-layer drop shadow)." },
+      { category: "Line Height", figma: "ВысотаСтрокиНаборный = 120", frontend: "body { line-height: 120%; }", status: "alias", note: "Applied as global style, not as token var." }
+    ];
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => toast.classList.remove("show"), 1200);
+    }
+
+    async function loadJsonFromFile(path) {
+      const response = await fetch(path);
+      if (!response.ok) throw new Error(`HTTP ${response.status}: ${path}`);
+      const text = await response.text();
+      let parsed = JSON.parse(text);
+      while (typeof parsed === "string") parsed = JSON.parse(parsed);
+      return parsed;
+    }
+
+    function normalizeKey(input) {
+      return String(input || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    }
+
+    function parseRgbaColor(value) {
+      if (!value) return null;
+      if (typeof value === "object" && value.red !== undefined) {
+        return { r: +value.red, g: +value.green, b: +value.blue, a: value.alpha === undefined ? 1 : +value.alpha };
+      }
+      const c = String(value).trim().toLowerCase();
+      if (c.startsWith("#")) {
+        const hex = c.slice(1);
+        if (hex.length === 3 || hex.length === 4) {
+          return {
+            r: parseInt(hex[0] + hex[0], 16),
+            g: parseInt(hex[1] + hex[1], 16),
+            b: parseInt(hex[2] + hex[2], 16),
+            a: hex.length === 4 ? parseInt(hex[3] + hex[3], 16) / 255 : 1
+          };
+        }
+        if (hex.length === 6 || hex.length === 8) {
+          return {
+            r: parseInt(hex.slice(0, 2), 16),
+            g: parseInt(hex.slice(2, 4), 16),
+            b: parseInt(hex.slice(4, 6), 16),
+            a: hex.length === 8 ? parseInt(hex.slice(6, 8), 16) / 255 : 1
+          };
+        }
+      }
+      const m = c.match(/^rgba?\(([^)]+)\)$/);
+      if (!m) return null;
+      const parts = m[1].replace(/\s*\/\s*/g, ",").split(",").map((x) => x.trim());
+      if (parts.length < 3) return null;
+      return { r: +parts[0], g: +parts[1], b: +parts[2], a: parts[3] !== undefined ? +parts[3] : 1 };
+    }
+
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+    const fmtAlpha = (a) => Math.abs(a - 1) < 0.0005 ? "1" : a.toFixed(3).replace(/0+$/, "").replace(/\.$/, "");
+
+    function rgbaToHex(c) {
+      const r = Math.round(c.r), g = Math.round(c.g), b = Math.round(c.b), a = clamp01(c.a);
+      const base = `#${r.toString(16).padStart(2, "0")}${g.toString(16).padStart(2, "0")}${b.toString(16).padStart(2, "0")}`.toUpperCase();
+      return a >= 0.999 ? base : `${base}${Math.round(a * 255).toString(16).padStart(2, "0")}`.toUpperCase();
+    }
+
+    function rgbaToString(c) {
+      return `rgba(${Math.round(c.r)}, ${Math.round(c.g)}, ${Math.round(c.b)}, ${fmtAlpha(clamp01(c.a))})`;
+    }
+
+    function rgbaToOklch(c) {
+      const srgbToLinear = (v) => v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+      const r = srgbToLinear(clamp01(c.r / 255));
+      const g = srgbToLinear(clamp01(c.g / 255));
+      const b = srgbToLinear(clamp01(c.b / 255));
+      const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+      const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+      const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+      const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s;
+      const a = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s;
+      const bb = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s;
+      const C = Math.sqrt(a * a + bb * bb);
+      let h = Math.atan2(bb, a) * 180 / Math.PI;
+      if (h < 0) h += 360;
+      if (C < 1e-7) h = 0;
+      const alpha = clamp01(c.a);
+      const lStr = `${(L * 100).toFixed(2).replace(/\.00$/, "")}%`;
+      const cStr = C.toFixed(4).replace(/0+$/, "").replace(/\.$/, "") || "0";
+      const hStr = h.toFixed(2).replace(/\.00$/, "");
+      return alpha >= 0.999 ? `oklch(${lStr} ${cStr} ${hStr})` : `oklch(${lStr} ${cStr} ${hStr} / ${fmtAlpha(alpha)})`;
+    }
+
+    function compositeOnWhite(c) {
+      const a = clamp01(c.a);
+      return {
+        r: Math.round(c.r * a + 255 * (1 - a)),
+        g: Math.round(c.g * a + 255 * (1 - a)),
+        b: Math.round(c.b * a + 255 * (1 - a)),
+        a: 1
+      };
+    }
+
+    function contrastOnWhite(c) {
+      const ch = (v) => {
+        const x = v / 255;
+        return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+      };
+      const blended = compositeOnWhite(c);
+      const lum = 0.2126 * ch(blended.r) + 0.7152 * ch(blended.g) + 0.0722 * ch(blended.b);
+      return (1 + 0.05) / (lum + 0.05);
+    }
+
+    function darkenColor(c, factor) {
+      return { r: c.r * factor, g: c.g * factor, b: c.b * factor, a: c.a };
+    }
+
+    function suggestDarkerForGeneral(c, target = 4.5) {
+      for (let factor = 0.97; factor >= 0.45; factor -= 0.01) {
+        const candidate = darkenColor(c, factor);
+        const ratio = contrastOnWhite(candidate);
+        if (ratio >= target) return { hex: rgbaToHex(candidate), ratio };
+      }
+      return null;
+    }
+
+    function tokenizeName(name) {
+      const lower = name.toLowerCase();
+      const normalized = lower.replace(/-/g, "");
+      if (lower.startsWith("general")) return { section: "general", subgroup: "text-icons" };
+      if (lower.startsWith("border")) return { section: "border", subgroup: "all" };
+      if (lower.startsWith("background")) {
+        if (normalized.startsWith("backgroundbase")) return { section: "backgrounds", subgroup: "base" };
+        if (normalized.startsWith("backgroundwhite")) return { section: "backgrounds", subgroup: "white" };
+        if (normalized.startsWith("backgroundbrand")) return { section: "backgrounds", subgroup: "brand" };
+        if (normalized.startsWith("backgrounddanger")) return { section: "backgrounds", subgroup: "danger" };
+        if (normalized.startsWith("backgroundwarning")) return { section: "backgrounds", subgroup: "warning" };
+        if (normalized.startsWith("backgroundsuccess")) return { section: "backgrounds", subgroup: "success" };
+        return { section: "backgrounds", subgroup: "other" };
+      }
+      if (lower.startsWith("toast")) return { section: "toast", subgroup: "opaque" };
+      return { section: "general", subgroup: "text-icons" };
+    }
+
+    function hasTypo(name) {
+      const typo = /(^|[-_])succes($|[-_])/i.test(String(name || ""));
+      return { typo, flagged: typo };
+    }
+
+    function buildPaletteIndex(paletteJson) {
+      const idx = new Map();
+      for (const [key, payload] of Object.entries(paletteJson)) {
+        const mode = payload?.mode1 ?? payload;
+        const rgba = parseRgbaColor(mode);
+        if (!rgba) continue;
+        idx.set(normalizeKey(key), { key, rgba });
+      }
+      return idx;
+    }
+
+    function buildPaletteRows(paletteJson) {
+      const rows = [];
+      const shadeFromKey = (k) => {
+        const m = String(k).match(/(\d{2,4})$/);
+        return m ? Number(m[1]) : 9999;
+      };
+      const familyFromKey = (k) => {
+        const normalized = String(k).replace(/[-_]/g, "");
+        return normalized.replace(/\d+/g, "") || "other";
+      };
+      for (const [key, payload] of Object.entries(paletteJson || {})) {
+        const mode = payload?.mode1 ?? payload;
+        const rgbaObj = parseRgbaColor(mode);
+        if (!rgbaObj) continue;
+        rows.push({
+          key,
+          family: familyFromKey(key),
+          shade: shadeFromKey(key),
+          hex: rgbaToHex(rgbaObj),
+          rgba: rgbaToString(rgbaObj),
+          oklch: rgbaToOklch(rgbaObj)
+        });
+      }
+      rows.sort((a, b) => a.family.localeCompare(b.family) || a.shade - b.shade || a.key.localeCompare(b.key));
+      return rows;
+    }
+
+    function resolveColorToken(name, payload, paletteIndex, cache) {
+      if (cache.has(name)) return cache.get(name);
+      const mode = payload?.mode1 ?? payload;
+      if (typeof mode === "string") {
+        const m = mode.match(/^\{([^}]+)\}$/);
+        if (m) {
+          const ref = m[1].trim();
+          const found = paletteIndex.get(normalizeKey(ref));
+          const r = found ? { sourceRef: found.key, rgba: found.rgba, error: null } : { sourceRef: ref, rgba: null, error: "palette ref not found" };
+          cache.set(name, r);
+          return r;
+        }
+        const direct = parseRgbaColor(mode);
+        const r = direct ? { sourceRef: null, rgba: direct, error: null } : { sourceRef: null, rgba: null, error: "invalid color string" };
+        cache.set(name, r);
+        return r;
+      }
+      const rgba = parseRgbaColor(mode);
+      const r = rgba ? { sourceRef: null, rgba, error: null } : { sourceRef: null, rgba: null, error: "invalid rgba object" };
+      cache.set(name, r);
+      return r;
+    }
+
+    function evaluateAccessibility(section, name, rgba, hasError) {
+      if (hasError || !rgba) return { status: "fail", badge: "FAIL", badgeClass: "fail", ratio: null, context: "unresolved", threshold: null, alert: true, suggestion: null };
+      const ratio = contrastOnWhite(rgba);
+      if (section === "general") {
+        const pass = ratio >= 4.5;
+        return { status: pass ? "pass" : "fail", badge: pass ? "PASS" : "FAIL", badgeClass: pass ? "pass" : "fail", ratio, context: "text on white", threshold: 4.5, alert: !pass, suggestion: pass ? null : suggestDarkerForGeneral(rgba, 4.5) };
+      }
+      if (section === "border") {
+        if (name === "border-menu") return { status: "skip", badge: "N/A", badgeClass: "na", ratio: null, context: "decorative border", threshold: null, alert: false, suggestion: null };
+        const pass = ratio >= 3;
+        return { status: pass ? "pass" : "fail", badge: pass ? "PASS" : "FAIL", badgeClass: pass ? "pass" : "fail", ratio, context: "border vs white", threshold: 3, alert: !pass, suggestion: null };
+      }
+      if (section === "backgrounds" || section === "toast") {
+        const pass = ratio >= 4.5;
+        return { status: pass ? "pass" : "fail", badge: pass ? "PASS" : "FAIL", badgeClass: pass ? "pass" : "fail", ratio, context: "white text on bg", threshold: 4.5, alert: !pass, suggestion: null };
+      }
+      return { status: "skip", badge: "N/A", badgeClass: "na", ratio: null, context: "not checked", threshold: null, alert: false, suggestion: null };
+    }
+
+    function enrichTokens(colorsJson, paletteIndex) {
+      const cache = new Map();
+      const tokens = [];
+      for (const [name, payload] of Object.entries(colorsJson)) {
+        const resolved = resolveColorToken(name, payload, paletteIndex, cache);
+        const qa = hasTypo(name);
+        const type = tokenizeName(name);
+        if (!resolved.rgba) {
+          const access = evaluateAccessibility(type.section, name, null, true);
+          const parentLabel = resolved.sourceRef || "direct value";
+          tokens.push({
+            name, ...type, ...qa,
+            sourceRef: resolved.sourceRef || null,
+            parentLabel,
+            parentKey: normalizeKey(parentLabel),
+            alpha: -1,
+            error: resolved.error,
+            formats: { hex: "-", rgba: "-", oklch: "-" },
+            alphaOnWhiteHex: "-",
+            accessibility: access
+          });
+          continue;
+        }
+        const hex = rgbaToHex(resolved.rgba);
+        const rgba = rgbaToString(resolved.rgba);
+        const oklch = rgbaToOklch(resolved.rgba);
+        const alphaOnWhiteHex = resolved.rgba.a < 0.999 ? rgbaToHex(compositeOnWhite(resolved.rgba)) : "-";
+        const accessibility = evaluateAccessibility(type.section, name, resolved.rgba, false);
+        const parentLabel = resolved.sourceRef || "direct value";
+        tokens.push({
+          name, ...type, ...qa,
+          sourceRef: resolved.sourceRef || null,
+          parentLabel,
+          parentKey: normalizeKey(parentLabel),
+          alpha: clamp01(resolved.rgba.a),
+          error: null,
+          formats: { hex, rgba, oklch },
+          alphaOnWhiteHex,
+          accessibility
+        });
+      }
+      return tokens;
+    }
+
+    function tokenSort(a, b) {
+      const p = String(a.parentKey || "").localeCompare(String(b.parentKey || ""));
+      if (p !== 0) return p;
+      // Within one parent: opaque first, then more transparent.
+      if (a.alpha !== b.alpha) return (b.alpha ?? -1) - (a.alpha ?? -1);
+      return a.name.localeCompare(b.name);
+    }
+
+    function groupBySection(tokens) {
+      const grouped = {
+        general: { "text-icons": [] },
+        border: { all: [] },
+        backgrounds: { base: [], white: [], brand: [], danger: [], warning: [], success: [], other: [] },
+        toast: { opaque: [] }
+      };
+      tokens.forEach((t) => {
+        if (!grouped[t.section]) return;
+        if (!grouped[t.section][t.subgroup]) grouped[t.section][t.subgroup] = [];
+        grouped[t.section][t.subgroup].push(t);
+      });
+      Object.keys(grouped).forEach((section) => {
+        Object.keys(grouped[section]).forEach((sg) => grouped[section][sg].sort(tokenSort));
+      });
+      return grouped;
+    }
+
+    function buildSystemMapping(tokens) {
+      const map = new Map();
+      tokens.forEach((t) => {
+        const k = t.sourceRef ? `ref:${normalizeKey(t.sourceRef)}` : `val:${t.formats.hex}`;
+        if (!map.has(k)) map.set(k, []);
+        map.get(k).push(t);
+      });
+      const groups = [];
+      for (const arr of map.values()) {
+        const parent = arr[0].sourceRef || arr[0].formats.hex;
+        const sorted = arr.slice().sort((a, b) => a.name.localeCompare(b.name));
+        const representative = sorted.find((t) => !t.error && t.formats?.rgba && t.formats.rgba !== "-");
+        const sections = [...new Set(sorted.map((t) => t.section))];
+        groups.push({
+          parent,
+          tokens: sorted,
+          swatchRgba: representative ? representative.formats.rgba : "transparent",
+          sectionSummary: sections.join(", ")
+        });
+      }
+      groups.sort((a, b) => a.parent.localeCompare(b.parent));
+      return groups;
+    }
+
+    function copyCssVariables(title, tokens) {
+      const lines = [`/* ${title} */`, ":root {"];
+      tokens.forEach((t) => lines.push(`  --${t.name.toLowerCase()}: ${t.error ? "transparent" : t.formats.rgba};`));
+      lines.push("}");
+      navigator.clipboard.writeText(lines.join("\n")).then(() => showToast("CSS variables copied")).catch(() => showToast("Copy failed"));
+    }
+
+    function buildMigrationMapText(mappings) {
+      const lines = ["System Mapping", ""];
+      mappings.forEach((group) => {
+        lines.push(`${group.parent}`);
+        group.tokens.forEach((t) => lines.push(`  - ${t.name}`));
+        lines.push("");
+      });
+      return lines.join("\n");
+    }
+
+    function tokenHoverGlow(t) {
+      if (!t || t.error || !t.formats?.rgba) return "";
+      return `box-shadow: 0 10px 22px ${t.formats.rgba.replace('rgba(', 'rgba(').replace(/\)$/, ', 0.18)')};`;
+    }
+
+    function tokenItemHtml(t, idx, extraClass = "") {
+      const acc = t.accessibility || { status: "skip", badge: "N/A", badgeClass: "na", ratio: null, context: "not checked", threshold: null, alert: false, suggestion: null };
+      const referencePath = t.error ? `${t.name} -> {${t.sourceRef || "missing"}} -> unresolved` : `${t.name} -> {${t.sourceRef || "direct"}} -> ${t.formats.hex}`;
+      const extraBadge = t.typo ? `<span class="badge typo">succes typo</span>` : "";
+      const statusBadge = `<span class="badge ${acc.badgeClass}">${acc.badge}</span>`;
+      return `
+        <article class="token-item${extraClass ? ` ${extraClass}` : ""}${t.typo || acc.alert ? " alert" : ""}" data-token-item data-token-id="${idx}" style="${tokenHoverGlow(t)}">
+          <div class="token-head" data-token-toggle="${idx}">
+            <div class="swatch"><div class="swatch-fill" style="background-color:${t.error ? "transparent" : t.formats.rgba};"></div></div>
+            <div class="token-meta">
+              <div class="token-mainline">
+                <div class="token-name">${t.name}</div>
+                <div class="token-ref">${t.sourceRef ? `ref: ${t.sourceRef}` : "ref: direct value"}${t.error ? ` • ${t.error}` : ""}</div>
+              </div>
+              <div class="token-path mono">Reference Path: ${referencePath}</div>
+            </div>
+          </div>
+          <div class="token-body">
+            <div class="token-body-grid">
+              <div class="formats">
+                <span class="copy mono" data-copy="${t.formats.hex}">HEX: ${t.formats.hex}</span>
+                <span class="copy mono" data-copy="${t.formats.rgba}">RGBA: ${t.formats.rgba}</span>
+                <span class="copy mono" data-copy="${t.formats.oklch}">OKLCH: ${t.formats.oklch}</span>
+                ${t.alphaOnWhiteHex !== "-" ? `<span class="copy mono" data-copy="${t.alphaOnWhiteHex}">On #FFF: ${t.alphaOnWhiteHex}</span>` : ""}
+              </div>
+              <div class="right">
+                <div class="contrast mono">${t.error || acc.ratio === null ? acc.context : `${acc.context}: ${acc.ratio.toFixed(2)}:1 ${acc.threshold ? `(>=${acc.threshold})` : ""}`}</div>
+                ${statusBadge}
+                ${acc.suggestion ? `<span class="badge na mono">suggest: ${acc.suggestion.hex}</span>` : ""}
+                ${extraBadge}
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function subgroupCardHtml(sectionId, subgroup, items, showHeader = true) {
+      if (!items.length) return "";
+      const wide = items.length > 7 ? " wide" : "";
+      const label = SUBGROUP_TITLES[sectionId]?.[subgroup] || subgroup;
+      let currentParent = "";
+      const rows = items.map((t, i) => {
+        const markerNeeded = i > 0 && t.parentLabel !== currentParent;
+        currentParent = t.parentLabel;
+        return tokenItemHtml(t, `${label}-${i}`, markerNeeded ? "parent-start" : "");
+      }).join("");
+      return `
+        <section class="bento-card${wide}">
+          ${showHeader ? `
+            <div class="card-top">
+              <h3 class="card-title">${label}</h3>
+              <span class="count">${items.length}</span>
+            </div>
+          ` : ""}
+          ${rows}
+        </section>
+      `;
+    }
+
+    function sectionHtml(id, groupedSection) {
+      const order = id === "backgrounds" ? BACKGROUND_SUBGROUPS : Object.keys(groupedSection);
+      return `
+        <section id="${id}" class="bento-section">
+          <div class="section-head">
+            <h2>${SECTION_TITLES[id]}</h2>
+            <button class="ghost-btn copy-css-btn" data-section="${id}"><span>⧉</span><span>Copy CSS</span></button>
+          </div>
+          <div class="bento-grid">
+            ${order.map((sg) => subgroupCardHtml(id, sg, groupedSection[sg] || [])).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function sectionCompactHtml(id, groupedSection) {
+      const order = id === "backgrounds" ? BACKGROUND_SUBGROUPS : Object.keys(groupedSection);
+      return `
+        <div class="bento-grid">
+          ${order.map((sg) => subgroupCardHtml(id, sg, groupedSection[sg] || [])).join("")}
+        </div>
+      `;
+    }
+
+    function sectionCompactHtmlNoHeaders(id, groupedSection) {
+      const order = id === "backgrounds" ? BACKGROUND_SUBGROUPS : Object.keys(groupedSection);
+      return `
+        <div class="bento-grid">
+          ${order.map((sg) => subgroupCardHtml(id, sg, groupedSection[sg] || [], false)).join("")}
+        </div>
+      `;
+    }
+
+    function overviewHtml(tokens, mappings) {
+      const semanticCount = tokens.filter((t) => ["general", "border", "backgrounds", "toast"].includes(t.section)).length;
+      const paletteRefs = new Set(tokens.map((t) => t.sourceRef).filter(Boolean)).size;
+      const unresolved = tokens.filter((t) => t.error).length;
+      const removeNow = tokens.filter((t) => t.name === "background-base-ghost-select2").length;
+      const frontendOnlyGaps = 2; // --border-secondary, --bg-toast-info
+      return `
+        <section id="overview" class="bento-section">
+          <div class="section-head"><h2>Variables Overview</h2></div>
+          <div class="overview-grid">
+            <article class="overview-card">
+              <div class="overview-label">Semantic Variables</div>
+              <div class="overview-value">${semanticCount}</div>
+              <div class="overview-note">Role-based tokens for text, borders, surfaces and toasts.</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Shared Value Sources</div>
+              <div class="overview-value">${mappings.length}</div>
+              <div class="overview-note">Parent refs currently shared by semantic tokens.</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Palette References</div>
+              <div class="overview-value">${paletteRefs}</div>
+              <div class="overview-note">Unique primitive refs consumed by semantic layer.</div>
+            </article>
+            <article class="overview-card">
+              <div class="overview-label">Immediate Actions</div>
+              <div class="overview-value">${removeNow + frontendOnlyGaps}</div>
+              <div class="overview-note">${unresolved ? `${unresolved} unresolved refs found.` : "Legacy + frontend-only alignment in plan."}</div>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function mappingItemHtml(group) {
+      return `
+        <section class="mapping-item">
+          <div class="mapping-head">
+            <div class="mapping-swatch">
+              <div class="mapping-swatch-fill" style="background-color:${group.swatchRgba};"></div>
+            </div>
+            <div>
+              <div class="mapping-parent mono">${group.parent}</div>
+              <div class="mapping-meta mono">${group.tokens.length} token(s) • ${group.sectionSummary || "mixed"}</div>
+            </div>
+          </div>
+          <div class="mapping-tokens">
+            ${group.tokens.map((t) => `
+              <div class="mapping-token-row">
+                <span class="mapping-token-name mono">${t.name}</span>
+                <span class="mapping-token-alpha mono">a:${t.alpha >= 0 ? fmtAlpha(t.alpha) : "-"}</span>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+      `;
+    }
+
+    function auditHtml(tokens, mappings) {
+      const sortedMappings = mappings.slice().sort((a, b) => b.tokens.length - a.tokens.length || a.parent.localeCompare(b.parent));
+      return `
+        <section id="audit" class="bento-section">
+          <div class="section-head"><h2>Dependency Mapping</h2></div>
+          <div class="bento-grid">
+            <article class="bento-card wide">
+              <div class="card-top"><h3 class="card-title">System Mapping</h3></div>
+              <div class="audit-list">
+                ${sortedMappings.length ? `
+                  <details class="mapping-details" open>
+                    <summary class="mono">System Mapping (${sortedMappings.length} parent refs)</summary>
+                    <div class="mapping-content">
+                      <div class="mapping-grid">
+                        ${sortedMappings.map((g) => mappingItemHtml(g)).join("")}
+                      </div>
+                    </div>
+                  </details>
+                ` : "No links found."}
+              </div>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function inferFigmaFromOurs(name) {
+      const exceptions = {
+        "general-success": "general/succes",
+        "border-success": "border/Succes",
+        "toast-success": "toast/Succes",
+        "background-base-ghost-select2": "background/base/ghost_select 2",
+        "background-brand-ghost-select": "background/brand/Ghost_Select",
+        "background-danger-ghost-select": "background/danger/Ghost_Select",
+        "background-warning-ghost-select": "background/warning/Ghost_Select"
+      };
+      if (exceptions[name]) return exceptions[name];
+      if (name.startsWith("general-")) return `general/${name.slice(8).replace(/-/g, "_")}`;
+      if (name.startsWith("border-")) return `border/${name.slice(7).replace(/-/g, "_")}`;
+      if (name.startsWith("background-")) {
+        const parts = name.slice(11).split("-");
+        const family = parts.shift();
+        const state = parts.join("_");
+        return `background/${family}/${state}`;
+      }
+      if (name.startsWith("toast-")) return `toast/${name.slice(6).replace(/-/g, "_")}`;
+      return name;
+    }
+
+    function inferFrontFromOurs(name) {
+      if (name.startsWith("background-")) return `--bg-${name.slice(11)}`;
+      if (name.startsWith("toast-")) return `--bg-toast-${name.slice(6)}`;
+      if (name === "border-success") return "--border-succsess";
+      return `--${name}`;
+    }
+
+    function inferCategory(name) {
+      if (name.startsWith("general-")) return "General";
+      if (name.startsWith("border-")) return "Border";
+      if (name.startsWith("background-")) return "Background";
+      if (name.startsWith("toast-")) return "Toast";
+      return "Other";
+    }
+
+    function buildColorComparisonRows(tokens) {
+      const tokenByName = new Map(tokens.map((t) => [t.name, t]));
+      const rows = [];
+      tokens
+        .filter((t) => ["general", "border", "backgrounds", "toast"].includes(t.section))
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach((t) => {
+          const front = inferFrontFromOurs(t.name);
+          const frontExists = FRONT_COLOR_VARS.has(front);
+          const status = frontExists ? (t.name.startsWith("background-") || t.name.startsWith("toast-") || t.name === "border-success" || t.name === "general-success" ? "alias" : "exact") : "missing";
+          const isRemoveCandidate = t.name === "background-base-ghost-select2";
+          rows.push({
+            group: inferCategory(t.name),
+            figma: inferFigmaFromOurs(t.name),
+            ours: t.name,
+            frontend: frontExists ? front : "n/a",
+            parent: t.sourceRef || "direct value",
+            collapse: t.sourceRef || "direct",
+            status,
+            note: isRemoveCandidate
+              ? "Legacy duplicate. Strong remove candidate."
+              : (!frontExists ? "Missing on frontend." : ""),
+            removeCandidate: isRemoveCandidate
+          });
+        });
+
+      [
+        { figma: "general/primary", ours: "general-primary", frontend: "--text-primary", note: "Text alias on frontend." },
+        { figma: "general/secondary", ours: "general-secondary", frontend: "--text-secondary", note: "Text alias on frontend." },
+        { figma: "general/ghost", ours: "general-ghost", frontend: "--text-ghost", note: "Text alias on frontend." },
+        { figma: "general/invert", ours: "general-invert", frontend: "--general-white", note: "White alias naming on frontend." }
+      ].forEach((x) => {
+        const tok = tokenByName.get(x.ours);
+        rows.push({
+          group: "Text Aliases",
+          figma: x.figma,
+          ours: x.ours,
+          frontend: x.frontend,
+          parent: tok?.sourceRef || "-",
+          collapse: tok?.sourceRef || "-",
+          status: "alias",
+          note: x.note
+        });
+      });
+
+      rows.push({
+        group: "Frontend-only",
+        figma: "n/a",
+        ours: "n/a",
+        frontend: "--border-secondary",
+        parent: "-",
+        collapse: "-",
+        status: "missing",
+        note: "Exists on frontend, not in current normalized set."
+      });
+      rows.push({
+        group: "Frontend-only",
+        figma: "n/a",
+        ours: "n/a",
+        frontend: "--bg-toast-info",
+        parent: "-",
+        collapse: "-",
+        status: "missing",
+        note: "Exists on frontend, not in current normalized set."
+      });
+
+      const parentCount = rows.reduce((acc, r) => {
+        if (!r.parent || r.parent === "-" || r.parent === "direct value") return acc;
+        acc[r.parent] = (acc[r.parent] || 0) + 1;
+        return acc;
+      }, {});
+
+      return rows.map((r) => ({
+        ...r,
+        collapseHint: parentCount[r.parent] > 1 ? `${parentCount[r.parent]} tokens share this parent` : "unique parent"
+      }));
+    }
+
+    function pickCanonicalToken(names) {
+      if (!names.length) return "-";
+      return names.slice().sort((a, b) => {
+        const score = (n) => {
+          let s = 0;
+          if (/-primary$/.test(n)) s -= 4;
+          if (/^general-/.test(n)) s -= 2;
+          if (/^background-.*-primary$/.test(n)) s -= 1;
+          s += n.length / 100;
+          return s;
+        };
+        const diff = score(a) - score(b);
+        return diff !== 0 ? diff : a.localeCompare(b);
+      })[0];
+    }
+
+    function buildCollapseCandidates(colorRows) {
+      const byParent = new Map();
+      colorRows.forEach((r) => {
+        if (!r.parent || r.parent === "-" || r.parent === "direct value") return;
+        if (r.group === "Text Aliases" || r.group === "Frontend-only") return;
+        if (r.ours === "n/a") return;
+        if (!byParent.has(r.parent)) byParent.set(r.parent, []);
+        byParent.get(r.parent).push(r.ours);
+      });
+      const candidates = [];
+      for (const [parent, oursList] of byParent.entries()) {
+        const unique = [...new Set(oursList)];
+        if (unique.length < 2) continue;
+        candidates.push({
+          parent,
+          tokens: unique.sort((a, b) => a.localeCompare(b)),
+          canonical: pickCanonicalToken(unique),
+          savings: unique.length - 1
+        });
+      }
+      return candidates.sort((a, b) => b.savings - a.savings || a.parent.localeCompare(b.parent));
+    }
+
+    function optimizationPlanHtml(colorRows, collapseCandidates) {
+      const removeNow = [...new Set(colorRows.filter((r) => r.removeCandidate).map((r) => r.ours))];
+      const frontendMissing = colorRows.filter((r) => r.group === "Frontend-only" && r.status === "missing");
+      const sharedParents = collapseCandidates.filter((c) => c.tokens.length > 1).length;
+      const items = [
+        {
+          status: "PRIORITY: DO NOW",
+          action: "REMOVE LEGACY TOKENS",
+          value: "Eliminates ambiguity for developers by removing redundant variables.",
+          target: removeNow.length ? removeNow.join(", ") : "none"
+        },
+        {
+          status: "PRIORITY: DO NOW",
+          action: "ALIGN FRONTEND-ONLY VARIABLES",
+          value: "Eliminates ambiguity for developers by reconciling missing contracts.",
+          target: frontendMissing.length ? frontendMissing.map((r) => r.frontend).join(", ") : "none"
+        },
+        {
+          status: "STATUS: IN PROGRESS",
+          action: "MAINTAIN SEMANTIC ROLES",
+          value: "Guarantees system scalability by preserving unique UI intents.",
+          target: "general-* / border-* / background-* / toast-*"
+        },
+        {
+          status: "STATUS: IN PROGRESS",
+          action: "MAINTAIN SHARED VALUE SOURCES",
+          value: "Prevents token drift by anchoring aliases to stable palette parents.",
+          target: `${sharedParents} shared parent groups`
+        },
+        {
+          status: "STATUS: BACKLOG",
+          action: "EXECUTE UNUSED TOKEN CLEANUP",
+          value: "Guarantees system scalability by removing confirmed dead branches only.",
+          target: "design + code usage audit"
+        }
+      ];
+      return `
+        <div class="strategy-roadmap">
+          ${items.map((item) => `
+            <article class="strategy-item">
+              <div class="strategy-status">[${item.status}]</div>
+              <h5 class="strategy-action">${item.action}</h5>
+              <p class="strategy-value">${item.value}</p>
+              <p class="strategy-target">${item.target}</p>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function comparisonHtml(tokens, groupedSections, paletteRows) {
+      const colorRows = buildColorComparisonRows(tokens);
+      const groupedByCategory = colorRows.reduce((acc, row) => {
+        if (!acc[row.group]) acc[row.group] = [];
+        acc[row.group].push(row);
+        return acc;
+      }, {});
+      const foundationGrouped = FOUNDATION_COMPARE_ROWS.reduce((acc, row) => {
+        if (!acc[row.category]) acc[row.category] = [];
+        acc[row.category].push(row);
+        return acc;
+      }, {});
+      const foundationOrder = [
+        "Radius",
+        "Space",
+        "Text Size",
+        "Text Weight",
+        "Dialog Size",
+        "Effects",
+        "Line Height"
+      ];
+      const statusLabel = (status) => {
+        if (status === "exact") return "EXACT";
+        if (status === "alias") return "ALIAS";
+        return "MISSING";
+      };
+      const collapseCandidates = buildCollapseCandidates(colorRows);
+      const parentSwatch = new Map();
+      tokens.forEach((t) => {
+        if (t.error || !t.sourceRef || !t.formats?.rgba || t.formats.rgba === "-") return;
+        if (!parentSwatch.has(t.sourceRef)) parentSwatch.set(t.sourceRef, t.formats.rgba);
+      });
+      const paletteByFamily = (paletteRows || []).reduce((acc, row) => {
+        if (!acc[row.family]) acc[row.family] = [];
+        acc[row.family].push(row);
+        return acc;
+      }, {});
+      const paletteFamilies = Object.keys(paletteByFamily).sort((a, b) => a.localeCompare(b));
+      const paletteTableRows = paletteFamilies.map((family) => {
+        const rows = paletteByFamily[family] || [];
+        return rows.map((p, idx) => `
+          <tr>
+            ${idx === 0 ? `<td class="family-cell mono" rowspan="${rows.length}">${family}</td>` : ""}
+            <td class="mono">${p.key}</td>
+            <td><span class="mini-swatch"><span class="mini-swatch-fill" style="background-color:${p.rgba};"></span></span></td>
+            <td class="mono">${p.hex}</td>
+            <td class="mono">${p.rgba}</td>
+            <td class="mono">${p.oklch}</td>
+          </tr>
+        `).join("");
+      }).join("");
+      const logicalWeight = (name) => {
+        if (!name || name === "n/a") return 9999;
+        const rule = [
+          [/cover$/, 1], [/core$/, 2],
+          [/primary$/, 10], [/primary-hover$/, 11], [/primary-select$/, 12],
+          [/secondary$/, 20], [/secondary-hover$/, 21], [/secondary-select$/, 22],
+          [/ghost-hover$/, 30], [/ghost-select2$/, 31], [/ghost-select$/, 32],
+          [/disable$/, 40],
+          [/menu$/, 50], [/hover$/, 51], [/select$/, 52], [/danger$/, 53], [/success$/, 54],
+          [/warning$/, 55], [/brand$/, 56], [/invert$/, 57]
+        ];
+        for (const [rx, w] of rule) if (rx.test(name)) return w;
+        return 500;
+      };
+      const inferCompareClass = (row) => {
+        const ours = String(row.ours || "").toLowerCase();
+        if (ours && ours !== "n/a") {
+          if (ours.startsWith("background-")) return ours.split("-")[1] || "background";
+          if (ours.startsWith("toast-")) return "toast";
+          const cls = ours.split("-")[0];
+          return cls.replace(/\d+$/g, "") || "misc";
+        }
+        const figma = String(row.figma || "").toLowerCase();
+        if (!figma || figma === "n/a") return "misc";
+        if (figma.includes("/")) {
+          const parts = figma.split("/");
+          return parts.length > 1 ? `${parts[0]}/${parts[1]}` : parts[0];
+        }
+        const m = figma.match(/^[a-z]+/);
+        return (m ? m[0] : "misc").replace(/\d+$/g, "");
+      };
+      const normalizeCompareLabel = (value) => String(value || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const order = COLOR_COMPARE_ORDER;
+      const colorTableRows = order.map((group) => {
+        const rows = (groupedByCategory[group] || []).slice().sort((a, b) => {
+          if (group === "Background") {
+            const classOrder = { base: 0, white: 1, brand: 2, danger: 3, warning: 4, success: 5, other: 6, misc: 7 };
+            const ca = inferCompareClass(a);
+            const cb = inferCompareClass(b);
+            const oa = classOrder[ca] ?? 99;
+            const ob = classOrder[cb] ?? 99;
+            if (oa !== ob) return oa - ob;
+            if (ca !== cb) return ca.localeCompare(cb);
+          }
+          const wa = logicalWeight(a.ours);
+          const wb = logicalWeight(b.ours);
+          if (wa !== wb) return wa - wb;
+          return a.ours.localeCompare(b.ours);
+        });
+        if (!rows.length) return "";
+        const classNames = rows.map((row) => inferCompareClass(row));
+        const uniqueClassNames = [...new Set(classNames)];
+        const classRepeatsGroup =
+          uniqueClassNames.length === 1 &&
+          normalizeCompareLabel(uniqueClassNames[0]) === normalizeCompareLabel(group);
+        const classStart = new Set();
+        const classSpan = new Map();
+        classNames.forEach((cls, idx) => {
+          if (idx > 0 && classNames[idx - 1] === cls) return;
+          classStart.add(idx);
+          let len = 1;
+          while (idx + len < classNames.length && classNames[idx + len] === cls) len += 1;
+          classSpan.set(idx, len);
+        });
+        return `
+          <tr class="comparison-group-row"><td colspan="6">${group}</td></tr>
+          ${rows.map((row, idx) => `
+            <tr>
+              ${classStart.has(idx)
+                ? `<td class="compare-class-cell mono" rowspan="${classSpan.get(idx)}">${classRepeatsGroup ? "&nbsp;" : classNames[idx]}</td>`
+                : ""}
+              <td class="mono">${row.figma}</td>
+              <td class="mono">${row.ours}</td>
+              <td class="mono">${row.frontend}</td>
+              <td><span class="status-pill status-${row.status}">${statusLabel(row.status)}</span></td>
+              <td>${row.note || ""}</td>
+            </tr>
+          `).join("")}
+        `;
+      }).join("");
+      const collapseHtml = collapseCandidates.length ? `
+        <div class="collapse-grid">
+          ${collapseCandidates.map((c) => `
+            <article class="collapse-card">
+              <div class="collapse-anchor">
+                <span class="collapse-dot" style="background-color:${parentSwatch.get(c.parent) || "transparent"};"></span>
+                <div class="collapse-anchor-body">
+                  <div class="collapse-parent mono">${c.parent}</div>
+                  <div class="collapse-anchor-line"></div>
+                </div>
+              </div>
+              <div class="collapse-list">
+                ${c.tokens.map((t) => `<div class="collapse-token">${t}</div>`).join("")}
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      ` : `<div class="audit-list">No collapse opportunities found.</div>`;
+      const foundationSubgroupsHtml = foundationOrder.map((category) => {
+        const rows = foundationGrouped[category] || [];
+        if (!rows.length) return "";
+        return `
+          <details class="compare-subgroup">
+            <summary>${category}</summary>
+            <div class="compare-subgroup-content">
+              <div class="comparison-wrap">
+                <table class="comparison-table compact">
+                  <colgroup>
+                    <col style="width:34%">
+                    <col style="width:24%">
+                    <col style="width:12%">
+                    <col style="width:30%">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Figma Original</th>
+                      <th>Front CSS</th>
+                      <th>Status</th>
+                      <th>Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rows.map((row) => `
+                      <tr>
+                        <td class="mono">${row.figma}</td>
+                        <td class="mono">${row.frontend}</td>
+                        <td><span class="status-pill status-${row.status}">${statusLabel(row.status)}</span></td>
+                        <td>${row.note || ""}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </details>
+        `;
+      }).join("");
+      return `
+        <section id="comparison" class="bento-section">
+          <div class="bento-grid">
+            <article class="bento-card wide">
+              <details id="colorsBlock" class="compare-group">
+                <summary>Colors</summary>
+                <div class="compare-group-content">
+                  <details class="compare-subgroup">
+                    <summary>Palette</summary>
+                    <div class="compare-subgroup-content">
+                      <div class="comparison-wrap">
+                        <table class="comparison-table compact">
+                          <colgroup>
+                            <col style="width:14%">
+                            <col style="width:26%">
+                            <col style="width:10%">
+                            <col style="width:16%">
+                            <col style="width:17%">
+                            <col style="width:17%">
+                          </colgroup>
+                          <thead>
+                            <tr>
+                              <th>Family</th>
+                              <th>Palette key</th>
+                              <th>Swatch</th>
+                              <th>HEX</th>
+                              <th>RGBA</th>
+                              <th>OKLCH</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${paletteTableRows}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </details>
+                  <details class="compare-subgroup">
+                    <summary>General</summary>
+                    <div class="compare-subgroup-content">${sectionCompactHtmlNoHeaders("general", groupedSections.general)}</div>
+                  </details>
+                  <details class="compare-subgroup">
+                    <summary>Border</summary>
+                    <div class="compare-subgroup-content">${sectionCompactHtmlNoHeaders("border", groupedSections.border)}</div>
+                  </details>
+                  <details class="compare-subgroup">
+                    <summary>Backgrounds</summary>
+                    <div class="compare-subgroup-content">${sectionCompactHtml("backgrounds", groupedSections.backgrounds)}</div>
+                  </details>
+                  <details class="compare-subgroup">
+                    <summary>Toasts</summary>
+                    <div class="compare-subgroup-content">${sectionCompactHtmlNoHeaders("toast", groupedSections.toast)}</div>
+                  </details>
+                </div>
+              </details>
+            </article>
+            <article class="bento-card wide">
+              <details id="foundationBlock" class="compare-group">
+                <summary>Foundation</summary>
+                <div class="compare-group-content">
+                  ${foundationSubgroupsHtml}
+                </div>
+              </details>
+            </article>
+            <article class="bento-card wide">
+              <details id="analyticsBlock" class="compare-group">
+                <summary>Analytics</summary>
+                <div class="compare-group-content">
+                  <details class="compare-subgroup">
+                    <summary>Shared Parent Summary</summary>
+                    <div class="compare-subgroup-content">${collapseHtml}</div>
+                  </details>
+                  <details class="compare-subgroup">
+                    <summary>Figma Original vs Our Normalized vs Front CSS</summary>
+                    <div class="compare-subgroup-content">
+                      <div class="comparison-wrap">
+                        <table class="comparison-table compact">
+                          <colgroup>
+                            <col style="width:12%">
+                            <col style="width:23%">
+                            <col style="width:20%">
+                            <col style="width:20%">
+                            <col style="width:10%">
+                            <col style="width:15%">
+                          </colgroup>
+                          <thead>
+                            <tr>
+                              <th>Class</th>
+                              <th>Figma Original</th>
+                              <th>Our Normalized</th>
+                              <th>Front CSS</th>
+                              <th>Status</th>
+                              <th>Notes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            ${colorTableRows}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </details>
+                  <details class="compare-subgroup">
+                    <summary>SYSTEM STRATEGY & OPTIMIZATION</summary>
+                    <div class="compare-subgroup-content">${optimizationPlanHtml(colorRows, collapseCandidates)}</div>
+                  </details>
+                </div>
+              </details>
+            </article>
+          </div>
+        </section>
+      `;
+    }
+
+    function wireTokenToggle() {
+      app.addEventListener("click", (e) => {
+        const copy = e.target.closest("[data-copy]");
+        if (copy) {
+          const value = copy.dataset.copy;
+          if (!value || value === "-") return;
+          navigator.clipboard.writeText(value).then(() => showToast("Copied")).catch(() => showToast("Copy failed"));
+          return;
+        }
+        const toggle = e.target.closest("[data-token-toggle]");
+        if (!toggle) return;
+        const id = toggle.dataset.tokenToggle;
+        const card = app.querySelector(`[data-token-id="${CSS.escape(id)}"]`);
+        if (!card) return;
+        card.classList.toggle("open");
+      });
+    }
+
+    async function init() {
+      try {
+        let colors, palette;
+        try {
+          const finalVars = await loadJsonFromFile("./final_fixed_vars.json");
+          colors = finalVars.colors;
+          palette = finalVars.palette;
+        } catch {
+          [colors, palette] = await Promise.all([loadJsonFromFile("./colors26.json"), loadJsonFromFile("./pallette26.json")]);
+        }
+
+        const paletteIndex = buildPaletteIndex(palette);
+        const paletteRows = buildPaletteRows(palette);
+        const tokens = enrichTokens(colors, paletteIndex);
+        const grouped = groupBySection(tokens);
+        const functionalVars = tokens.filter((t) => ["general", "border", "backgrounds", "toast"].includes(t.section)).length;
+        const paletteConstants = paletteRows.length;
+        const semanticCategories = Object.values(grouped).filter((subgroups) =>
+          Object.values(subgroups || {}).some((items) => (items || []).length > 0)
+        ).length;
+        systemHealth.textContent = `${functionalVars} semantic vars • ${paletteConstants} palette constants • ${semanticCategories} semantic categories`;
+
+        app.innerHTML = [
+          comparisonHtml(tokens, grouped, paletteRows)
+        ].join("");
+
+        app.querySelectorAll(".copy-css-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const section = btn.dataset.section;
+            const list = Object.values(grouped[section]).flat();
+            copyCssVariables(SECTION_TITLES[section], list);
+          });
+        });
+        wireTokenToggle();
+      } catch (err) {
+        app.innerHTML = `<section class="bento-section"><div class="bento-card wide">Ошибка загрузки: ${err.message}</div></section>`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

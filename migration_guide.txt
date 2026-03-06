@@ -1,0 +1,59 @@
+MIGRATION GUIDE (legacy tokens -> canonical tokens)
+
+БЫЛО: general.primary -> СТАЛО: base.primary (Color: #222934).
+БЫЛО: background.base.primary -> СТАЛО: base.primary (Color: #222934).
+БЫЛО: general.secondary -> СТАЛО: base.primary_select (Color: #253447D6).
+БЫЛО: background.base.primary_select -> СТАЛО: base.primary_select (Color: #253447D6).
+БЫЛО: general.disable -> СТАЛО: base.secondary_select (Color: #0D2D5E47).
+БЫЛО: background.base.secondary_select -> СТАЛО: base.secondary_select (Color: #0D2D5E47).
+БЫЛО: background.base.ghost_hover -> СТАЛО: base.disable (Color: #0D2D5E0A).
+БЫЛО: background.base.disable -> СТАЛО: base.disable (Color: #0D2D5E0A).
+БЫЛО: border.menu -> СТАЛО: base.disable (Color: #0D2D5E0A).
+БЫЛО: background.base.ghost_select -> СТАЛО: base.secondary (Color: #0D2D5E14).
+БЫЛО: background.base.secondary -> СТАЛО: base.secondary (Color: #0D2D5E14).
+БЫЛО: background.base.ghost_select 2 -> СТАЛО: base.secondary_hover (Color: #0D2D5E29).
+БЫЛО: background.base.secondary_hover -> СТАЛО: base.secondary_hover (Color: #0D2D5E29).
+БЫЛО: border.primary -> СТАЛО: base.secondary_hover (Color: #0D2D5E29).
+БЫЛО: general.invert -> СТАЛО: base.cover (Color: #FFFFFF).
+БЫЛО: background.base.cover -> СТАЛО: base.cover (Color: #FFFFFF).
+БЫЛО: background.base.core -> СТАЛО: base.core (Color: #F6F7F9).
+БЫЛО: general.ghost -> СТАЛО: base.ghost (Color: #0D2D5E8F).
+БЫЛО: background.white.ghost_hover -> СТАЛО: white.ghost_hover (Color: #FFFFFF14).
+
+БЫЛО: general.brand -> СТАЛО: brand.primary (Color: #007FFF).
+БЫЛО: border.select -> СТАЛО: brand.primary (Color: #007FFF).
+БЫЛО: background.brand.primary -> СТАЛО: brand.primary (Color: #007FFF).
+БЫЛО: general.brand_hover -> СТАЛО: brand.primary_hover (Color: #0070E1).
+БЫЛО: background.brand.primary_hover -> СТАЛО: brand.primary_hover (Color: #0070E1).
+БЫЛО: background.brand.secondary -> СТАЛО: brand.secondary (Color: #007FFF14).
+БЫЛО: background.brand.ghost_hover -> СТАЛО: brand.secondary (Color: #007FFF14).
+БЫЛО: background.brand.secondary_hover -> СТАЛО: brand.secondary_hover (Color: #007FFF29).
+БЫЛО: background.brand.ghost_select -> СТАЛО: brand.secondary_hover (Color: #007FFF29).
+
+БЫЛО: general.danger -> СТАЛО: danger.primary (Color: #EC3F39).
+БЫЛО: border.danger -> СТАЛО: danger.primary (Color: #EC3F39).
+БЫЛО: background.danger.primary -> СТАЛО: danger.primary (Color: #EC3F39).
+БЫЛО: background.danger.secondary -> СТАЛО: danger.secondary (Color: #EC3F3914).
+БЫЛО: background.danger.ghost_hover -> СТАЛО: danger.secondary (Color: #EC3F3914).
+БЫЛО: background.danger.secondary_hover -> СТАЛО: danger.secondary_hover (Color: #EC3F3929).
+БЫЛО: background.danger.ghost_select -> СТАЛО: danger.secondary_hover (Color: #EC3F3929).
+
+БЫЛО: general.warning -> СТАЛО: warning.primary (Color: #FF8519).
+БЫЛО: background.warning.primary -> СТАЛО: warning.primary (Color: #FF8519).
+БЫЛО: background.warning.secondary -> СТАЛО: warning.secondary (Color: #FF851914).
+БЫЛО: background.warning.ghost_hover -> СТАЛО: warning.secondary (Color: #FF851914).
+БЫЛО: background.warning.secondary_hover -> СТАЛО: warning.secondary_hover (Color: #FF851929).
+БЫЛО: background.warning.ghost_select -> СТАЛО: warning.secondary_hover (Color: #FF851929).
+
+БЫЛО: general.success -> СТАЛО: success.primary (Color: #3CAA3C).
+БЫЛО: border.success -> СТАЛО: success.primary (Color: #3CAA3C).
+БЫЛО: background.success.primary -> СТАЛО: success.primary (Color: #3CAA3C).
+БЫЛО: background.success.secondary -> СТАЛО: success.secondary (Color: #3CAA3C14).
+БЫЛО: background.success.ghost_hover -> СТАЛО: success.secondary (Color: #3CAA3C14).
+БЫЛО: background.success.secondary_hover -> СТАЛО: success.secondary_hover (Color: #3CAA3C29).
+БЫЛО: background.success.ghost_select -> СТАЛО: success.secondary_hover (Color: #3CAA3C29).
+
+Notes:
+- Все имена токенов в новой системе приведены к lowercase.
+- Опечатки succes/succes* заменены на success/success*.
+- Для каждого canonical токена в optimized_design_system.json сохранены HEX, RGBA и OKLCH.

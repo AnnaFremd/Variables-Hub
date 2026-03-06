@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "name": "ideal color system",
+    "version": "1.0.0",
+    "principles": [
+      "all source colors preserved",
+      "clear separation: primitives vs semantic",
+      "default-hover-active always mapped to 500-600-700 for solid actions"
+    ],
+    "palette_token_count": 41
+  },
+  "legacy_palette_all_41": {
+    "feild_26.cover": "#ffffff",
+    "feild_26.core": "#f6f7f9",
+    "feild_26.toastdanger": "#fdf0ef",
+    "feild_26.toastwarning": "#fff5ed",
+    "feild_26.toastsuccess": "#eff8ef",
+    "feild_26.toastbrand": "#ebf5ff",
+    "white_transparent_26.200": "rgba(255, 255, 255, 0.08)",
+    "black_26.300": "rgba(37, 52, 71, 0.84)",
+    "black_26.400": "#3e4756",
+    "black_26.500": "#222934",
+    "navy_26.100": "rgba(13, 45, 94, 0.04)",
+    "navy_26.200": "rgba(13, 45, 94, 0.08)",
+    "navy_26.300": "rgba(13, 45, 94, 0.16)",
+    "navy_26.400": "rgba(13, 45, 94, 0.28)",
+    "navy_26.500": "rgba(13, 45, 94, 0.4)",
+    "navy_26.600": "rgba(13, 45, 94, 0.56)",
+    "brand_26.100": "rgba(0, 127, 255, 0.03)",
+    "brand_26.200": "rgba(0, 127, 255, 0.08)",
+    "brand_26.300": "rgba(0, 127, 255, 0.16)",
+    "brand_26.400": "rgba(0, 127, 255, 0.28)",
+    "brand_26.500": "#007fff",
+    "brand_26.600": "#0070e1",
+    "brand_26.700": "#0066ce",
+    "red_26.200": "rgba(236, 63, 57, 0.08)",
+    "red_26.300": "rgba(236, 63, 57, 0.16)",
+    "red_26.400": "rgba(236, 63, 57, 0.28)",
+    "red_26.500": "#ec3f39",
+    "red_26.600": "#de3b36",
+    "red_26.700": "#d13833",
+    "orange_26.200": "rgba(255, 133, 25, 0.08)",
+    "orange_26.300": "rgba(255, 133, 25, 0.16)",
+    "orange_26.400": "rgba(255, 133, 25, 0.28)",
+    "orange_26.500": "#ff8519",
+    "orange_26.600": "#f27e18",
+    "orange_26.700": "#e57817",
+    "green_26.200": "rgba(60, 170, 60, 0.08)",
+    "green_26.300": "rgba(60, 170, 60, 0.16)",
+    "green_26.400": "rgba(60, 170, 60, 0.28)",
+    "green_26.500": "#3caa3c",
+    "green_26.600": "#349d34",
+    "green_26.700": "#2c942c"
+  },
+  "primitives": {
+    "neutral": {
+      "surface": {
+        "0": "#ffffff",
+        "50": "#f6f7f9"
+      },
+      "white_alpha": {
+        "200": "rgba(255, 255, 255, 0.08)"
+      },
+      "ink": {
+        "300": "rgba(37, 52, 71, 0.84)",
+        "400": "#3e4756",
+        "500": "#222934"
+      },
+      "navy_alpha": {
+        "100": "rgba(13, 45, 94, 0.04)",
+        "200": "rgba(13, 45, 94, 0.08)",
+        "300": "rgba(13, 45, 94, 0.16)",
+        "400": "rgba(13, 45, 94, 0.28)",
+        "500": "rgba(13, 45, 94, 0.4)",
+        "600": "rgba(13, 45, 94, 0.56)"
+      }
+    },
+    "brand": {
+      "100": "rgba(0, 127, 255, 0.03)",
+      "200": "rgba(0, 127, 255, 0.08)",
+      "300": "rgba(0, 127, 255, 0.16)",
+      "400": "rgba(0, 127, 255, 0.28)",
+      "500": "#007fff",
+      "600": "#0070e1",
+      "700": "#0066ce"
+    },
+    "danger": {
+      "200": "rgba(236, 63, 57, 0.08)",
+      "300": "rgba(236, 63, 57, 0.16)",
+      "400": "rgba(236, 63, 57, 0.28)",
+      "500": "#ec3f39",
+      "600": "#de3b36",
+      "700": "#d13833"
+    },
+    "warning": {
+      "200": "rgba(255, 133, 25, 0.08)",
+      "300": "rgba(255, 133, 25, 0.16)",
+      "400": "rgba(255, 133, 25, 0.28)",
+      "500": "#ff8519",
+      "600": "#f27e18",
+      "700": "#e57817"
+    },
+    "success": {
+      "200": "rgba(60, 170, 60, 0.08)",
+      "300": "rgba(60, 170, 60, 0.16)",
+      "400": "rgba(60, 170, 60, 0.28)",
+      "500": "#3caa3c",
+      "600": "#349d34",
+      "700": "#2c942c"
+    },
+    "toast_background": {
+      "brand": "#ebf5ff",
+      "danger": "#fdf0ef",
+      "warning": "#fff5ed",
+      "success": "#eff8ef"
+    }
+  },
+  "semantic": {
+    "background": {
+      "canvas": "{neutral.surface.0}",
+      "surface": "{neutral.surface.50}",
+      "surface_inverse": "{neutral.ink.500}",
+      "surface_inverse_hover": "{neutral.ink.400}",
+      "surface_inverse_active": "{neutral.ink.300}",
+      "overlay_subtle": "{neutral.navy_alpha.100}",
+      "overlay_default": "{neutral.navy_alpha.200}",
+      "overlay_hover": "{neutral.navy_alpha.300}",
+      "overlay_active": "{neutral.navy_alpha.400}",
+      "overlay_strong": "{neutral.navy_alpha.600}",
+      "on_dark_ghost_hover": "{neutral.white_alpha.200}"
+    },
+    "text": {
+      "primary": "{neutral.ink.500}",
+      "secondary": "{neutral.ink.300}",
+      "inverse": "{neutral.surface.0}",
+      "disabled": "{neutral.navy_alpha.400}"
+    },
+    "border": {
+      "subtle": "{neutral.navy_alpha.100}",
+      "default": "{neutral.navy_alpha.300}",
+      "strong": "{neutral.navy_alpha.500}",
+      "focus": "{brand.500}",
+      "danger": "{danger.500}",
+      "success": "{success.500}"
+    },
+    "action": {
+      "brand": {
+        "solid_default": "{brand.500}",
+        "solid_hover": "{brand.600}",
+        "solid_active": "{brand.700}",
+        "soft_default": "{brand.200}",
+        "soft_hover": "{brand.300}",
+        "soft_active": "{brand.400}"
+      },
+      "danger": {
+        "solid_default": "{danger.500}",
+        "solid_hover": "{danger.600}",
+        "solid_active": "{danger.700}",
+        "soft_default": "{danger.200}",
+        "soft_hover": "{danger.300}",
+        "soft_active": "{danger.400}"
+      },
+      "warning": {
+        "solid_default": "{warning.500}",
+        "solid_hover": "{warning.600}",
+        "solid_active": "{warning.700}",
+        "soft_default": "{warning.200}",
+        "soft_hover": "{warning.300}",
+        "soft_active": "{warning.400}"
+      },
+      "success": {
+        "solid_default": "{success.500}",
+        "solid_hover": "{success.600}",
+        "solid_active": "{success.700}",
+        "soft_default": "{success.200}",
+        "soft_hover": "{success.300}",
+        "soft_active": "{success.400}"
+      }
+    },
+    "feedback": {
+      "toast_background_brand": "{toast_background.brand}",
+      "toast_background_danger": "{toast_background.danger}",
+      "toast_background_warning": "{toast_background.warning}",
+      "toast_background_success": "{toast_background.success}"
+    }
+  },
+  "legacy_to_ideal_aliases": {
+    "general.primary": "text.primary",
+    "general.secondary": "text.secondary",
+    "general.ghost": "background.overlay_strong",
+    "general.disable": "text.disabled",
+    "general.brand": "action.brand.solid_default",
+    "general.brand_hover": "action.brand.solid_hover",
+    "general.danger": "action.danger.solid_default",
+    "general.warning": "action.warning.solid_default",
+    "general.success": "action.success.solid_default",
+    "general.invert": "text.inverse",
+    "border.menu": "border.subtle",
+    "border.primary": "border.default",
+    "border.hover": "border.strong",
+    "border.select": "border.focus",
+    "background.base.cover": "background.canvas",
+    "background.base.core": "background.surface",
+    "background.base.primary": "background.surface_inverse",
+    "background.base.primary_hover": "background.surface_inverse_hover",
+    "background.base.primary_select": "background.surface_inverse_active",
+    "background.base.secondary": "background.overlay_default",
+    "background.base.secondary_hover": "background.overlay_hover",
+    "background.base.secondary_select": "background.overlay_active",
+    "background.base.ghost_hover": "background.overlay_subtle",
+    "background.base.ghost_select": "background.overlay_default",
+    "background.base.ghost_select 2": "background.overlay_hover",
+    "background.base.disable": "background.overlay_subtle",
+    "background.white.ghost_hover": "background.on_dark_ghost_hover",
+    "background.brand.primary": "action.brand.solid_default",
+    "background.brand.primary_hover": "action.brand.solid_hover",
+    "background.brand.primary_select": "action.brand.solid_active",
+    "background.brand.secondary": "action.brand.soft_default",
+    "background.brand.secondary_hover": "action.brand.soft_hover",
+    "background.brand.secondary_select": "action.brand.soft_active",
+    "background.brand.ghost_hover": "action.brand.soft_default",
+    "background.brand.ghost_select": "action.brand.soft_hover",
+    "background.danger.primary": "action.danger.solid_default",
+    "background.danger.primary_hover": "action.danger.solid_hover",
+    "background.danger.primary_select": "action.danger.solid_active",
+    "background.danger.secondary": "action.danger.soft_default",
+    "background.danger.secondary_hover": "action.danger.soft_hover",
+    "background.danger.secondary_select": "action.danger.soft_active",
+    "background.danger.ghost_hover": "action.danger.soft_default",
+    "background.danger.ghost_select": "action.danger.soft_hover",
+    "background.warning.primary": "action.warning.solid_default",
+    "background.warning.primary_hover": "action.warning.solid_hover",
+    "background.warning.primary_select": "action.warning.solid_active",
+    "background.warning.secondary": "action.warning.soft_default",
+    "background.warning.secondary_hover": "action.warning.soft_hover",
+    "background.warning.secondary_select": "action.warning.soft_active",
+    "background.warning.ghost_hover": "action.warning.soft_default",
+    "background.warning.ghost_select": "action.warning.soft_hover",
+    "background.success.primary": "action.success.solid_default",
+    "background.success.primary_hover": "action.success.solid_hover",
+    "background.success.primary_select": "action.success.solid_active",
+    "background.success.secondary": "action.success.soft_default",
+    "background.success.secondary_hover": "action.success.soft_hover",
+    "background.success.secondary_select": "action.success.soft_active",
+    "background.success.ghost_hover": "action.success.soft_default",
+    "background.success.ghost_select": "action.success.soft_hover",
+    "toast.brand": "feedback.toast_background_brand",
+    "toast.danger": "feedback.toast_background_danger",
+    "toast.warning": "feedback.toast_background_warning",
+    "toast.success": "feedback.toast_background_success"
+  }
+}

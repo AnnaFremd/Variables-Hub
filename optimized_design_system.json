@@ -1,0 +1,362 @@
+{
+  "meta": {
+    "name": "optimized design system",
+    "version": "1.0.0",
+    "source": "export.json",
+    "normalization": [
+      "succes -> success",
+      "all token keys converted to lowercase"
+    ]
+  },
+  "refactored_tokens": {
+    "canonical": {
+      "base.cover": {
+        "palette_ref": "feild 26.cover",
+        "source_value": "#ffffff",
+        "hex": "#FFFFFF",
+        "rgba": "rgba(255, 255, 255, 1)",
+        "oklch": "oklch(100.00% 0.0000 89.88)"
+      },
+      "base.core": {
+        "palette_ref": "feild 26.core",
+        "source_value": "#f6f7f9",
+        "hex": "#F6F7F9",
+        "rgba": "rgba(246, 247, 249, 1)",
+        "oklch": "oklch(97.59% 0.0029 264.54)"
+      },
+      "base.primary": {
+        "palette_ref": "black 26.500",
+        "source_value": "#222934",
+        "hex": "#222934",
+        "rgba": "rgba(34, 41, 52, 1)",
+        "oklch": "oklch(27.91% 0.0227 259.35)"
+      },
+      "base.primary_hover": {
+        "palette_ref": "black 26.400",
+        "source_value": "#3e4756",
+        "hex": "#3E4756",
+        "rgba": "rgba(62, 71, 86, 1)",
+        "oklch": "oklch(39.59% 0.0281 260.62)"
+      },
+      "base.primary_select": {
+        "palette_ref": "black 26.300",
+        "source_value": "rgba(37, 52, 71, 0.84)",
+        "hex": "#253447D6",
+        "rgba": "rgba(37, 52, 71, 0.84)",
+        "oklch": "oklch(32.06% 0.0396 254.68 / 0.84)"
+      },
+      "base.secondary": {
+        "palette_ref": "navy 26.200",
+        "source_value": "rgba(13, 45, 94, 0.08)",
+        "hex": "#0D2D5E14",
+        "rgba": "rgba(13, 45, 94, 0.08)",
+        "oklch": "oklch(30.54% 0.0952 259.07 / 0.08)"
+      },
+      "base.secondary_hover": {
+        "palette_ref": "navy 26.300",
+        "source_value": "rgba(13, 45, 94, 0.16)",
+        "hex": "#0D2D5E29",
+        "rgba": "rgba(13, 45, 94, 0.16)",
+        "oklch": "oklch(30.54% 0.0952 259.07 / 0.16)"
+      },
+      "base.secondary_select": {
+        "palette_ref": "navy 26.400",
+        "source_value": "rgba(13, 45, 94, 0.28)",
+        "hex": "#0D2D5E47",
+        "rgba": "rgba(13, 45, 94, 0.28)",
+        "oklch": "oklch(30.54% 0.0952 259.07 / 0.28)"
+      },
+      "base.disable": {
+        "palette_ref": "navy 26.100",
+        "source_value": "rgba(13, 45, 94, 0.04)",
+        "hex": "#0D2D5E0A",
+        "rgba": "rgba(13, 45, 94, 0.04)",
+        "oklch": "oklch(30.54% 0.0952 259.07 / 0.04)"
+      },
+      "base.ghost": {
+        "palette_ref": "navy 26.600",
+        "source_value": "rgba(13, 45, 94, 0.56)",
+        "hex": "#0D2D5E8F",
+        "rgba": "rgba(13, 45, 94, 0.56)",
+        "oklch": "oklch(30.54% 0.0952 259.07 / 0.56)"
+      },
+      "white.ghost_hover": {
+        "palette_ref": "white transparent 26.200",
+        "source_value": "rgba(255, 255, 255, 0.08)",
+        "hex": "#FFFFFF14",
+        "rgba": "rgba(255, 255, 255, 0.08)",
+        "oklch": "oklch(100.00% 0.0000 89.88 / 0.08)"
+      },
+      "border.hover": {
+        "palette_ref": "navy 26.500",
+        "source_value": "rgba(13, 45, 94, 0.4)",
+        "hex": "#0D2D5E66",
+        "rgba": "rgba(13, 45, 94, 0.4)",
+        "oklch": "oklch(30.54% 0.0952 259.07 / 0.4)"
+      },
+      "brand.primary": {
+        "palette_ref": "brand 26.500",
+        "source_value": "#007fff",
+        "hex": "#007FFF",
+        "rgba": "rgba(0, 127, 255, 1)",
+        "oklch": "oklch(61.31% 0.2120 256.33)"
+      },
+      "brand.primary_hover": {
+        "palette_ref": "brand 26.600",
+        "source_value": "#0070e1",
+        "hex": "#0070E1",
+        "rgba": "rgba(0, 112, 225, 1)",
+        "oklch": "oklch(55.93% 0.1920 256.14)"
+      },
+      "brand.primary_select": {
+        "palette_ref": "brand 26.700",
+        "source_value": "#0066ce",
+        "hex": "#0066CE",
+        "rgba": "rgba(0, 102, 206, 1)",
+        "oklch": "oklch(52.35% 0.1797 256.14)"
+      },
+      "brand.secondary": {
+        "palette_ref": "brand 26.200",
+        "source_value": "rgba(0, 127, 255, 0.08)",
+        "hex": "#007FFF14",
+        "rgba": "rgba(0, 127, 255, 0.08)",
+        "oklch": "oklch(61.31% 0.2120 256.33 / 0.08)"
+      },
+      "brand.secondary_hover": {
+        "palette_ref": "brand 26.300",
+        "source_value": "rgba(0, 127, 255, 0.16)",
+        "hex": "#007FFF29",
+        "rgba": "rgba(0, 127, 255, 0.16)",
+        "oklch": "oklch(61.31% 0.2120 256.33 / 0.16)"
+      },
+      "brand.secondary_select": {
+        "palette_ref": "brand 26.400",
+        "source_value": "rgba(0, 127, 255, 0.28)",
+        "hex": "#007FFF47",
+        "rgba": "rgba(0, 127, 255, 0.28)",
+        "oklch": "oklch(61.31% 0.2120 256.33 / 0.28)"
+      },
+      "danger.primary": {
+        "palette_ref": "red 26.500",
+        "source_value": "#ec3f39",
+        "hex": "#EC3F39",
+        "rgba": "rgba(236, 63, 57, 1)",
+        "oklch": "oklch(62.59% 0.2105 27.26)"
+      },
+      "danger.primary_hover": {
+        "palette_ref": "red 26.600",
+        "source_value": "#de3b36",
+        "hex": "#DE3B36",
+        "rgba": "rgba(222, 59, 54, 1)",
+        "oklch": "oklch(59.81% 0.2006 27.06)"
+      },
+      "danger.primary_select": {
+        "palette_ref": "red 26.700",
+        "source_value": "#d13833",
+        "hex": "#D13833",
+        "rgba": "rgba(209, 56, 51, 1)",
+        "oklch": "oklch(57.26% 0.1908 27.07)"
+      },
+      "danger.secondary": {
+        "palette_ref": "red 26.200",
+        "source_value": "rgba(236, 63, 57, 0.08)",
+        "hex": "#EC3F3914",
+        "rgba": "rgba(236, 63, 57, 0.08)",
+        "oklch": "oklch(62.59% 0.2105 27.26 / 0.08)"
+      },
+      "danger.secondary_hover": {
+        "palette_ref": "red 26.300",
+        "source_value": "rgba(236, 63, 57, 0.16)",
+        "hex": "#EC3F3929",
+        "rgba": "rgba(236, 63, 57, 0.16)",
+        "oklch": "oklch(62.59% 0.2105 27.26 / 0.16)"
+      },
+      "danger.secondary_select": {
+        "palette_ref": "red 26.400",
+        "source_value": "rgba(236, 63, 57, 0.28)",
+        "hex": "#EC3F3947",
+        "rgba": "rgba(236, 63, 57, 0.28)",
+        "oklch": "oklch(62.59% 0.2105 27.26 / 0.28)"
+      },
+      "warning.primary": {
+        "palette_ref": "orange 26.500",
+        "source_value": "#ff8519",
+        "hex": "#FF8519",
+        "rgba": "rgba(255, 133, 25, 1)",
+        "oklch": "oklch(74.01% 0.1798 53.67)"
+      },
+      "warning.primary_hover": {
+        "palette_ref": "orange 26.600",
+        "source_value": "#f27e18",
+        "hex": "#F27E18",
+        "rgba": "rgba(242, 126, 24, 1)",
+        "oklch": "oklch(71.15% 0.1726 53.63)"
+      },
+      "warning.primary_select": {
+        "palette_ref": "orange 26.700",
+        "source_value": "#e57817",
+        "hex": "#E57817",
+        "rgba": "rgba(229, 120, 23, 1)",
+        "oklch": "oklch(68.43% 0.1647 54.09)"
+      },
+      "warning.secondary": {
+        "palette_ref": "orange 26.200",
+        "source_value": "rgba(255, 133, 25, 0.08)",
+        "hex": "#FF851914",
+        "rgba": "rgba(255, 133, 25, 0.08)",
+        "oklch": "oklch(74.01% 0.1798 53.67 / 0.08)"
+      },
+      "warning.secondary_hover": {
+        "palette_ref": "orange 26.300",
+        "source_value": "rgba(255, 133, 25, 0.16)",
+        "hex": "#FF851929",
+        "rgba": "rgba(255, 133, 25, 0.16)",
+        "oklch": "oklch(74.01% 0.1798 53.67 / 0.16)"
+      },
+      "warning.secondary_select": {
+        "palette_ref": "orange 26.400",
+        "source_value": "rgba(255, 133, 25, 0.28)",
+        "hex": "#FF851947",
+        "rgba": "rgba(255, 133, 25, 0.28)",
+        "oklch": "oklch(74.01% 0.1798 53.67 / 0.28)"
+      },
+      "success.primary": {
+        "palette_ref": "green 26.500",
+        "source_value": "#3caa3c",
+        "hex": "#3CAA3C",
+        "rgba": "rgba(60, 170, 60, 1)",
+        "oklch": "oklch(65.21% 0.1793 143.18)"
+      },
+      "success.primary_hover": {
+        "palette_ref": "green 26.600",
+        "source_value": "#349d34",
+        "hex": "#349D34",
+        "rgba": "rgba(52, 157, 52, 1)",
+        "oklch": "oklch(61.39% 0.1722 143.12)"
+      },
+      "success.primary_select": {
+        "palette_ref": "green 26.700",
+        "source_value": "#2c942c",
+        "hex": "#2C942C",
+        "rgba": "rgba(44, 148, 44, 1)",
+        "oklch": "oklch(58.62% 0.1698 143.03)"
+      },
+      "success.secondary": {
+        "palette_ref": "green 26.200",
+        "source_value": "rgba(60, 170, 60, 0.08)",
+        "hex": "#3CAA3C14",
+        "rgba": "rgba(60, 170, 60, 0.08)",
+        "oklch": "oklch(65.21% 0.1793 143.18 / 0.08)"
+      },
+      "success.secondary_hover": {
+        "palette_ref": "green 26.300",
+        "source_value": "rgba(60, 170, 60, 0.16)",
+        "hex": "#3CAA3C29",
+        "rgba": "rgba(60, 170, 60, 0.16)",
+        "oklch": "oklch(65.21% 0.1793 143.18 / 0.16)"
+      },
+      "success.secondary_select": {
+        "palette_ref": "green 26.400",
+        "source_value": "rgba(60, 170, 60, 0.28)",
+        "hex": "#3CAA3C47",
+        "rgba": "rgba(60, 170, 60, 0.28)",
+        "oklch": "oklch(65.21% 0.1793 143.18 / 0.28)"
+      },
+      "toast.warning": {
+        "palette_ref": "feild 26.toastwarning",
+        "source_value": "#fff5ed",
+        "hex": "#FFF5ED",
+        "rgba": "rgba(255, 245, 237, 1)",
+        "oklch": "oklch(97.58% 0.0151 61.35)"
+      },
+      "toast.brand": {
+        "palette_ref": "feild 26.toastbrand",
+        "source_value": "#ebf5ff",
+        "hex": "#EBF5FF",
+        "rgba": "rgba(235, 245, 255, 1)",
+        "oklch": "oklch(96.56% 0.0171 248.01)"
+      },
+      "toast.danger": {
+        "palette_ref": "feild 26.toastdanger",
+        "source_value": "#fdf0ef",
+        "hex": "#FDF0EF",
+        "rgba": "rgba(253, 240, 239, 1)",
+        "oklch": "oklch(96.51% 0.0141 22.76)"
+      },
+      "toast.success": {
+        "palette_ref": "feild 26.toastsuccess",
+        "source_value": "#eff8ef",
+        "hex": "#EFF8EF",
+        "rgba": "rgba(239, 248, 239, 1)",
+        "oklch": "oklch(96.99% 0.0152 145.46)"
+      }
+    },
+    "aliases": {
+      "general.primary": { "points_to": "base.primary", "palette_ref": "black 26.500" },
+      "background.base.primary": { "points_to": "base.primary", "palette_ref": "black 26.500" },
+      "background.base.primary_hover": { "points_to": "base.primary_hover", "palette_ref": "black 26.400" },
+      "general.secondary": { "points_to": "base.primary_select", "palette_ref": "black 26.300" },
+      "background.base.primary_select": { "points_to": "base.primary_select", "palette_ref": "black 26.300" },
+      "background.base.secondary": { "points_to": "base.secondary", "palette_ref": "navy 26.200" },
+      "background.base.ghost_select": { "points_to": "base.secondary", "palette_ref": "navy 26.200" },
+      "background.base.secondary_hover": { "points_to": "base.secondary_hover", "palette_ref": "navy 26.300" },
+      "background.base.ghost_select 2": { "points_to": "base.secondary_hover", "palette_ref": "navy 26.300" },
+      "general.disable": { "points_to": "base.secondary_select", "palette_ref": "navy 26.400" },
+      "background.base.secondary_select": { "points_to": "base.secondary_select", "palette_ref": "navy 26.400" },
+      "background.base.disable": { "points_to": "base.disable", "palette_ref": "navy 26.100" },
+      "background.base.ghost_hover": { "points_to": "base.disable", "palette_ref": "navy 26.100" },
+      "border.menu": { "points_to": "base.disable", "palette_ref": "navy 26.100" },
+      "general.ghost": { "points_to": "base.ghost", "palette_ref": "navy 26.600" },
+      "general.invert": { "points_to": "base.cover", "palette_ref": "feild 26.cover" },
+      "background.base.cover": { "points_to": "base.cover", "palette_ref": "feild 26.cover" },
+      "background.base.core": { "points_to": "base.core", "palette_ref": "feild 26.core" },
+      "background.white.ghost_hover": { "points_to": "white.ghost_hover", "palette_ref": "white transparent 26.200" },
+      "border.primary": { "points_to": "base.secondary_hover", "palette_ref": "navy 26.300" },
+      "border.hover": { "points_to": "border.hover", "palette_ref": "navy 26.500" },
+      "general.brand": { "points_to": "brand.primary", "palette_ref": "brand 26.500" },
+      "border.select": { "points_to": "brand.primary", "palette_ref": "brand 26.500" },
+      "background.brand.primary": { "points_to": "brand.primary", "palette_ref": "brand 26.500" },
+      "general.brand_hover": { "points_to": "brand.primary_hover", "palette_ref": "brand 26.600" },
+      "background.brand.primary_hover": { "points_to": "brand.primary_hover", "palette_ref": "brand 26.600" },
+      "background.brand.primary_select": { "points_to": "brand.primary_select", "palette_ref": "brand 26.700" },
+      "background.brand.secondary": { "points_to": "brand.secondary", "palette_ref": "brand 26.200" },
+      "background.brand.ghost_hover": { "points_to": "brand.secondary", "palette_ref": "brand 26.200" },
+      "background.brand.secondary_hover": { "points_to": "brand.secondary_hover", "palette_ref": "brand 26.300" },
+      "background.brand.ghost_select": { "points_to": "brand.secondary_hover", "palette_ref": "brand 26.300" },
+      "background.brand.secondary_select": { "points_to": "brand.secondary_select", "palette_ref": "brand 26.400" },
+      "general.danger": { "points_to": "danger.primary", "palette_ref": "red 26.500" },
+      "border.danger": { "points_to": "danger.primary", "palette_ref": "red 26.500" },
+      "background.danger.primary": { "points_to": "danger.primary", "palette_ref": "red 26.500" },
+      "background.danger.primary_hover": { "points_to": "danger.primary_hover", "palette_ref": "red 26.600" },
+      "background.danger.primary_select": { "points_to": "danger.primary_select", "palette_ref": "red 26.700" },
+      "background.danger.secondary": { "points_to": "danger.secondary", "palette_ref": "red 26.200" },
+      "background.danger.ghost_hover": { "points_to": "danger.secondary", "palette_ref": "red 26.200" },
+      "background.danger.secondary_hover": { "points_to": "danger.secondary_hover", "palette_ref": "red 26.300" },
+      "background.danger.ghost_select": { "points_to": "danger.secondary_hover", "palette_ref": "red 26.300" },
+      "background.danger.secondary_select": { "points_to": "danger.secondary_select", "palette_ref": "red 26.400" },
+      "general.warning": { "points_to": "warning.primary", "palette_ref": "orange 26.500" },
+      "background.warning.primary": { "points_to": "warning.primary", "palette_ref": "orange 26.500" },
+      "background.warning.primary_hover": { "points_to": "warning.primary_hover", "palette_ref": "orange 26.600" },
+      "background.warning.primary_select": { "points_to": "warning.primary_select", "palette_ref": "orange 26.700" },
+      "background.warning.secondary": { "points_to": "warning.secondary", "palette_ref": "orange 26.200" },
+      "background.warning.ghost_hover": { "points_to": "warning.secondary", "palette_ref": "orange 26.200" },
+      "background.warning.secondary_hover": { "points_to": "warning.secondary_hover", "palette_ref": "orange 26.300" },
+      "background.warning.ghost_select": { "points_to": "warning.secondary_hover", "palette_ref": "orange 26.300" },
+      "background.warning.secondary_select": { "points_to": "warning.secondary_select", "palette_ref": "orange 26.400" },
+      "general.success": { "points_to": "success.primary", "palette_ref": "green 26.500" },
+      "border.success": { "points_to": "success.primary", "palette_ref": "green 26.500" },
+      "background.success.primary": { "points_to": "success.primary", "palette_ref": "green 26.500" },
+      "background.success.primary_hover": { "points_to": "success.primary_hover", "palette_ref": "green 26.600" },
+      "background.success.primary_select": { "points_to": "success.primary_select", "palette_ref": "green 26.700" },
+      "background.success.secondary": { "points_to": "success.secondary", "palette_ref": "green 26.200" },
+      "background.success.ghost_hover": { "points_to": "success.secondary", "palette_ref": "green 26.200" },
+      "background.success.secondary_hover": { "points_to": "success.secondary_hover", "palette_ref": "green 26.300" },
+      "background.success.ghost_select": { "points_to": "success.secondary_hover", "palette_ref": "green 26.300" },
+      "background.success.secondary_select": { "points_to": "success.secondary_select", "palette_ref": "green 26.400" },
+      "toast.warning": { "points_to": "toast.warning", "palette_ref": "feild 26.toastwarning" },
+      "toast.brand": { "points_to": "toast.brand", "palette_ref": "feild 26.toastbrand" },
+      "toast.danger": { "points_to": "toast.danger", "palette_ref": "feild 26.toastdanger" },
+      "toast.success": { "points_to": "toast.success", "palette_ref": "feild 26.toastsuccess" }
+    }
+  }
+}

@@ -1,0 +1,562 @@
+{
+  "meta": {
+    "name": "quotcat one optimized vars",
+    "description": "hierarchical tokens preserving semantic layers and aliases; no token collapse",
+    "source": "final_fixed_vars.json"
+  },
+  "colors": {
+    "general": {
+      "primary": {
+        "mode1": "{black26500}"
+      },
+      "secondary": {
+        "mode1": "{black26300}"
+      },
+      "ghost": {
+        "mode1": "{navy26600}"
+      },
+      "disable": {
+        "mode1": "{navy26400}"
+      },
+      "brand": {
+        "mode1": "{brand26500}",
+        "hover": {
+          "mode1": "{brand26600}"
+        }
+      },
+      "danger": {
+        "mode1": "{red26500}"
+      },
+      "warning": {
+        "mode1": "{orange26500}"
+      },
+      "success": {
+        "mode1": "{green26500}"
+      },
+      "invert": {
+        "mode1": "{feild26-cover}"
+      }
+    },
+    "border": {
+      "menu": {
+        "mode1": "{navy26100}"
+      },
+      "primary": {
+        "mode1": "{navy26300}"
+      },
+      "hover": {
+        "mode1": "{navy26500}"
+      },
+      "select": {
+        "mode1": "{brand26500}"
+      },
+      "danger": {
+        "mode1": "{red26500}"
+      },
+      "success": {
+        "mode1": "{green26500}"
+      }
+    },
+    "background": {
+      "base": {
+        "cover": {
+          "mode1": "{feild26-cover}"
+        },
+        "core": {
+          "mode1": "{feild26-core}"
+        },
+        "primary": {
+          "mode1": "{black26500}",
+          "hover": {
+            "mode1": "{black26400}"
+          },
+          "select": {
+            "mode1": "{black26300}"
+          }
+        },
+        "secondary": {
+          "mode1": "{navy26200}"
+        },
+        "ghost": {
+          "hover": {
+            "mode1": "{navy26100}"
+          },
+          "select": {
+            "mode1": "{navy26200}"
+          },
+          "select2": {
+            "mode1": "{navy26300}"
+          }
+        },
+        "disable": {
+          "mode1": "{navy26100}"
+        }
+      },
+      "white": {
+        "ghost": {
+          "hover": {
+            "mode1": "{white-transparent26200}"
+          }
+        }
+      },
+      "brand": {
+        "primary": {
+          "mode1": "{brand26500}",
+          "hover": {
+            "mode1": "{brand26600}"
+          },
+          "select": {
+            "mode1": "{brand26700}"
+          }
+        },
+        "secondary": {
+          "mode1": "{brand26200}",
+          "hover": {
+            "mode1": "{brand26300}"
+          },
+          "select": {
+            "mode1": "{brand26400}"
+          }
+        },
+        "ghost": {
+          "hover": {
+            "mode1": "{brand26200}"
+          },
+          "select": {
+            "mode1": "{brand26300}"
+          }
+        }
+      },
+      "danger": {
+        "primary": {
+          "mode1": "{red26500}",
+          "hover": {
+            "mode1": "{red26600}"
+          },
+          "select": {
+            "mode1": "{red26700}"
+          }
+        },
+        "secondary": {
+          "mode1": "{red26200}",
+          "hover": {
+            "mode1": "{red26300}"
+          },
+          "select": {
+            "mode1": "{red26400}"
+          }
+        },
+        "ghost": {
+          "hover": {
+            "mode1": "{red26200}"
+          },
+          "select": {
+            "mode1": "{red26300}"
+          }
+        }
+      },
+      "warning": {
+        "primary": {
+          "mode1": "{orange26500}",
+          "hover": {
+            "mode1": "{orange26600}"
+          },
+          "select": {
+            "mode1": "{orange26700}"
+          }
+        },
+        "secondary": {
+          "mode1": "{orange26200}",
+          "hover": {
+            "mode1": "{orange26300}"
+          },
+          "select": {
+            "mode1": "{orange26400}"
+          }
+        },
+        "ghost": {
+          "hover": {
+            "mode1": "{orange26200}"
+          },
+          "select": {
+            "mode1": "{orange26300}"
+          }
+        }
+      },
+      "success": {},
+      "other": {
+        "primary": {
+          "mode1": "{green26500}",
+          "hover": {
+            "mode1": "{green26600}"
+          },
+          "select": {
+            "mode1": "{green26700}"
+          }
+        },
+        "secondary": {
+          "mode1": "{green26200}",
+          "hover": {
+            "mode1": "{green26300}"
+          },
+          "select": {
+            "mode1": "{green26400}"
+          }
+        },
+        "ghost": {
+          "hover": {
+            "mode1": "{green26200}"
+          },
+          "select": {
+            "mode1": "{green26300}"
+          }
+        }
+      }
+    },
+    "toast": {
+      "warning": {
+        "mode1": "{feild26-toast-warning}"
+      },
+      "brand": {
+        "mode1": "{feild26-toast-brand}"
+      },
+      "danger": {
+        "mode1": "{feild26-toast-danger}"
+      },
+      "success": {
+        "mode1": "{feild26-toast-success}"
+      }
+    },
+    "other": {}
+  },
+  "palette": {
+    "feild26-cover": {
+      "mode1": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "alpha": 1
+      }
+    },
+    "feild26-core": {
+      "mode1": {
+        "red": 246,
+        "green": 247,
+        "blue": 249,
+        "alpha": 1
+      }
+    },
+    "black26500": {
+      "mode1": {
+        "red": 34,
+        "green": 41,
+        "blue": 52,
+        "alpha": 1
+      }
+    },
+    "black26400": {
+      "mode1": {
+        "red": 62,
+        "green": 71,
+        "blue": 86,
+        "alpha": 1
+      }
+    },
+    "black26300": {
+      "mode1": {
+        "red": 37,
+        "green": 52,
+        "blue": 71,
+        "alpha": 0.83
+      }
+    },
+    "navy26600": {
+      "mode1": {
+        "red": 13,
+        "green": 45,
+        "blue": 94,
+        "alpha": 0.56
+      }
+    },
+    "navy26500": {
+      "mode1": {
+        "red": 13,
+        "green": 45,
+        "blue": 94,
+        "alpha": 0.4
+      }
+    },
+    "navy26400": {
+      "mode1": {
+        "red": 13,
+        "green": 45,
+        "blue": 94,
+        "alpha": 0.28
+      }
+    },
+    "navy26300": {
+      "mode1": {
+        "red": 13,
+        "green": 45,
+        "blue": 94,
+        "alpha": 0.15
+      }
+    },
+    "navy26200": {
+      "mode1": {
+        "red": 13,
+        "green": 45,
+        "blue": 94,
+        "alpha": 0.07
+      }
+    },
+    "navy26100": {
+      "mode1": {
+        "red": 13,
+        "green": 45,
+        "blue": 94,
+        "alpha": 0.03
+      }
+    },
+    "red26700": {
+      "mode1": {
+        "red": 209,
+        "green": 56,
+        "blue": 51,
+        "alpha": 1
+      }
+    },
+    "red26500": {
+      "mode1": {
+        "red": 236,
+        "green": 63,
+        "blue": 57,
+        "alpha": 1
+      }
+    },
+    "red26400": {
+      "mode1": {
+        "red": 236,
+        "green": 63,
+        "blue": 57,
+        "alpha": 0.28
+      }
+    },
+    "red26300": {
+      "mode1": {
+        "red": 236,
+        "green": 63,
+        "blue": 57,
+        "alpha": 0.15
+      }
+    },
+    "red26200": {
+      "mode1": {
+        "red": 236,
+        "green": 63,
+        "blue": 57,
+        "alpha": 0.07
+      }
+    },
+    "red26600": {
+      "mode1": {
+        "red": 222,
+        "green": 59,
+        "blue": 54,
+        "alpha": 1
+      }
+    },
+    "brand26700": {
+      "mode1": {
+        "red": 0,
+        "green": 102,
+        "blue": 206,
+        "alpha": 1
+      }
+    },
+    "brand26600": {
+      "mode1": {
+        "red": 0,
+        "green": 112,
+        "blue": 225,
+        "alpha": 1
+      }
+    },
+    "brand26500": {
+      "mode1": {
+        "red": 0,
+        "green": 127,
+        "blue": 255,
+        "alpha": 1
+      }
+    },
+    "brand26400": {
+      "mode1": {
+        "red": 0,
+        "green": 127,
+        "blue": 255,
+        "alpha": 0.28
+      }
+    },
+    "brand26300": {
+      "mode1": {
+        "red": 0,
+        "green": 127,
+        "blue": 255,
+        "alpha": 0.15
+      }
+    },
+    "brand26200": {
+      "mode1": {
+        "red": 0,
+        "green": 127,
+        "blue": 255,
+        "alpha": 0.07
+      }
+    },
+    "orange26700": {
+      "mode1": {
+        "red": 229,
+        "green": 120,
+        "blue": 23,
+        "alpha": 1
+      }
+    },
+    "orange26600": {
+      "mode1": {
+        "red": 242,
+        "green": 126,
+        "blue": 24,
+        "alpha": 1
+      }
+    },
+    "orange26500": {
+      "mode1": {
+        "red": 255,
+        "green": 133,
+        "blue": 25,
+        "alpha": 1
+      }
+    },
+    "orange26400": {
+      "mode1": {
+        "red": 255,
+        "green": 133,
+        "blue": 25,
+        "alpha": 0.28
+      }
+    },
+    "orange26300": {
+      "mode1": {
+        "red": 255,
+        "green": 133,
+        "blue": 25,
+        "alpha": 0.15
+      }
+    },
+    "orange26200": {
+      "mode1": {
+        "red": 255,
+        "green": 133,
+        "blue": 25,
+        "alpha": 0.07
+      }
+    },
+    "green26700": {
+      "mode1": {
+        "red": 44,
+        "green": 148,
+        "blue": 44,
+        "alpha": 1
+      }
+    },
+    "green26600": {
+      "mode1": {
+        "red": 52,
+        "green": 157,
+        "blue": 52,
+        "alpha": 1
+      }
+    },
+    "green26500": {
+      "mode1": {
+        "red": 60,
+        "green": 170,
+        "blue": 60,
+        "alpha": 1
+      }
+    },
+    "green26400": {
+      "mode1": {
+        "red": 60,
+        "green": 170,
+        "blue": 60,
+        "alpha": 0.28
+      }
+    },
+    "green26300": {
+      "mode1": {
+        "red": 60,
+        "green": 170,
+        "blue": 60,
+        "alpha": 0.15
+      }
+    },
+    "green26200": {
+      "mode1": {
+        "red": 60,
+        "green": 170,
+        "blue": 60,
+        "alpha": 0.07
+      }
+    },
+    "feild26-toast-danger": {
+      "mode1": {
+        "red": 253,
+        "green": 240,
+        "blue": 239,
+        "alpha": 1
+      }
+    },
+    "feild26-toast-warning": {
+      "mode1": {
+        "red": 255,
+        "green": 245,
+        "blue": 237,
+        "alpha": 1
+      }
+    },
+    "feild26-toast-success": {
+      "mode1": {
+        "red": 239,
+        "green": 248,
+        "blue": 239,
+        "alpha": 1
+      }
+    },
+    "feild26-toast-brand": {
+      "mode1": {
+        "red": 235,
+        "green": 245,
+        "blue": 255,
+        "alpha": 1
+      }
+    },
+    "white-transparent26200": {
+      "mode1": {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "alpha": 0.07
+      }
+    },
+    "brand26100": {
+      "mode1": {
+        "red": 0,
+        "green": 127,
+        "blue": 255,
+        "alpha": 0.02
+      }
+    }
+  }
+}
