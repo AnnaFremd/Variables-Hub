@@ -56,6 +56,38 @@
     .brand img { width: 92px; height: 24px; display: block; }
     .verified { display: none; }
     .hero { margin: 14px 0 26px; text-align: center; }
+    .export-vars {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #0f172a;
+      opacity: .6;
+    }
+    .export-vars .export-link {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      opacity: .85;
+    }
+    .export-vars .export-link:hover { text-decoration: underline; opacity: 1; }
+    .export-vars .export-sep { margin: 0 .35em; opacity: .7; user-select: none; }
+    .export-details { display: inline; }
+    .export-details summary {
+      cursor: pointer;
+      font-family: inherit;
+      font-size: inherit;
+      letter-spacing: inherit;
+      list-style: none;
+    }
+    .export-details summary::-webkit-details-marker { display: none; }
+    .export-details summary::before { content: "▸ "; font-size: 9px; opacity: .8; }
+    .export-details[open] summary::before { content: "▾ "; }
     h1 {
       margin: 0;
       font-size: clamp(42px, 9.2vw, 78px);
@@ -779,18 +811,84 @@
     }
 
 
-    .footer-signature {
+    .footer-bar {
       margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding-top: 1px;
+    }
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .footer-signature {
+      margin-left: auto;
       color: #0f172a;
       opacity: .6;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: .06em;
       font-family: "JetBrains Mono", ui-monospace, monospace;
-      text-align: right;
     }
-    .footer-signature::before {
-      content: none;
+    .footer-bar .export-vars { margin-top: 0; }
+    .export-expanded {
+      display: none;
+      width: 100%;
+      margin-top: var(--section-gap);
+    }
+    .export-expanded[aria-hidden="false"] { display: block; }
+    .export-expanded .export-code-wrap {
+      position: relative;
+      background: #f8f9fa;
+      border: 1px solid rgba(15, 23, 42, 0.06);
+      border-radius: 6px;
+    }
+    .export-expanded .export-toolbar {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 6px;
+      z-index: 2;
+    }
+    .export-expanded .export-toolbar .export-btn {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      background: #fff;
+      color: transparent;
+      cursor: pointer;
+      border-radius: 4px;
+      opacity: .8;
+      font-size: 0;
+    }
+    .export-expanded .export-toolbar .export-btn:hover { opacity: 1; background: #fff; border-color: rgba(15, 23, 42, 0.25); }
+    .export-expanded .export-toolbar .export-btn::before {
+      color: #0f172a;
+      font-size: 14px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+    }
+    .export-expanded .export-toolbar .export-btn[data-export-copy]::before { content: "⎘"; }
+    .export-expanded .export-toolbar .export-btn[data-export-download]::before { content: "↓"; }
+    .export-expanded pre {
+      margin: 0;
+      padding: 14px 16px;
+      padding-top: 44px;
+      padding-right: 48px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+      line-height: 1.5;
+      overflow: auto;
+      max-height: 360px;
+      white-space: pre;
+      tab-size: 2;
     }
 
     .toast {
@@ -860,7 +958,13 @@
 
     <main id="app"></main>
 
-    <footer class="footer-signature">Curated & Architected by Anna Fremd</footer>
+    <footer class="footer-bar">
+      <div class="footer-row">
+        <div id="exportVars" class="export-vars"></div>
+        <span class="footer-signature">Curated & Architected by Anna Fremd</span>
+      </div>
+      <div class="export-expanded" id="exportExpanded" aria-hidden="true"></div>
+    </footer>
   </div>
 
   <div id="toast" class="toast"></div>
@@ -1259,6 +1363,82 @@
       tokens.forEach((t) => lines.push(`  --${t.name.toLowerCase()}: ${t.error ? "transparent" : t.formats.rgba};`));
       lines.push("}");
       navigator.clipboard.writeText(lines.join("\n")).then(() => showToast("CSS variables copied")).catch(() => showToast("Copy failed"));
+    }
+
+    function paletteKeyToCssVar(key) {
+      return "--" + String(key || "").trim().toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/\./g, "-")
+        .replace(/[^a-z0-9-]/g, "");
+    }
+
+    function buildFullFrontendCss(tokens, paletteRows) {
+      const NL = "\n";
+      const comment = (s) => `/* ${s} */`;
+      const lines = [
+        comment("Variables Hub — design tokens (OKLCH), frontend format"),
+        comment("Generated for 1:1 use in code. Do not edit by hand."),
+        ""
+      ];
+
+      if (paletteRows && paletteRows.length > 0) {
+        lines.push(comment("palette (primitives) — base colors referenced by semantic tokens"));
+        lines.push(":root {");
+        paletteRows.forEach((row) => {
+          const varName = paletteKeyToCssVar(row.key);
+          const value = (row.oklch && row.oklch !== "-") ? row.oklch : (row.rgba || row.hex || "transparent");
+          lines.push(`  ${varName}: ${value};`);
+        });
+        lines.push("}");
+        lines.push("");
+      }
+
+      lines.push(comment("semantic (reference palette) — tokens used in UI"));
+      lines.push(":root {");
+      const colorTokens = tokens.filter((t) => ["general", "border", "backgrounds", "toast"].includes(t.section));
+      const order = (a, b) => {
+        const groupOrder = { general: 0, border: 1, backgrounds: 2, toast: 3 };
+        if (groupOrder[a.section] !== groupOrder[b.section]) return groupOrder[a.section] - groupOrder[b.section];
+        const bgSub = (n) => ({ base: 0, white: 1, brand: 2, danger: 3, warning: 4, success: 5 }[n] ?? 6);
+        if (a.section === "backgrounds" && b.section === "backgrounds") {
+          const subA = a.name.startsWith("background-") ? a.name.split("-")[1] : "";
+          const subB = b.name.startsWith("background-") ? b.name.split("-")[1] : "";
+          return (bgSub(subA) - bgSub(subB)) || a.name.localeCompare(b.name);
+        }
+        return a.name.localeCompare(b.name);
+      };
+      colorTokens.sort(order).forEach((t) => {
+        const varName = inferFrontFromOurs(t.name);
+        const value = t.error ? "transparent" : ((t.formats?.oklch && t.formats.oklch !== "-") ? t.formats.oklch : (t.formats?.rgba || t.formats?.hex || "transparent"));
+        lines.push(`  ${varName}: ${value};`);
+      });
+      lines.push("}");
+      lines.push("");
+
+      const foundationWithDecl = FOUNDATION_COMPARE_ROWS.filter((r) => typeof r.frontend === "string" && /^--[\w-]+:\s*.+$/.test(r.frontend.trim()));
+      if (foundationWithDecl.length > 0) {
+        lines.push(comment("foundation — radius, space, typography, layout"));
+        lines.push(":root {");
+        const byCategory = foundationWithDecl.reduce((acc, r) => {
+          if (!acc[r.category]) acc[r.category] = [];
+          acc[r.category].push(r);
+          return acc;
+        }, {});
+        const categoryOrder = ["Radius", "Space", "Text Size", "Text Weight", "Dialog Size", "Effects", "Line Height"];
+        categoryOrder.forEach((cat) => {
+          const rows = byCategory[cat];
+          if (!rows || rows.length === 0) return;
+          lines.push("");
+          lines.push("  " + comment(cat.toLowerCase()));
+          rows.forEach((r) => {
+            const decl = r.frontend.trim();
+            lines.push(`  ${decl.endsWith(";") ? decl : decl + ";"}`);
+          });
+        });
+        lines.push("");
+        lines.push("}");
+      }
+      return lines.join(NL) + NL;
     }
 
     function buildMigrationMapText(mappings) {
@@ -2000,6 +2180,43 @@
           Object.values(subgroups || {}).some((items) => (items || []).length > 0)
         ).length;
         systemHealth.textContent = `${functionalVars} semantic vars • ${paletteConstants} palette constants • ${semanticCategories} semantic categories`;
+
+        const fullCss = buildFullFrontendCss(tokens, paletteRows);
+        const exportEl = document.getElementById("exportVars");
+        const expandedEl = document.getElementById("exportExpanded");
+        if (exportEl && expandedEl) {
+          exportEl.innerHTML = `<details id="exportDetails" class="export-details"><summary class="export-link">View CSS</summary></details>`;
+          expandedEl.innerHTML = `
+            <div class="export-code-wrap">
+              <div class="export-toolbar">
+                <button type="button" class="export-btn" data-export-copy title="Copy"></button>
+                <button type="button" class="export-btn" data-export-download title="Download"></button>
+              </div>
+              <pre data-export-pre></pre>
+            </div>
+          `;
+          const pre = expandedEl.querySelector("[data-export-pre]");
+          if (pre) pre.textContent = fullCss;
+          expandedEl.querySelector("[data-export-download]")?.addEventListener("click", () => {
+            const blob = new Blob([fullCss], { type: "text/css" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "variables-hub.css";
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast("Downloaded variables-hub.css");
+          });
+          expandedEl.querySelector("[data-export-copy]")?.addEventListener("click", () => {
+            navigator.clipboard.writeText(fullCss).then(() => showToast("Copied to clipboard")).catch(() => showToast("Copy failed"));
+          });
+          const details = exportEl.querySelector("#exportDetails");
+          if (details) {
+            details.addEventListener("toggle", () => {
+              expandedEl.setAttribute("aria-hidden", details.open ? "false" : "true");
+            });
+          }
+        }
 
         app.innerHTML = [
           comparisonHtml(tokens, grouped, paletteRows)
