@@ -755,7 +755,7 @@
         </div>
         <div class="topbar__right">
           <button type="button" class="btn btn--soft" id="seed-conflicts">Набросать конфликты</button>
-          <button type="button" class="btn btn--soft" id="reset-local">Сбросить локальные решения</button>
+          <button type="button" class="btn btn--soft" id="reset-local">Сбросить все локальные изменения тегов</button>
           <button type="button" class="btn btn--primary" id="reset-all">Вернуть стартовый сценарий</button>
         </div>
       </header>
@@ -975,7 +975,7 @@
       function init() {
         populateScenarioSelect();
         renderScenarioHint();
-        addLog("system", "Стенд готов: сейчас всё синхронизируется с поставщиком.");
+        addLog("system", "Сейчас всё синхронизируется с поставщиком.");
         render();
       }
 
@@ -1237,7 +1237,7 @@
                     </div>`
                   : `<div class="status-stack">
                       <span class="tag-pill tag-pill--ghost">Нет тега</span>
-                      <span class="status-line">Поле сейчас ничем не занято.</span>
+                      <span class="status-line">Никакой тег не назначен.</span>
                     </div>`;
                 return `<td data-tone="${row.status ? row.status.tone : "none"}">${currentTag}</td>`;
               })
