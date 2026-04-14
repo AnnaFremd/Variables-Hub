@@ -1198,8 +1198,7 @@
 
         problemStrip.classList.add("is-visible");
         problemTitle.textContent = "Есть системные теги, которые сейчас не назначены.";
-        problemCopy.textContent =
-          "Это уже не цвет строки, а состояние системы. Такие теги надо либо вернуть к поставщику, либо дособрать вручную.";
+    
         problemTags.innerHTML = criticalUnassigned
           .map((tag) => `<span class="tag-pill tag-pill--ghost">${tag.label}</span>`)
           .join("");
