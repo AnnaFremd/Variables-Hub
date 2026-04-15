@@ -1,0 +1,1710 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tag Mapping Lab</title>
+    <style>
+      :root {
+        --bg: #f6f7f9;
+        --surface: #ffffff;
+        --surface-muted: #f8fafc;
+        --surface-subtle: rgba(13, 45, 94, 0.04);
+        --line: rgba(13, 45, 94, 0.08);
+        --line-strong: rgba(13, 45, 94, 0.16);
+        --text: #253447;
+        --muted: rgba(37, 52, 71, 0.62);
+        --blue: #007fff;
+        --blue-soft: rgba(0, 127, 255, 0.12);
+        --orange: #c27e00;
+        --orange-soft: rgba(255, 176, 31, 0.18);
+        --gray: #6e7683;
+        --gray-soft: rgba(110, 118, 131, 0.14);
+        --red: #e25d57;
+        --red-soft: rgba(226, 93, 87, 0.12);
+        --green: #3caa3c;
+        --green-soft: rgba(60, 170, 60, 0.14);
+        --shadow: 0 6px 20px rgba(22, 34, 51, 0.06);
+        --radius-xl: 18px;
+        --radius-lg: 12px;
+        --radius-md: 10px;
+        --radius-sm: 8px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 13px/1.45 "PT Root UI", "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      p {
+        margin: 0;
+      }
+
+      .catalog-app {
+        min-height: 100%;
+        display: grid;
+        grid-template-rows: 48px 1fr;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 0 12px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .topbar__left,
+      .topbar__right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .icon-btn {
+        width: 28px;
+        height: 28px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--muted);
+      }
+
+      .icon-btn:hover {
+        background: var(--surface-subtle);
+      }
+
+      .topbar__title {
+        display: grid;
+        gap: 1px;
+        min-width: 0;
+      }
+
+      .topbar__crumb {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .topbar__name {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .topbar__right {
+        overflow: auto hidden;
+      }
+
+      .topbar__legend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        min-height: 32px;
+        padding: 0 12px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        white-space: nowrap;
+        transition: 0.18s ease;
+      }
+
+      .btn--primary {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .btn--soft {
+        background: var(--surface);
+        border-color: var(--line-strong);
+        color: var(--text);
+      }
+
+      .btn--danger {
+        background: var(--red-soft);
+        color: var(--red);
+      }
+
+      .workspace {
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+      }
+
+      .main-panel,
+      .side-panel {
+        min-height: 0;
+        background: var(--surface);
+      }
+
+      .main-panel {
+        border-right: 1px solid var(--line);
+      }
+
+      .panel-head {
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 0 12px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .panel-head h2,
+      .panel-head h3 {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .panel-scroll {
+        min-height: 0;
+        overflow: auto;
+      }
+
+      .hint,
+      .table-meta,
+      .status-line,
+      .field-meta,
+      .mapping-copy,
+      .scenario-hint,
+      .note,
+      .log-item__meta {
+        color: var(--muted);
+      }
+
+      .main-panel {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        min-width: 0;
+      }
+
+      .main-banner {
+        padding: 10px 16px;
+        border-bottom: 1px solid var(--line);
+        display: grid;
+        gap: 10px;
+      }
+
+      .banner-title {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .problem-strip {
+        display: none;
+        grid-template-columns: 22px 1fr;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: var(--red-soft);
+        border: 1px solid rgba(226, 93, 87, 0.18);
+      }
+
+      .problem-strip.is-visible {
+        display: grid;
+      }
+
+      .problem-strip__icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: rgba(226, 93, 87, 0.16);
+        color: var(--red);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .problem-strip__meta {
+        display: grid;
+        gap: 4px;
+      }
+
+      .problem-strip__tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .content-scroll {
+        min-height: 0;
+        overflow: auto;
+      }
+
+      .content-pad {
+        padding: 16px 16px 16px;
+      }
+
+      .table-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 12px 0 10px;
+      }
+
+      .table-head__copy {
+        display: grid;
+        gap: 4px;
+      }
+
+      .table-head__copy h2 {
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .table-wrap {
+        overflow: auto;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1120px;
+      }
+
+      thead th {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        height: 56px;
+        padding: 10px 12px;
+        background: var(--surface);
+        border-bottom: 1px solid #ebeef2;
+        border-right: 1px solid #ebeef2;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+        vertical-align: middle;
+      }
+
+      thead th:last-child,
+      tbody td:last-child {
+        border-right: 0;
+      }
+
+      tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #eef2f6;
+        border-right: 1px solid #eef2f6;
+        vertical-align: top;
+        width: 168px;
+        min-width: 168px;
+      }
+
+      tbody th {
+        padding: 10px 12px;
+        border-bottom: 1px solid #eef2f6;
+        border-right: 1px solid #eef2f6;
+        background: #fbfcfd;
+        text-align: left;
+        vertical-align: top;
+        width: 180px;
+        min-width: 180px;
+        position: sticky;
+        left: 0;
+        z-index: 1;
+      }
+
+      thead th:not(:first-child) {
+        width: 168px;
+        min-width: 168px;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      tbody tr:last-child th {
+        border-bottom: 0;
+      }
+
+      thead th:first-child {
+        left: 0;
+        z-index: 2;
+      }
+
+      tbody td[data-tone="blue"] {
+        box-shadow: inset 3px 0 0 var(--blue);
+      }
+
+      tbody td[data-tone="orange"] {
+        box-shadow: inset 3px 0 0 var(--orange);
+      }
+
+      tbody td[data-tone="gray"] {
+        box-shadow: inset 3px 0 0 var(--gray);
+      }
+
+      .field-title,
+      .status-stack {
+        display: grid;
+        gap: 4px;
+      }
+
+      .field-col {
+        display: grid;
+        min-height: 36px;
+        align-content: center;
+      }
+
+      .field-col strong {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .row-label {
+        display: grid;
+        gap: 3px;
+        min-height: 52px;
+        align-content: center;
+      }
+
+      .row-label strong {
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .row-label span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .matrix-cell {
+        display: grid;
+        gap: 6px;
+        min-width: 150px;
+      }
+
+      .field-title strong {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .field-meta {
+        font-size: 12px;
+      }
+
+      .tag-pill {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        min-height: 22px;
+        padding: 0 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .tag-pill--blue {
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .tag-pill--orange {
+        background: var(--orange-soft);
+        color: var(--orange);
+      }
+
+      .tag-pill--gray {
+        background: var(--gray-soft);
+        color: var(--gray);
+      }
+
+      .tag-pill--ghost {
+        background: var(--surface-subtle);
+        color: var(--muted);
+      }
+
+      .status-line,
+      .cell-note {
+        font-size: 12px;
+      }
+
+      .field-actions {
+        display: grid;
+        gap: 6px;
+      }
+
+      .field-actions__row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 30px;
+        gap: 6px;
+        align-items: start;
+      }
+
+      .field-actions select,
+      .side-card__controls select {
+        width: 100%;
+        min-height: 30px;
+        padding: 0 8px;
+        border-radius: 8px;
+        border: 1px solid var(--line-strong);
+        background: var(--surface);
+        color: var(--text);
+      }
+
+      .field-actions select:focus,
+      .side-card__controls select:focus {
+        outline: none;
+        border-color: rgba(0, 127, 255, 0.5);
+        box-shadow: 0 0 0 2px rgba(0, 127, 255, 0.12);
+      }
+
+      .field-actions__helper {
+        font-size: 11px;
+        color: var(--muted);
+      }
+
+      .icon-action {
+        width: 30px;
+        min-width: 30px;
+        height: 30px;
+        border: 1px solid var(--line-strong);
+        border-radius: 8px;
+        background: var(--surface);
+        color: var(--muted);
+        display: grid;
+        place-items: center;
+        padding: 0;
+      }
+
+      .icon-action:hover:not(:disabled) {
+        background: var(--surface-subtle);
+        color: var(--text);
+      }
+
+      .icon-action:disabled {
+        opacity: 0.42;
+        cursor: default;
+      }
+
+      .side-panel {
+        display: grid;
+        grid-template-rows: 48px minmax(0, 1fr);
+      }
+
+      .side-scroll {
+        min-height: 0;
+        overflow: auto;
+        padding: 12px;
+        display: grid;
+        gap: 12px;
+        align-content: start;
+      }
+
+      .side-card {
+        display: grid;
+        gap: 12px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .side-card__head {
+        display: grid;
+        gap: 4px;
+      }
+
+      .side-card__head-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .side-card__head h3 {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .side-card__controls {
+        display: grid;
+        gap: 8px;
+      }
+
+      .scenario-hint {
+        font-size: 12px;
+      }
+
+      .pending-list,
+      .log-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .pending-card,
+      .log-item {
+        display: grid;
+        gap: 8px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface-muted);
+      }
+
+      .pending-card--critical {
+        background: var(--red-soft);
+        border-color: rgba(226, 93, 87, 0.18);
+      }
+
+      .pending-card__header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .pending-card__title {
+        display: grid;
+        gap: 3px;
+      }
+
+      .pending-card__title strong,
+      .log-item strong {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .pending-card__bullets {
+        display: grid;
+        gap: 4px;
+      }
+
+      .pending-card__bullets li,
+      .modal__impacts li {
+        list-style: disc;
+        margin-left: 18px;
+      }
+
+      .pending-card__actions,
+      .modal__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        min-height: 20px;
+        padding: 0 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .badge--neutral {
+        background: var(--surface-subtle);
+        color: var(--muted);
+      }
+
+      .badge--critical {
+        background: var(--red-soft);
+        color: var(--red);
+      }
+
+      .badge--info {
+        background: var(--blue-soft);
+        color: var(--blue);
+      }
+
+      .log-item--system {
+        border-left: 3px solid var(--blue);
+      }
+
+      .log-item--warning {
+        border-left: 3px solid var(--orange);
+      }
+
+      .log-item--critical {
+        border-left: 3px solid var(--red);
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(16, 24, 40, 0.44);
+        z-index: 1000;
+      }
+
+      .modal-backdrop.is-open {
+        display: flex;
+      }
+
+      .modal {
+        width: min(620px, 100%);
+        max-height: calc(100vh - 48px);
+        overflow: auto;
+        padding: 20px;
+        border-radius: 16px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        display: grid;
+        gap: 14px;
+        position: relative;
+        z-index: 1001;
+      }
+
+      .modal__copy {
+        display: grid;
+        gap: 8px;
+      }
+
+      .modal__copy p {
+        color: var(--muted);
+      }
+
+      .modal__impacts {
+        display: grid;
+        gap: 6px;
+        padding: 12px;
+        border-radius: 10px;
+        background: var(--surface-muted);
+        border: 1px solid var(--line);
+      }
+
+      @media (max-width: 1320px) {
+        .workspace {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .side-panel {
+          grid-column: 1 / -1;
+          border-top: 1px solid var(--line);
+          border-right: 0;
+          grid-template-rows: auto;
+        }
+
+        .side-scroll {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 1024px) {
+      }
+
+      @media (max-width: 780px) {
+        .catalog-app {
+          grid-template-rows: auto 1fr;
+        }
+
+        .topbar {
+          padding: 8px 10px;
+          align-items: flex-start;
+        }
+
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .side-scroll {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="catalog-app">
+      <header class="topbar">
+        <div class="topbar__left">
+          <div class="topbar__legend" aria-label="Легенда статусов">
+            <span class="tag-pill tag-pill--blue">Synced</span>
+            <span class="tag-pill tag-pill--orange">Overridden</span>
+            <span class="tag-pill tag-pill--gray">Local only</span>
+          </div>
+        </div>
+        <div class="topbar__right">
+          <button type="button" class="btn btn--soft" id="seed-conflicts">Набросать конфликты</button>
+          <button type="button" class="btn btn--soft" id="reset-local">Сбросить все локальные изменения тегов</button>
+          <button type="button" class="btn btn--primary" id="reset-all">Вернуть стартовый сценарий</button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <main class="main-panel">
+          <div class="main-banner">
+            <div class="banner-title">Тестирование переназначения тегов</div>
+            <div class="problem-strip" id="problem-strip" aria-live="polite">
+              <div class="problem-strip__icon">!</div>
+              <div class="problem-strip__meta">
+                <strong id="problem-title">Есть теги, которые сейчас не назначены.</strong>
+                <p id="problem-copy"></p>
+                <div class="problem-strip__tags" id="problem-tags"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="content-scroll">
+            <div class="content-pad">
+              <div class="table-wrap">
+                <table>
+                  <thead id="fields-head"></thead>
+                  <tbody id="fields-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <aside class="side-panel">
+          <div class="panel-head">
+            <h3>Инспектор</h3>
+          </div>
+          <div class="side-scroll">
+            <section class="side-card">
+              <div class="side-card__head">
+                <div class="side-card__head-row">
+                  <h3>Входящие обновления</h3>
+                  <span class="badge badge--neutral" id="pending-count">0 во входящих</span>
+                </div>
+              </div>
+
+              <div class="side-card__controls">
+                <select id="scenario-select" aria-label="Сценарий обновления поставщика"></select>
+                <div class="scenario-hint" id="scenario-hint"></div>
+                <button type="button" class="btn btn--primary" id="queue-update">Добавить во входящие</button>
+              </div>
+
+              <div class="pending-list" id="pending-list"></div>
+            </section>
+
+	            <section class="side-card">
+	              <div class="side-card__head">
+	                <div class="side-card__head-row">
+	                  <h3>Журнал действий</h3>
+	                  <span class="badge badge--info">Corner cases</span>
+	                </div>
+	              </div>
+	              <div class="log-list" id="log-list"></div>
+	            </section>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="modal-backdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal__copy">
+          <h3 id="modal-title">Подтвердите изменение</h3>
+          <p id="modal-body"></p>
+        </div>
+        <ul class="modal__impacts" id="modal-impacts"></ul>
+        <div class="modal__actions">
+          <button type="button" class="btn btn--soft" id="modal-cancel">Отмена</button>
+          <button type="button" class="btn btn--primary" id="modal-confirm">Подтвердить</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const TAGS = [
+        { id: "sku", label: "Артикул", critical: true },
+        { id: "title", label: "Название", critical: true },
+        { id: "price", label: "Цена", critical: true },
+        { id: "brand", label: "Бренд", critical: false },
+        { id: "image", label: "Изображение", critical: true },
+        { id: "description", label: "Описание", critical: false },
+        { id: "warranty", label: "Гарантия", critical: false }
+      ];
+
+      const INITIAL_FIELDS = [
+        { id: "supplier_sku", name: "sku", sample: "N4120A-4T" },
+        { id: "supplier_name", name: "name", sample: "Подъёмник Nordberg 4T" },
+        { id: "supplier_vendor_code", name: "vendor_code", sample: "NB-4120A" },
+        { id: "supplier_marketing", name: "marketing_name", sample: "Подъёмник Nordberg N4120A-4T" },
+        { id: "supplier_price", name: "retail_price", sample: "344 000 ₽" },
+        { id: "supplier_brand", name: "brand", sample: "Nordberg" },
+        { id: "supplier_gallery", name: "gallery", sample: "3 фото и 1 схема" }
+      ];
+
+      const INITIAL_SUPPLIER_ASSIGNMENTS = {
+        sku: "supplier_sku",
+        title: "supplier_name",
+        price: "supplier_price",
+        brand: "supplier_brand",
+        image: "supplier_gallery"
+      };
+
+      const SCENARIOS = [
+        {
+          id: "move-sku",
+          label: "Поставщик перевесил Артикул на vendor_code",
+          summary: "У поставщика источник артикула переезжает на другое поле.",
+          apply(draft) {
+            draft.supplierAssignments.sku = "supplier_vendor_code";
+          }
+        },
+        {
+          id: "move-title",
+          label: "Поставщик назначил Название на marketing_name",
+          summary: "Поставщик теперь считает главным другое текстовое поле.",
+          apply(draft) {
+            draft.supplierAssignments.title = "supplier_marketing";
+          }
+        },
+        {
+          id: "remove-price",
+          label: "Поставщик снял Цена",
+          summary: "У поставщика системный тег перестаёт быть назначенным.",
+          apply(draft) {
+            draft.supplierAssignments.price = null;
+          }
+        },
+        {
+          id: "delete-gallery",
+          label: "Поставщик удалил поле gallery",
+          summary: "Из каталога исчезает поле, которое раньше было источником изображений.",
+          apply(draft) {
+            draft.fields = draft.fields.filter((field) => field.id !== "supplier_gallery");
+          }
+        },
+        {
+          id: "assign-description-existing",
+          label: "Поставщик впервые назначил Описание на marketing_name",
+          summary: "Раньше поле было без supplier-тега, теперь поставщик использует его для нового тега.",
+          apply(draft) {
+            draft.supplierAssignments.description = "supplier_marketing";
+          }
+        },
+        {
+          id: "add-note-field",
+          label: "Поставщик добавил поле note без тега",
+          summary: "В каталоге появляется новое поле, но supplier ничего на него не назначает.",
+          apply(draft) {
+            if (!draft.fields.some((field) => field.id === "supplier_note")) {
+              draft.fields.push({
+                id: "supplier_note",
+                name: "note",
+                sample: "Для сервиса 380 В"
+              });
+            }
+          }
+        },
+        {
+          id: "delete-marketing",
+          label: "Поставщик удалил поле marketing_name без тега",
+          summary: "Исчезает поле, на котором по умолчанию supplier ничего не держал.",
+          apply(draft) {
+            draft.fields = draft.fields.filter((field) => field.id !== "supplier_marketing");
+          }
+        },
+        {
+          id: "add-short-name",
+          label: "Поставщик добавил short_name и назначил туда Название",
+          summary: "Появляется новое поле сверху и сразу получает системный тег.",
+          apply(draft) {
+            if (!draft.fields.some((field) => field.id === "supplier_short_name")) {
+              draft.fields.splice(2, 0, {
+                id: "supplier_short_name",
+                name: "short_name",
+                sample: "Nordberg N4120A"
+              });
+            }
+            draft.supplierAssignments.title = "supplier_short_name";
+          }
+        },
+        {
+          id: "bulk-wave",
+          label: "Пакетное обновление: Артикул, Цена и новое поле",
+          summary: "Комбинированный апдейт, чтобы проверить несколько последствий сразу.",
+          apply(draft) {
+            if (!draft.fields.some((field) => field.id === "supplier_short_name")) {
+              draft.fields.splice(2, 0, {
+                id: "supplier_short_name",
+                name: "short_name",
+                sample: "Nordberg N4120A"
+              });
+            }
+            draft.supplierAssignments.sku = "supplier_vendor_code";
+            draft.supplierAssignments.title = "supplier_short_name";
+            draft.supplierAssignments.price = null;
+          }
+        }
+      ];
+
+      const state = {
+        fields: cloneFields(INITIAL_FIELDS),
+        supplierAssignments: { ...INITIAL_SUPPLIER_ASSIGNMENTS },
+        dealerOverrides: {},
+        pendingUpdates: [],
+        logs: [],
+        modal: null,
+        nextId: 0
+      };
+
+      const fieldsHead = document.getElementById("fields-head");
+      const fieldsBody = document.getElementById("fields-body");
+      const scenarioSelect = document.getElementById("scenario-select");
+      const scenarioHint = document.getElementById("scenario-hint");
+      const pendingList = document.getElementById("pending-list");
+      const pendingCount = document.getElementById("pending-count");
+      const logList = document.getElementById("log-list");
+      const problemStrip = document.getElementById("problem-strip");
+      const problemTitle = document.getElementById("problem-title");
+      const problemCopy = document.getElementById("problem-copy");
+      const problemTags = document.getElementById("problem-tags");
+      const modalBackdrop = document.getElementById("modal-backdrop");
+      const modalBody = document.getElementById("modal-body");
+      const modalImpacts = document.getElementById("modal-impacts");
+      const modalConfirm = document.getElementById("modal-confirm");
+      const modalCancel = document.getElementById("modal-cancel");
+
+      document.getElementById("queue-update").addEventListener("click", queueSelectedUpdate);
+      document.getElementById("reset-all").addEventListener("click", resetAll);
+      document.getElementById("reset-local").addEventListener("click", resetLocalChanges);
+      document.getElementById("seed-conflicts").addEventListener("click", seedConflicts);
+      scenarioSelect.addEventListener("change", renderScenarioHint);
+      modalConfirm.addEventListener("click", confirmModal);
+      modalCancel.addEventListener("click", closeModal);
+      modalBackdrop.addEventListener("click", (event) => {
+        if (event.target === modalBackdrop) closeModal();
+      });
+
+      init();
+
+      function init() {
+        populateScenarioSelect();
+        renderScenarioHint();
+        addLog("system", "Сейчас всё синхронизируется с поставщиком.");
+        render();
+      }
+
+      function populateScenarioSelect() {
+        scenarioSelect.replaceChildren();
+        for (const scenario of SCENARIOS) {
+          const option = new Option(scenario.label, scenario.id);
+          scenarioSelect.add(option);
+        }
+      }
+
+      function renderScenarioHint() {
+        const scenario = SCENARIOS.find((item) => item.id === scenarioSelect.value);
+        scenarioHint.textContent = scenario ? scenario.summary : "";
+      }
+
+      function cloneFields(fields) {
+        return fields.map((field) => ({ ...field }));
+      }
+
+      function cloneSnapshot() {
+        return {
+          fields: cloneFields(state.fields),
+          supplierAssignments: { ...state.supplierAssignments },
+          dealerOverrides: { ...state.dealerOverrides }
+        };
+      }
+
+      function fieldLabel(fieldId, snapshot = state) {
+        const field = snapshot.fields.find((item) => item.id === fieldId);
+        return field ? field.name : "удалённое поле";
+      }
+
+      function tagLabel(tagId) {
+        const tag = TAGS.find((item) => item.id === tagId);
+        return tag ? tag.label : tagId;
+      }
+
+      function isCriticalTag(tagId) {
+        const tag = TAGS.find((item) => item.id === tagId);
+        return Boolean(tag && tag.critical);
+      }
+
+      function hasDealerOverride(tagId, snapshot = state) {
+        return Object.prototype.hasOwnProperty.call(snapshot.dealerOverrides, tagId);
+      }
+
+      function normalizeSnapshot(snapshot) {
+        const fieldIds = new Set(snapshot.fields.map((field) => field.id));
+
+        for (const tag of TAGS) {
+          if (!fieldIds.has(snapshot.supplierAssignments[tag.id])) {
+            snapshot.supplierAssignments[tag.id] = null;
+          }
+        }
+
+        for (const tag of TAGS) {
+          if (!hasDealerOverride(tag.id, snapshot)) continue;
+
+          const override = snapshot.dealerOverrides[tag.id];
+          if (override !== null && !fieldIds.has(override)) {
+            snapshot.dealerOverrides[tag.id] = null;
+          }
+
+          if (snapshot.dealerOverrides[tag.id] === snapshot.supplierAssignments[tag.id]) {
+            delete snapshot.dealerOverrides[tag.id];
+            continue;
+          }
+
+        }
+      }
+
+      function computeAssignments(snapshot = state) {
+        normalizeSnapshot(snapshot);
+
+        const effective = {};
+        const source = {};
+        const occupied = new Map();
+        const supplierFieldToTag = new Map();
+
+        for (const tag of TAGS) {
+          const supplierField = snapshot.supplierAssignments[tag.id];
+          if (supplierField) supplierFieldToTag.set(supplierField, tag.id);
+        }
+
+        for (const tag of TAGS) {
+          if (!hasDealerOverride(tag.id, snapshot)) continue;
+
+          const override = snapshot.dealerOverrides[tag.id];
+          if (override === null) {
+            effective[tag.id] = null;
+            source[tag.id] = "dealer-none";
+            continue;
+          }
+
+          if (!occupied.has(override)) {
+            effective[tag.id] = override;
+            source[tag.id] = "dealer";
+            occupied.set(override, tag.id);
+          } else {
+            effective[tag.id] = null;
+            source[tag.id] = "dealer-blocked";
+          }
+        }
+
+        for (const tag of TAGS) {
+          if (Object.prototype.hasOwnProperty.call(effective, tag.id)) continue;
+
+          const supplierField = snapshot.supplierAssignments[tag.id];
+          if (supplierField && !occupied.has(supplierField)) {
+            effective[tag.id] = supplierField;
+            source[tag.id] = "supplier";
+            occupied.set(supplierField, tag.id);
+          } else if (supplierField) {
+            effective[tag.id] = null;
+            source[tag.id] = "supplier-blocked";
+          } else {
+            effective[tag.id] = null;
+            source[tag.id] = "supplier-none";
+          }
+        }
+
+        return { effective, source, occupied, supplierFieldToTag };
+      }
+
+      function getTagStatus(tagId, snapshot = state) {
+        const assignments = computeAssignments(snapshot);
+        const effectiveField = assignments.effective[tagId];
+        const source = assignments.source[tagId];
+        const supplierField = snapshot.supplierAssignments[tagId];
+        const supplierTagOnEffectiveField = effectiveField ? assignments.supplierFieldToTag.get(effectiveField) || null : null;
+
+        if (!effectiveField) {
+          return {
+            tone: "none",
+            badge: "Не назначен",
+            line: supplierField ? "Тег сверху есть, но сейчас не применяется." : "Тег сейчас нигде не назначен."
+          };
+        }
+
+        if (source === "supplier") {
+          return {
+            tone: "blue",
+            badge: "Synced",
+            line: "Изменится автоматически, если поставщик поменяет маппинг."
+          };
+        }
+
+        if (
+          source === "dealer" &&
+          (supplierField || (supplierTagOnEffectiveField && supplierTagOnEffectiveField !== tagId))
+        ) {
+          return {
+            tone: "orange",
+            badge: "Overridden",
+            line: "Локальное решение дилера сильнее актуального маппинга поставщика."
+          };
+        }
+
+        return {
+          tone: "gray",
+          badge: "Local only",
+          line: "Локальное назначение дилера, у поставщика этот тег сейчас свободен."
+        };
+      }
+
+      function getRowData(field, snapshot = state) {
+        const assignments = computeAssignments(snapshot);
+        const currentTagId = assignments.occupied.get(field.id) || null;
+        const supplierTagId = assignments.supplierFieldToTag.get(field.id) || null;
+        const status = currentTagId ? getTagStatus(currentTagId, snapshot) : null;
+
+        return { currentTagId, supplierTagId, status };
+      }
+
+      function getRollbackMeta(fieldId, snapshot = state) {
+        const assignments = computeAssignments(snapshot);
+        const currentTagId = assignments.occupied.get(fieldId) || null;
+        const supplierTagId = assignments.supplierFieldToTag.get(fieldId) || null;
+        const rollbackTagId =
+          supplierTagId && hasDealerOverride(supplierTagId, snapshot)
+            ? supplierTagId
+            : currentTagId && hasDealerOverride(currentTagId, snapshot) && snapshot.dealerOverrides[currentTagId] === fieldId
+              ? currentTagId
+              : null;
+
+        if (!rollbackTagId) {
+          return {
+            available: false,
+            hint: "На поле сейчас нет тега, который можно откатить."
+          };
+        }
+
+        const supplierFieldId = snapshot.supplierAssignments[rollbackTagId] || null;
+        const currentFieldId = assignments.effective[rollbackTagId] || null;
+        const after = cloneSnapshot();
+        delete after.dealerOverrides[rollbackTagId];
+        normalizeSnapshot(after);
+        const afterAssignments = computeAssignments(after);
+        const nextFieldId = afterAssignments.effective[rollbackTagId];
+
+        return {
+          available: true,
+          currentTagId: rollbackTagId,
+          currentFieldId,
+          supplierFieldId,
+          nextFieldId,
+          hint: supplierFieldId
+            ? `Вернуть тег «${tagLabel(rollbackTagId)}» к поставщику.`
+            : `Снять локальное назначение. У поставщика для этого тега сейчас нет поля.`
+        };
+      }
+
+      function render() {
+        renderProblemStrip();
+        renderTable();
+        renderPendingUpdates();
+        renderLogs();
+        renderModal();
+      }
+
+      function renderProblemStrip() {
+        const assignments = computeAssignments();
+        const criticalUnassigned = TAGS.filter((tag) => tag.critical && !assignments.effective[tag.id]);
+
+        if (!criticalUnassigned.length) {
+          problemStrip.classList.remove("is-visible");
+          return;
+        }
+
+        problemStrip.classList.add("is-visible");
+        problemTitle.textContent = "Есть системные теги, которые сейчас не назначены.";
+        problemCopy.textContent =
+          "Такие теги надо либо вернуть к поставщику, либо назначить вручную на новое поле.";
+        problemTags.innerHTML = criticalUnassigned
+          .map((tag) => `<span class="tag-pill tag-pill--ghost">${tag.label}</span>`)
+          .join("");
+      }
+
+      function renderTable() {
+        const rowData = state.fields.map((field) => ({ field, row: getRowData(field) }));
+
+        fieldsHead.innerHTML = `<tr>
+          <th aria-hidden="true"></th>
+          ${rowData
+            .map(
+              ({ field }) => `<th>
+                <div class="field-col">
+                  <strong>${field.name}</strong>
+                </div>
+              </th>`
+            )
+            .join("")}
+        </tr>`;
+
+        fieldsBody.innerHTML = `
+          <tr>
+            <th scope="row">
+              <div class="row-label">
+                <strong>Текущий тег</strong>
+                <span>Что реально читает система сейчас</span>
+              </div>
+            </th>
+            ${rowData
+              .map(({ row }) => {
+                const currentTag = row.currentTagId
+                  ? `<div class="status-stack">
+                      <span class="tag-pill tag-pill--${row.status.tone}">${tagLabel(row.currentTagId)}</span>
+                      <span class="status-line">${row.status.line}</span>
+                    </div>`
+                  : `<div class="status-stack">
+                      <span class="tag-pill tag-pill--ghost">Нет тега</span>
+                      <span class="status-line">Никакой тег не назначен.</span>
+                    </div>`;
+                return `<td data-tone="${row.status ? row.status.tone : "none"}">${currentTag}</td>`;
+              })
+              .join("")}
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="row-label">
+                <strong>Поставщик ждёт здесь</strong>
+                <span>Что приедет сверху без локального вмешательства</span>
+              </div>
+            </th>
+            ${rowData
+              .map(({ row }) => {
+                const supplierTag = row.supplierTagId
+                  ? `<div class="status-stack">
+                      <span class="tag-pill tag-pill--ghost">${tagLabel(row.supplierTagId)}</span>
+                      <span class="status-line">Если дилер не вмешивается, этот тег придёт сверху.</span>
+                    </div>`
+                  : `<span class="cell-note">Поставщик сюда ничего не назначил.</span>`;
+                return `<td>${supplierTag}</td>`;
+              })
+              .join("")}
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="row-label">
+                <strong>Действие дилера</strong>
+                <span>Можно назначать, менять и снимать теги</span>
+              </div>
+            </th>
+            ${rowData
+              .map(
+                ({ field, row }) => `<td>
+                  <div class="field-actions">
+                    <div class="field-actions__row">
+                      <select data-field-select="${field.id}" data-current-tag="${row.currentTagId || ""}"></select>
+                      <button
+                        type="button"
+                        class="icon-action"
+                        data-rollback-field="${field.id}"
+                        title="${getRollbackMeta(field.id).hint}"
+                        aria-label="${getRollbackMeta(field.id).hint}"
+                        ${getRollbackMeta(field.id).available ? "" : "disabled"}
+                      >↺</button>
+                    </div>
+                
+                  </div>
+                </td>`
+              )
+              .join("")}
+          </tr>
+        `;
+
+        fieldsBody.querySelectorAll("[data-field-select]").forEach((select) => {
+          populateFieldSelect(select, select.getAttribute("data-current-tag") || "");
+          select.addEventListener("change", (event) => {
+            const fieldId = event.target.getAttribute("data-field-select");
+            const value = event.target.value || null;
+            handleFieldSelection(fieldId, value);
+          });
+        });
+
+        fieldsBody.querySelectorAll("[data-rollback-field]").forEach((button) => {
+          button.addEventListener("click", () => {
+            handleRollback(button.getAttribute("data-rollback-field"));
+          });
+        });
+      }
+
+      function populateFieldSelect(select, currentTagId) {
+        select.replaceChildren();
+        select.add(new Option("Не назначать", "", !currentTagId, !currentTagId));
+        for (const tag of TAGS) {
+          const kindLabel = tag.critical ? "системный" : "несистемный";
+          const isSelected = currentTagId === tag.id;
+          select.add(new Option(`${tag.label} · ${kindLabel}`, tag.id, isSelected, isSelected));
+        }
+      }
+
+      function handleFieldSelection(fieldId, nextTagId) {
+        const assignments = computeAssignments();
+        const currentTagId = assignments.occupied.get(fieldId) || null;
+
+        if (currentTagId === nextTagId) {
+          render();
+          return;
+        }
+
+        if (!nextTagId) {
+          if (!currentTagId) {
+            render();
+            return;
+          }
+
+          state.dealerOverrides[currentTagId] = null;
+          addLog(
+            TAGS.find((tag) => tag.id === currentTagId).critical ? "critical" : "warning",
+            `Дилер снял тег «${tagLabel(currentTagId)}» с поля ${fieldLabel(fieldId)}.`
+          );
+          render();
+          return;
+        }
+
+        const impacts = [];
+        const previousFieldForTag = assignments.effective[nextTagId];
+        const currentTagSource = currentTagId ? assignments.source[currentTagId] : null;
+        const nextTagSource = previousFieldForTag ? assignments.source[nextTagId] : null;
+        let needsConfirm = false;
+
+        if (previousFieldForTag && previousFieldForTag !== fieldId) {
+          impacts.push(
+            `Поле ${fieldLabel(previousFieldForTag)} перестанет быть источником для тега «${tagLabel(nextTagId)}».`
+          );
+          if (nextTagSource && nextTagSource !== "supplier" && !isCriticalTag(nextTagId)) needsConfirm = true;
+        }
+
+        if (currentTagId && currentTagId !== nextTagId) {
+          impacts.push(
+            `Тег «${tagLabel(currentTagId)}» уйдёт с поля ${fieldLabel(fieldId)}.`
+          );
+          if (currentTagSource && currentTagSource !== "supplier" && !isCriticalTag(currentTagId)) needsConfirm = true;
+        }
+
+        const mustClearDealerOverride =
+          currentTagId &&
+          currentTagId !== nextTagId &&
+          hasDealerOverride(currentTagId) &&
+          state.dealerOverrides[currentTagId] === fieldId;
+
+        const apply = () => {
+          if (mustClearDealerOverride) state.dealerOverrides[currentTagId] = null;
+          state.dealerOverrides[nextTagId] = fieldId;
+          addLog("warning", `Дилер назначил «${tagLabel(nextTagId)}» на поле ${fieldLabel(fieldId)}.`);
+          render();
+        };
+
+        if (impacts.length && needsConfirm) {
+          openModal({
+            title: "Подтвердите переназначение тега",
+            body:
+              "В этом действии есть побочный эффект: другое поле или другой тег потеряют текущее назначение.",
+            impacts,
+            confirm: apply
+          });
+          return;
+        }
+
+        apply();
+      }
+
+      function handleRollback(fieldId) {
+        const rollback = getRollbackMeta(fieldId);
+        if (!rollback.available) {
+          render();
+          return;
+        }
+
+        const impacts = rollback.currentFieldId
+          ? [
+              `Поле ${fieldLabel(rollback.currentFieldId)} перестанет быть локальным источником для тега «${tagLabel(
+                rollback.currentTagId
+              )}».`
+            ]
+          : [`Локальное снятие тега «${tagLabel(rollback.currentTagId)}» будет отменено.`];
+
+        if (rollback.nextFieldId) {
+          impacts.push(
+            `После роллбэка тег «${tagLabel(rollback.currentTagId)}» снова будет читаться из поля ${fieldLabel(
+              rollback.nextFieldId
+            )}.`
+          );
+        } else {
+          impacts.push(`После роллбэка тег «${tagLabel(rollback.currentTagId)}» останется не назначен.`);
+        }
+
+        if (rollback.supplierFieldId && rollback.nextFieldId !== rollback.supplierFieldId) {
+          impacts.push(
+            `Поставщик ждёт тег «${tagLabel(rollback.currentTagId)}» на поле ${fieldLabel(
+              rollback.supplierFieldId
+            )}, но сейчас это поле занято другим решением.`
+          );
+        }
+
+        openModal({
+          title: "Подтвердите роллбэк тега",
+          body: rollback.supplierFieldId
+            ? "Локальное переопределение будет снято, и система попробует вернуться к маппингу поставщика."
+            : "Локальное переопределение будет снято. У поставщика для этого тега сейчас нет активного поля.",
+          impacts,
+          confirm: () => {
+            delete state.dealerOverrides[rollback.currentTagId];
+            addLog(
+              rollback.nextFieldId ? "system" : "critical",
+              rollback.nextFieldId
+                ? `Дилер откатил тег «${tagLabel(rollback.currentTagId)}» к состоянию поставщика.`
+                : `Дилер откатил тег «${tagLabel(rollback.currentTagId)}», и после роллбэка он остался не назначен.`
+            );
+            render();
+          }
+        });
+      }
+
+      function queueSelectedUpdate() {
+        const scenario = SCENARIOS.find((item) => item.id === scenarioSelect.value);
+        if (!scenario) return;
+
+        const preview = buildScenarioPreview(scenario);
+        state.pendingUpdates.unshift(preview);
+        addLog("system", `Во входящие пришёл сценарий: ${scenario.label}.`);
+        render();
+      }
+
+      function buildScenarioPreview(scenario) {
+        const before = cloneSnapshot();
+        const after = cloneSnapshot();
+
+        scenario.apply(after);
+        normalizeSnapshot(after);
+
+        const analysis = analyzeTransition(before, after);
+        return {
+          id: nextId("pending"),
+          scenarioId: scenario.id,
+          title: scenario.label,
+          summary: scenario.summary,
+          bullets: analysis.bullets,
+          severity: analysis.severity
+        };
+      }
+
+      function analyzeTransition(before, after) {
+        const beforeAssignments = computeAssignments(before);
+        const afterAssignments = computeAssignments(after);
+        const bullets = [];
+
+        for (const tag of TAGS) {
+          const beforeSupplier = before.supplierAssignments[tag.id];
+          const afterSupplier = after.supplierAssignments[tag.id];
+          const beforeEffective = beforeAssignments.effective[tag.id];
+          const afterEffective = afterAssignments.effective[tag.id];
+
+          if (beforeSupplier !== afterSupplier) {
+            bullets.push(
+              `У поставщика «${tag.label}» было на ${beforeSupplier ? fieldLabel(beforeSupplier, before) : "свободном теге"}, теперь на ${afterSupplier ? fieldLabel(afterSupplier, after) : "свободном теге"}.`
+            );
+          }
+
+          if (beforeEffective !== afterEffective) {
+            if (afterEffective) {
+              bullets.push(
+                `Эффективно у дилера «${tag.label}» будет читаться из поля ${fieldLabel(afterEffective, after)}.`
+              );
+            } else {
+              bullets.push(`После обновления тег «${tag.label}» останется не назначен.`);
+            }
+          } else if (beforeSupplier !== afterSupplier && afterEffective) {
+            bullets.push(
+              `Текущее решение дилера для «${tag.label}» сохранится: ${fieldLabel(afterEffective, after)}.`
+            );
+          }
+        }
+
+        const lostFields = before.fields
+          .filter((field) => !after.fields.some((nextField) => nextField.id === field.id))
+          .map((field) => field.name);
+
+        for (const fieldName of lostFields) {
+          bullets.push(`Поле ${fieldName} исчезнет из каталога поставщика.`);
+        }
+
+        const criticalUnassigned = TAGS.filter((tag) => tag.critical && !afterAssignments.effective[tag.id]);
+
+        return {
+          severity: criticalUnassigned.length ? "critical" : "info",
+          bullets: bullets.slice(0, 5)
+        };
+      }
+
+      function renderPendingUpdates() {
+        pendingCount.textContent = `${state.pendingUpdates.length} во входящих`;
+
+        if (!state.pendingUpdates.length) {
+          pendingList.innerHTML = "";
+          return;
+        }
+
+        pendingList.innerHTML = state.pendingUpdates
+          .map((item) => {
+            return `<article class="pending-card pending-card--${item.severity}">
+              <div class="pending-card__header">
+                <div class="pending-card__title">
+                  <strong>${item.title}</strong>
+                  <span class="side-card__meta">${item.summary}</span>
+                </div>
+                <span class="badge badge--${item.severity === "critical" ? "critical" : "info"}">${
+                  item.severity === "critical" ? "Есть риск" : "Инфо"
+                }</span>
+              </div>
+              <ul class="pending-card__bullets">${item.bullets
+                .map((bullet) => `<li>${bullet}</li>`)
+                .join("")}</ul>
+              <div class="pending-card__actions">
+                <button type="button" class="btn btn--primary" data-apply-update="${item.id}">Применить</button>
+                <button type="button" class="btn btn--soft" data-dismiss-update="${item.id}">Убрать</button>
+              </div>
+            </article>`;
+          })
+          .join("");
+
+        pendingList.querySelectorAll("[data-apply-update]").forEach((button) => {
+          button.addEventListener("click", () => applyPendingUpdate(button.getAttribute("data-apply-update")));
+        });
+
+        pendingList.querySelectorAll("[data-dismiss-update]").forEach((button) => {
+          button.addEventListener("click", () => dismissPendingUpdate(button.getAttribute("data-dismiss-update")));
+        });
+      }
+
+      function applyPendingUpdate(id) {
+        const pending = state.pendingUpdates.find((item) => item.id === id);
+        if (!pending) return;
+
+        const scenario = SCENARIOS.find((item) => item.id === pending.scenarioId);
+        if (!scenario) return;
+
+        scenario.apply(state);
+        addLog(pending.severity === "critical" ? "critical" : "system", `Применено supplier-обновление: ${scenario.label}.`);
+        state.pendingUpdates = state.pendingUpdates.filter((item) => item.id !== id);
+        render();
+      }
+
+      function dismissPendingUpdate(id) {
+        state.pendingUpdates = state.pendingUpdates.filter((item) => item.id !== id);
+        addLog("system", "Сценарий обновления убран из входящих без применения.");
+        render();
+      }
+
+      function renderLogs() {
+        if (!state.logs.length) {
+          logList.innerHTML = "";
+          return;
+        }
+
+        logList.innerHTML = state.logs
+          .map((entry) => {
+            return `<article class="log-item log-item--${entry.tone}">
+              <strong>${entry.text}</strong>
+              <span class="log-item__meta">${entry.time}</span>
+            </article>`;
+          })
+          .join("");
+      }
+
+      function addLog(tone, text) {
+        state.logs.unshift({
+          id: nextId("log"),
+          tone,
+          text,
+          time: new Date().toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" })
+        });
+
+        state.logs = state.logs.slice(0, 12);
+      }
+
+      function resetAll() {
+        state.fields = cloneFields(INITIAL_FIELDS);
+        state.supplierAssignments = { ...INITIAL_SUPPLIER_ASSIGNMENTS };
+        state.dealerOverrides = {};
+        state.pendingUpdates = [];
+        addLog("system", "Стенд полностью сброшен к начальному состоянию.");
+        render();
+      }
+
+      function resetLocalChanges() {
+        state.dealerOverrides = {};
+        addLog("system", "Локальные решения дилера сброшены. Остался только supplier-state.");
+        render();
+      }
+
+      function seedConflicts() {
+        state.dealerOverrides = {
+          sku: "supplier_vendor_code",
+          title: "supplier_marketing",
+          price: null
+        };
+        addLog("warning", "В стенд добавлен конфликтный набор локальных решений дилера.");
+        render();
+      }
+
+      function openModal(config) {
+        state.modal = config;
+        render();
+      }
+
+      function closeModal() {
+        state.modal = null;
+        render();
+      }
+
+      function confirmModal() {
+        if (!state.modal) return;
+        const action = state.modal.confirm;
+        state.modal = null;
+        renderModal();
+        action();
+      }
+
+      function renderModal() {
+        if (!state.modal) {
+          modalBackdrop.classList.remove("is-open");
+          modalBackdrop.setAttribute("aria-hidden", "true");
+          return;
+        }
+
+        document.getElementById("modal-title").textContent = state.modal.title;
+        modalBody.textContent = state.modal.body;
+        modalImpacts.innerHTML = state.modal.impacts.map((impact) => `<li>${impact}</li>`).join("");
+        modalBackdrop.classList.add("is-open");
+        modalBackdrop.setAttribute("aria-hidden", "false");
+      }
+
+      function nextId(prefix) {
+        state.nextId += 1;
+        return `${prefix}-${state.nextId}`;
+      }
+    </script>
+  </body>
+</html>
