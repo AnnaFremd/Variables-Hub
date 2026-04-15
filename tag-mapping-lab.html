@@ -899,6 +899,36 @@
           }
         },
         {
+          id: "assign-description-existing",
+          label: "Поставщик впервые назначил Описание на marketing_name",
+          summary: "Раньше поле было без supplier-тега, теперь поставщик использует его для нового тега.",
+          apply(draft) {
+            draft.supplierAssignments.description = "supplier_marketing";
+          }
+        },
+        {
+          id: "add-note-field",
+          label: "Поставщик добавил поле note без тега",
+          summary: "В каталоге появляется новое поле, но supplier ничего на него не назначает.",
+          apply(draft) {
+            if (!draft.fields.some((field) => field.id === "supplier_note")) {
+              draft.fields.push({
+                id: "supplier_note",
+                name: "note",
+                sample: "Для сервиса 380 В"
+              });
+            }
+          }
+        },
+        {
+          id: "delete-marketing",
+          label: "Поставщик удалил поле marketing_name без тега",
+          summary: "Исчезает поле, на котором по умолчанию supplier ничего не держал.",
+          apply(draft) {
+            draft.fields = draft.fields.filter((field) => field.id !== "supplier_marketing");
+          }
+        },
+        {
           id: "add-short-name",
           label: "Поставщик добавил short_name и назначил туда Название",
           summary: "Появляется новое поле сверху и сразу получает системный тег.",
@@ -980,9 +1010,11 @@
       }
 
       function populateScenarioSelect() {
-        scenarioSelect.innerHTML = SCENARIOS.map(
-          (scenario) => `<option value="${scenario.id}">${scenario.label}</option>`
-        ).join("");
+        scenarioSelect.replaceChildren();
+        for (const scenario of SCENARIOS) {
+          const option = new Option(scenario.label, scenario.id);
+          scenarioSelect.add(option);
+        }
       }
 
       function renderScenarioHint() {
@@ -1102,6 +1134,7 @@
         const effectiveField = assignments.effective[tagId];
         const source = assignments.source[tagId];
         const supplierField = snapshot.supplierAssignments[tagId];
+        const supplierTagOnEffectiveField = effectiveField ? assignments.supplierFieldToTag.get(effectiveField) || null : null;
 
         if (!effectiveField) {
           return {
@@ -1119,7 +1152,10 @@
           };
         }
 
-        if (source === "dealer" && supplierField) {
+        if (
+          source === "dealer" &&
+          (supplierField || (supplierTagOnEffectiveField && supplierTagOnEffectiveField !== tagId))
+        ) {
           return {
             tone: "orange",
             badge: "Overridden",
@@ -1146,35 +1182,48 @@
       function getRollbackMeta(fieldId, snapshot = state) {
         const assignments = computeAssignments(snapshot);
         const currentTagId = assignments.occupied.get(fieldId) || null;
+        const supplierTagId = assignments.supplierFieldToTag.get(fieldId) || null;
 
-        if (!currentTagId) {
+        if (!currentTagId && !(supplierTagId && snapshot.dealerOverrides[supplierTagId] === null)) {
           return {
             available: false,
             hint: "На поле сейчас нет тега, который можно откатить."
           };
         }
 
-        if (!hasDealerOverride(currentTagId, snapshot) || snapshot.dealerOverrides[currentTagId] !== fieldId) {
+        const rollbackTagId = currentTagId || supplierTagId;
+
+        if (
+          currentTagId &&
+          (!hasDealerOverride(rollbackTagId, snapshot) || snapshot.dealerOverrides[rollbackTagId] !== fieldId)
+        ) {
           return {
             available: false,
             hint: "Это поле уже синхронизируется с поставщиком."
           };
         }
 
-        const supplierFieldId = snapshot.supplierAssignments[currentTagId] || null;
+        if (!currentTagId && supplierTagId && snapshot.dealerOverrides[supplierTagId] !== null) {
+          return {
+            available: false,
+            hint: "Для этого поля нечего откатывать."
+          };
+        }
+
+        const supplierFieldId = snapshot.supplierAssignments[rollbackTagId] || null;
         const after = cloneSnapshot();
-        delete after.dealerOverrides[currentTagId];
+        delete after.dealerOverrides[rollbackTagId];
         normalizeSnapshot(after);
         const afterAssignments = computeAssignments(after);
-        const nextFieldId = afterAssignments.effective[currentTagId];
+        const nextFieldId = afterAssignments.effective[rollbackTagId];
 
         return {
           available: true,
-          currentTagId,
+          currentTagId: rollbackTagId,
           supplierFieldId,
           nextFieldId,
           hint: supplierFieldId
-            ? `Вернуть тег «${tagLabel(currentTagId)}» к поставщику.`
+            ? `Вернуть тег «${tagLabel(rollbackTagId)}» к поставщику.`
             : `Снять локальное назначение. У поставщика для этого тега сейчас нет поля.`
         };
       }
@@ -1274,9 +1323,7 @@
                 ({ field, row }) => `<td>
                   <div class="field-actions">
                     <div class="field-actions__row">
-                      <select data-field-select="${field.id}">
-                        ${buildTagOptions(row.currentTagId)}
-                      </select>
+                      <select data-field-select="${field.id}" data-current-tag="${row.currentTagId || ""}"></select>
                       <button
                         type="button"
                         class="icon-action"
@@ -1295,6 +1342,7 @@
         `;
 
         fieldsBody.querySelectorAll("[data-field-select]").forEach((select) => {
+          populateFieldSelect(select, select.getAttribute("data-current-tag") || "");
           select.addEventListener("change", (event) => {
             const fieldId = event.target.getAttribute("data-field-select");
             const value = event.target.value || null;
@@ -1309,15 +1357,14 @@
         });
       }
 
-      function buildTagOptions(currentTagId) {
-        const base = [`<option value="" ${!currentTagId ? "selected" : ""}>Не назначать</option>`];
+      function populateFieldSelect(select, currentTagId) {
+        select.replaceChildren();
+        select.add(new Option("Не назначать", "", !currentTagId, !currentTagId));
         for (const tag of TAGS) {
           const kindLabel = tag.critical ? "системный" : "несистемный";
-          base.push(
-            `<option value="${tag.id}" ${currentTagId === tag.id ? "selected" : ""}>${tag.label} · ${kindLabel}</option>`
-          );
+          const isSelected = currentTagId === tag.id;
+          select.add(new Option(`${tag.label} · ${kindLabel}`, tag.id, isSelected, isSelected));
         }
-        return base.join("");
       }
 
       function handleFieldSelection(fieldId, nextTagId) {
@@ -1346,17 +1393,22 @@
 
         const impacts = [];
         const previousFieldForTag = assignments.effective[nextTagId];
+        const currentTagSource = currentTagId ? assignments.source[currentTagId] : null;
+        const nextTagSource = previousFieldForTag ? assignments.source[nextTagId] : null;
+        let needsConfirm = false;
 
         if (previousFieldForTag && previousFieldForTag !== fieldId) {
           impacts.push(
             `Поле ${fieldLabel(previousFieldForTag)} перестанет быть источником для тега «${tagLabel(nextTagId)}».`
           );
+          if (nextTagSource && nextTagSource !== "supplier") needsConfirm = true;
         }
 
         if (currentTagId && currentTagId !== nextTagId) {
           impacts.push(
             `Тег «${tagLabel(currentTagId)}» уйдёт с поля ${fieldLabel(fieldId)}.`
           );
+          if (currentTagSource && currentTagSource !== "supplier") needsConfirm = true;
         }
 
         const mustClearDealerOverride =
@@ -1372,7 +1424,7 @@
           render();
         };
 
-        if (impacts.length) {
+        if (impacts.length && needsConfirm) {
           openModal({
             title: "Подтвердите переназначение тега",
             body:
