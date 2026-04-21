@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design Tokens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────
+   RESET
+───────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:     #1C2333;
+  --ink-50:  rgba(28,35,51,.50);
+  --ink-25:  rgba(28,35,51,.25);
+  --ink-12:  rgba(28,35,51,.12);
+  --ink-06:  rgba(28,35,51,.06);
+  --ink-03:  rgba(28,35,51,.03);
+  --bg:      #F4F5F7;
+  --white:   #FFFFFF;
+  --blue:    #007FFF;
+  --mono:    'IBM Plex Mono', monospace;
+  --sans:    'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────
+   NAV — full-width top bar
+───────────────────────── */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid var(--ink-12);
+  display: flex;
+  align-items: flex-end;
+  padding: 0;
+}
+
+/* invisible spacer: tabs start at same 64px as .container */
+.nav-inner {
+  display: flex;
+  align-items: flex-end;
+  width: 100%;
+  max-width: calc(1080px + 128px); /* container max-width + 2×padding */
+  margin: 0 auto;
+  padding: 0 64px;
+}
+
+.nav-tabs {
+  display: flex;
+  list-style: none;
+}
+
+.nav-tabs a {
+  display: block;
+  padding: 20px 20px 17px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-50);
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: color 100ms;
+}
+.nav-tabs a:hover { color: var(--ink); }
+.nav-tabs a.on    { color: var(--ink); border-bottom-color: var(--ink); font-weight: 500; }
+
+.nav-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 16px;
+  align-self: center;
+  margin-left: auto;
+}
+.search-wrap { display: none; }
+
+/* ─────────────────────────
+   PAGE CONTAINER
+───────────────────────── */
+.page { display: none; }
+.page.on { display: block; }
+
+/* content width: comfortable reading at any screen */
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 64px 64px 120px;
+}
+
+/* ─────────────────────────
+   SECTION TITLES
+───────────────────────── */
+.sec-title {
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -.02em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.sec-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-25);
+  margin-bottom: 48px;
+}
+.sec-rule {
+  border: none;
+  border-top: 1px solid var(--ink-12);
+  margin: 56px 0;
+}
+.group-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-25);
+  margin-bottom: 16px;
+}
+
+/* ─────────────────────────
+   TOAST
+───────────────────────── */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background: var(--ink); color: #fff;
+  font-family: var(--mono); font-size: 11px;
+  padding: 9px 18px; border-radius: 4px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 150ms, transform 150ms;
+  z-index: 9999; white-space: nowrap;
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ─────────────────────────
+   FORMAT PILL
+───────────────────────── */
+.fmt-pill {
+  display: inline-flex;
+  background: var(--white);
+  border: 1px solid var(--ink-12);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.fmt-btn {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  background: none;
+  border: none;
+  border-right: 1px solid var(--ink-12);
+  color: var(--ink-25);
+  cursor: pointer;
+  transition: all 100ms;
+}
+.fmt-btn:last-child { border-right: none; }
+.fmt-btn:hover:not(.on) { background: var(--ink-03); color: var(--ink-50); }
+.fmt-btn.on { background: var(--ink); color: #fff; }
+
+/* ─────────────────────────
+   PALETTE — COLOR GRID
+───────────────────────── */
+.pal-group { margin-bottom: 48px; }
+.pal-group:last-child { margin-bottom: 0; }
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.swatch {
+  cursor: pointer;
+}
+.swatch:hover .sw-block { transform: translateY(-2px); }
+.sw-block {
+  height: 80px;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  background-image:
+    linear-gradient(45deg,#ddd 25%,transparent 25%),
+    linear-gradient(-45deg,#ddd 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#ddd 75%),
+    linear-gradient(-45deg,transparent 75%,#ddd 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  margin-bottom: 10px;
+}
+.swatch:hover .sw-block {
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+}
+.sw-color { position: absolute; inset: 0; }
+
+.sw-name {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sw-vals { display: flex; flex-direction: column; gap: 3px; }
+.sw-val {
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.4;
+  display: none; /* shown via JS */
+  gap: 4px;
+  cursor: pointer;
+  align-items: baseline;
+}
+.sw-val.vis { display: flex; }
+.sv-k { color: var(--ink-25); min-width: 32px; flex-shrink: 0; font-size: 8px; }
+.sv-v { color: var(--ink-50); word-break: break-all; }
+.sw-val:hover .sv-v { color: var(--blue); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ─────────────────────────
+   SEMANTIC TABLE
+───────────────────────── */
+.sem-group { margin-bottom: 56px; }
+.sem-group:last-child { margin-bottom: 0; }
+
+.sem-table { width: 100%; border-collapse: collapse; }
+.sem-table thead th {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-25);
+  text-align: left;
+  padding: 0 16px 12px 0;
+  border-bottom: 1px solid var(--ink-12);
+}
+.sem-table thead th:first-child { width: 48px; padding-left: 0; }
+.sem-table thead th:last-child  { text-align: right; padding-right: 0; }
+
+.sem-table tbody td {
+  padding: 10px 16px 10px 0;
+  border-bottom: 1px solid var(--ink-06);
+  vertical-align: middle;
+}
+.sem-table tbody td:first-child { padding-left: 0; padding-right: 12px; }
+.sem-table tbody td:last-child  { padding-right: 0; text-align: right; }
+.sem-table tbody tr { transition: background 80ms; }
+.sem-table tbody tr:hover td { background: var(--white); }
+
+.mini-sw {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  position: relative; overflow: hidden; display: block;
+  background-image:
+    linear-gradient(45deg,#ddd 25%,transparent 25%),
+    linear-gradient(-45deg,#ddd 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#ddd 75%),
+    linear-gradient(-45deg,transparent 75%,#ddd 75%);
+  background-size: 7px 7px;
+  background-position: 0 0, 0 3.5px, 3.5px -3.5px, -3.5px 0;
+}
+.mini-sw span { position: absolute; inset: 0; }
+
+.tok-name {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 80ms;
+}
+.tok-name:hover { color: var(--blue); }
+
+.ref-wrap { position: relative; display: inline-block; }
+.ref-lbl {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-25);
+  border-bottom: 1px dashed var(--ink-25);
+  cursor: default;
+  padding-bottom: 1px;
+}
+.ref-tip {
+  display: none;
+  position: absolute;
+  right: 0; bottom: calc(100% + 8px);
+  background: var(--ink); color: #fff;
+  font-family: var(--mono); font-size: 10px; line-height: 1.8;
+  padding: 12px 16px; border-radius: 6px;
+  white-space: nowrap; z-index: 200;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  min-width: 220px;
+}
+.ref-tip::after {
+  content: '';
+  position: absolute; top: 100%; right: 14px;
+  border: 5px solid transparent;
+  border-top-color: var(--ink);
+}
+.ref-wrap:hover .ref-tip { display: block; }
+.rt { display: flex; gap: 12px; }
+.rt-k { color: rgba(255,255,255,.4); width: 40px; flex-shrink: 0; }
+
+/* ─────────────────────────
+   SPACING TABLE
+───────────────────────── */
+.sp-table { width: 100%; border-collapse: collapse; }
+.sp-table th {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-25);
+  text-align: left; padding: 0 0 12px;
+  border-bottom: 1px solid var(--ink-12);
+}
+.sp-table th.tc { text-align: right; }
+.sp-table td {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ink-06);
+  vertical-align: middle;
+  cursor: pointer;
+}
+.sp-table tr:hover td { background: var(--white); }
+.sp-tok { font-family: var(--mono); font-size: 12px; color: var(--ink); width: 64px; }
+.sp-bar-td { padding: 12px 24px !important; }
+.sp-bar { height: 10px; background: var(--blue); border-radius: 2px; opacity: .6; min-width: 1px; transition: opacity 80ms; }
+.sp-table tr:hover .sp-bar { opacity: 1; }
+.sp-px { font-family: var(--mono); font-size: 11px; color: var(--ink-25); text-align: right; white-space: nowrap; width: 64px; }
+
+/* ─────────────────────────
+   RADIUS GRID
+───────────────────────── */
+.radius-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 24px;
+}
+.r-item { cursor: pointer; }
+.r-item:hover .r-box { border-color: var(--blue); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.r-box {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--white);
+  border: 1.5px solid var(--ink-12);
+  border-radius: var(--rr, 4px);
+  margin-bottom: 12px;
+  transition: border-color 100ms, box-shadow 100ms;
+}
+.r-name { font-family: var(--mono); font-size: 12px; color: var(--ink); display: block; margin-bottom: 4px; }
+.r-val  { font-family: var(--mono); font-size: 10px; color: var(--ink-25); display: block; }
+
+/* ─────────────────────────
+   MEDIA SIZES
+───────────────────────── */
+.media-list {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.m-item { cursor: pointer; }
+.m-item:hover .m-box { border-color: var(--blue); }
+.m-box {
+  background: var(--white);
+  border: 1.5px solid var(--ink-12);
+  border-radius: 4px;
+  display: block;
+  margin-bottom: 10px;
+  transition: border-color 100ms;
+  flex-shrink: 0;
+}
+.m-name { font-family: var(--mono); font-size: 12px; color: var(--ink); display: block; margin-bottom: 3px; }
+.m-val  { font-family: var(--mono); font-size: 10px; color: var(--ink-25); display: block; }
+
+/* ─────────────────────────
+   TYPOGRAPHY
+───────────────────────── */
+
+/* weight selector */
+.ty-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+.ty-ctrl-label {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-25);
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.seg {
+  display: inline-flex;
+  background: var(--white);
+  border: 1px solid var(--ink-12);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.seg-btn {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; padding: 7px 16px;
+  background: none; border: none; border-right: 1px solid var(--ink-12);
+  color: var(--ink-25); cursor: pointer; transition: all 100ms;
+}
+.seg-btn:last-child { border-right: none; }
+.seg-btn:hover:not(.on) { background: var(--ink-03); color: var(--ink-50); }
+.seg-btn.on { background: var(--ink); color: #fff; }
+
+/* table of all sizes */
+.ty-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 48px;
+}
+.ty-table thead th {
+  font-family: var(--mono); font-size: 9px; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink-25); text-align: left;
+  padding: 0 24px 12px 0;
+  border-bottom: 1px solid var(--ink-12);
+}
+.ty-table thead th:last-child { padding-right: 0; }
+.ty-table tbody tr {
+  border-bottom: 1px solid var(--ink-06);
+  transition: background 80ms;
+}
+.ty-table tbody tr:hover td { background: var(--white); }
+.ty-table td {
+  padding: 28px 24px 28px 0;
+  vertical-align: top;
+}
+.ty-table td:last-child { padding-right: 0; }
+
+.ty-td-label {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  color: var(--ink-25); white-space: nowrap; width: 72px;
+}
+.ty-td-sample {
+  color: var(--ink);
+  /* font set by JS */
+}
+.ty-td-meta {
+  text-align: right;
+  white-space: nowrap;
+}
+.ty-meta-line {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--ink-25); display: block; line-height: 18px;
+}
+.ty-meta-line span { color: var(--ink-50); }
+
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <ul class="nav-tabs">
+      <li><a href="#" data-pg="palette" class="on">Palette</a></li>
+      <li><a href="#" data-pg="semantic">Semantic</a></li>
+      <li><a href="#" data-pg="primitives">Primitives</a></li>
+      <li><a href="#" data-pg="typography">Typography</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<!-- ════════════════════════════════
+  PAGE: PALETTE
+════════════════════════════════ -->
+<div class="page on" id="pg-palette">
+<div class="container">
+
+  <h1 class="sec-title">Palette</h1>
+  <p class="sec-meta">raw · 7 scales · 49 tokens</p>
+
+  <div class="fmt-pill">
+    <button class="fmt-btn on"  data-f="hex">HEX</button>
+    <button class="fmt-btn"     data-f="rgba">RGBA</button>
+    <button class="fmt-btn"     data-f="oklch">OKLCH</button>
+    <button class="fmt-btn"     data-f="all">Все</button>
+  </div>
+
+  <!-- White -->
+  <div class="pal-group">
+    <div class="group-title">White</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('white/400')">
+        <div class="sw-block"><div class="sw-color" style="background:#FFFFFF"></div></div>
+        <span class="sw-name">white/400</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#FFFFFF')"><span class="sv-k">hex</span><span class="sv-v">#FFFFFF</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(255,255,255,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,255,255,1)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(100.00% 0.0000 89.88)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(100.00% 0.0000 89.88)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('white/200')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(255,255,255,.08)"></div></div>
+        <span class="sw-name">white/200</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#FFFFFF14')"><span class="sv-k">hex</span><span class="sv-v">#FFFFFF14</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(255,255,255,0.08)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,255,255,0.08)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(100.00% 0.0000 89.88 / 0.08)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(100.00% 0.0000 89.88 / 0.08)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Black -->
+  <div class="pal-group">
+    <div class="group-title">Black</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('black/500')">
+        <div class="sw-block"><div class="sw-color" style="background:#222934"></div></div>
+        <span class="sw-name">black/500</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#222934')"><span class="sv-k">hex</span><span class="sv-v">#222934</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(34,41,52,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(34,41,52,1)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(27.91% 0.0227 259.35)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(27.91% 0.0227 259.35)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('black/400')">
+        <div class="sw-block"><div class="sw-color" style="background:#3E4756"></div></div>
+        <span class="sw-name">black/400</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#3E4756')"><span class="sv-k">hex</span><span class="sv-v">#3E4756</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(62,71,86,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(62,71,86,1)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(39.59% 0.0281 260.62)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(39.59% 0.0281 260.62)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('black/300')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(37,52,71,.84)"></div></div>
+        <span class="sw-name">black/300</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#253447D6')"><span class="sv-k">hex</span><span class="sv-v">#253447D6</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(37,52,71,0.84)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(37,52,71,0.84)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(32.06% 0.0396 254.68 / 0.84)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(32.06% 0.0396 254.68 / 0.84)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Navy -->
+  <div class="pal-group">
+    <div class="group-title">Navy</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('navy/1000')">
+        <div class="sw-block"><div class="sw-color" style="background:#F6F7F9"></div></div>
+        <span class="sw-name">navy/1000</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#F6F7F9')"><span class="sv-k">hex</span><span class="sv-v">#F6F7F9</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(246,247,249,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(246,247,249,1)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(97.59% 0.0029 264.54)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(97.59% 0.0029 264.54)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('navy/600')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(13,45,94,.56)"></div></div>
+        <span class="sw-name">navy/600</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#0D2D5E8F')"><span class="sv-k">hex</span><span class="sv-v">#0D2D5E8F</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(13,45,94,0.56)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(13,45,94,0.56)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(30.54% 0.0952 259.07 / 0.56)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(30.54% 0.0952 259.07 / 0.56)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('navy/500')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(13,45,94,.4)"></div></div>
+        <span class="sw-name">navy/500</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#0D2D5E66')"><span class="sv-k">hex</span><span class="sv-v">#0D2D5E66</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(13,45,94,0.4)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(13,45,94,0.4)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(30.54% 0.0952 259.07 / 0.4)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(30.54% 0.0952 259.07 / 0.4)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('navy/400')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(13,45,94,.28)"></div></div>
+        <span class="sw-name">navy/400</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#0D2D5E47')"><span class="sv-k">hex</span><span class="sv-v">#0D2D5E47</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(13,45,94,0.28)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(13,45,94,0.28)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(30.54% 0.0952 259.07 / 0.28)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(30.54% 0.0952 259.07 / 0.28)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('navy/300')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(13,45,94,.16)"></div></div>
+        <span class="sw-name">navy/300</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#0D2D5E29')"><span class="sv-k">hex</span><span class="sv-v">#0D2D5E29</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(13,45,94,0.16)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(13,45,94,0.16)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(30.54% 0.0952 259.07 / 0.16)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(30.54% 0.0952 259.07 / 0.16)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('navy/200')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(13,45,94,.08)"></div></div>
+        <span class="sw-name">navy/200</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#0D2D5E14')"><span class="sv-k">hex</span><span class="sv-v">#0D2D5E14</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(13,45,94,0.08)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(13,45,94,0.08)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(30.54% 0.0952 259.07 / 0.08)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(30.54% 0.0952 259.07 / 0.08)</span></div>
+        </div>
+      </div>
+      <div class="swatch" onclick="cptok('navy/100')">
+        <div class="sw-block"><div class="sw-color" style="background:rgba(13,45,94,.04)"></div></div>
+        <span class="sw-name">navy/100</span>
+        <div class="sw-vals">
+          <div class="sw-val" data-f="hex"   onclick="stopcp(event,'#0D2D5E0A')"><span class="sv-k">hex</span><span class="sv-v">#0D2D5E0A</span></div>
+          <div class="sw-val" data-f="rgba"  onclick="stopcp(event,'rgba(13,45,94,0.04)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(13,45,94,0.04)</span></div>
+          <div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(30.54% 0.0952 259.07 / 0.04)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(30.54% 0.0952 259.07 / 0.04)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Brand -->
+  <div class="pal-group">
+    <div class="group-title">Brand</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('brand/1000')"><div class="sw-block"><div class="sw-color" style="background:#EBF5FF"></div></div><span class="sw-name">brand/1000</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#EBF5FF')"><span class="sv-k">hex</span><span class="sv-v">#EBF5FF</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(235,245,255,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(235,245,255,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(96.56% 0.0171 248.01)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(96.56% 0.0171 248.01)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/700')"><div class="sw-block"><div class="sw-color" style="background:#0066CE"></div></div><span class="sw-name">brand/700</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#0066CE')"><span class="sv-k">hex</span><span class="sv-v">#0066CE</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,102,206,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,102,206,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(52.35% 0.1797 256.14)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(52.35% 0.1797 256.14)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/600')"><div class="sw-block"><div class="sw-color" style="background:#0070E1"></div></div><span class="sw-name">brand/600</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#0070E1')"><span class="sv-k">hex</span><span class="sv-v">#0070E1</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,112,225,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,112,225,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(55.93% 0.1920 256.14)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(55.93% 0.1920 256.14)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/500')"><div class="sw-block"><div class="sw-color" style="background:#007FFF"></div></div><span class="sw-name">brand/500</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#007FFF')"><span class="sv-k">hex</span><span class="sv-v">#007FFF</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,127,255,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,127,255,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(61.31% 0.2120 256.33)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(61.31% 0.2120 256.33)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/400')"><div class="sw-block"><div class="sw-color" style="background:rgba(0,127,255,.28)"></div></div><span class="sw-name">brand/400</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#007FFF47')"><span class="sv-k">hex</span><span class="sv-v">#007FFF47</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,127,255,0.28)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,127,255,0.28)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(61.31% 0.2120 256.33 / 0.28)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(61.31% 0.2120 256.33 / 0.28)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/300')"><div class="sw-block"><div class="sw-color" style="background:rgba(0,127,255,.16)"></div></div><span class="sw-name">brand/300</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#007FFF29')"><span class="sv-k">hex</span><span class="sv-v">#007FFF29</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,127,255,0.16)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,127,255,0.16)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(61.31% 0.2120 256.33 / 0.16)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(61.31% 0.2120 256.33 / 0.16)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/200')"><div class="sw-block"><div class="sw-color" style="background:rgba(0,127,255,.08)"></div></div><span class="sw-name">brand/200</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#007FFF14')"><span class="sv-k">hex</span><span class="sv-v">#007FFF14</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,127,255,0.08)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,127,255,0.08)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(61.31% 0.2120 256.33 / 0.08)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(61.31% 0.2120 256.33 / 0.08)</span></div></div></div>
+      <div class="swatch" onclick="cptok('brand/100')"><div class="sw-block"><div class="sw-color" style="background:rgba(0,127,255,.03)"></div></div><span class="sw-name">brand/100</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#007FFF08')"><span class="sv-k">hex</span><span class="sv-v">#007FFF08</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(0,127,255,0.03)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(0,127,255,0.03)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(61.31% 0.2120 256.33 / 0.03)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(61.31% 0.2120 256.33 / 0.03)</span></div></div></div>
+    </div>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Red -->
+  <div class="pal-group">
+    <div class="group-title">Red</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('red/1000')"><div class="sw-block"><div class="sw-color" style="background:#FDF0EF"></div></div><span class="sw-name">red/1000</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#FDF0EF')"><span class="sv-k">hex</span><span class="sv-v">#FDF0EF</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(253,240,239,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(253,240,239,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(96.51% 0.0141 22.76)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(96.51% 0.0141 22.76)</span></div></div></div>
+      <div class="swatch" onclick="cptok('red/700')"><div class="sw-block"><div class="sw-color" style="background:#D13833"></div></div><span class="sw-name">red/700</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#D13833')"><span class="sv-k">hex</span><span class="sv-v">#D13833</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(209,56,51,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(209,56,51,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(57.26% 0.1908 27.07)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(57.26% 0.1908 27.07)</span></div></div></div>
+      <div class="swatch" onclick="cptok('red/600')"><div class="sw-block"><div class="sw-color" style="background:#DE3B36"></div></div><span class="sw-name">red/600</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#DE3B36')"><span class="sv-k">hex</span><span class="sv-v">#DE3B36</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(222,59,54,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(222,59,54,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(59.81% 0.2006 27.06)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(59.81% 0.2006 27.06)</span></div></div></div>
+      <div class="swatch" onclick="cptok('red/500')"><div class="sw-block"><div class="sw-color" style="background:#EC3F39"></div></div><span class="sw-name">red/500</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#EC3F39')"><span class="sv-k">hex</span><span class="sv-v">#EC3F39</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(236,63,57,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(236,63,57,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(62.59% 0.2105 27.26)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(62.59% 0.2105 27.26)</span></div></div></div>
+      <div class="swatch" onclick="cptok('red/400')"><div class="sw-block"><div class="sw-color" style="background:rgba(236,63,57,.28)"></div></div><span class="sw-name">red/400</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#EC3F3947')"><span class="sv-k">hex</span><span class="sv-v">#EC3F3947</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(236,63,57,0.28)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(236,63,57,0.28)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(62.59% 0.2105 27.26 / 0.28)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(62.59% 0.2105 27.26 / 0.28)</span></div></div></div>
+      <div class="swatch" onclick="cptok('red/300')"><div class="sw-block"><div class="sw-color" style="background:rgba(236,63,57,.16)"></div></div><span class="sw-name">red/300</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#EC3F3929')"><span class="sv-k">hex</span><span class="sv-v">#EC3F3929</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(236,63,57,0.16)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(236,63,57,0.16)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(62.59% 0.2105 27.26 / 0.16)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(62.59% 0.2105 27.26 / 0.16)</span></div></div></div>
+      <div class="swatch" onclick="cptok('red/200')"><div class="sw-block"><div class="sw-color" style="background:rgba(236,63,57,.08)"></div></div><span class="sw-name">red/200</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#EC3F3914')"><span class="sv-k">hex</span><span class="sv-v">#EC3F3914</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(236,63,57,0.08)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(236,63,57,0.08)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(62.59% 0.2105 27.26 / 0.08)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(62.59% 0.2105 27.26 / 0.08)</span></div></div></div>
+    </div>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Orange -->
+  <div class="pal-group">
+    <div class="group-title">Orange</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('orange/1000')"><div class="sw-block"><div class="sw-color" style="background:#FFF5ED"></div></div><span class="sw-name">orange/1000</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#FFF5ED')"><span class="sv-k">hex</span><span class="sv-v">#FFF5ED</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(255,245,237,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,245,237,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(97.58% 0.0151 61.35)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(97.58% 0.0151 61.35)</span></div></div></div>
+      <div class="swatch" onclick="cptok('orange/700')"><div class="sw-block"><div class="sw-color" style="background:#E57817"></div></div><span class="sw-name">orange/700</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#E57817')"><span class="sv-k">hex</span><span class="sv-v">#E57817</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(229,120,23,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(229,120,23,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(68.43% 0.1647 54.09)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(68.43% 0.1647 54.09)</span></div></div></div>
+      <div class="swatch" onclick="cptok('orange/600')"><div class="sw-block"><div class="sw-color" style="background:#F27E18"></div></div><span class="sw-name">orange/600</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#F27E18')"><span class="sv-k">hex</span><span class="sv-v">#F27E18</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(242,126,24,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(242,126,24,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(71.15% 0.1726 53.63)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(71.15% 0.1726 53.63)</span></div></div></div>
+      <div class="swatch" onclick="cptok('orange/500')"><div class="sw-block"><div class="sw-color" style="background:#FF8519"></div></div><span class="sw-name">orange/500</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#FF8519')"><span class="sv-k">hex</span><span class="sv-v">#FF8519</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(255,133,25,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,133,25,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(74.01% 0.1798 53.67)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(74.01% 0.1798 53.67)</span></div></div></div>
+      <div class="swatch" onclick="cptok('orange/400')"><div class="sw-block"><div class="sw-color" style="background:rgba(255,133,25,.28)"></div></div><span class="sw-name">orange/400</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#FF851947')"><span class="sv-k">hex</span><span class="sv-v">#FF851947</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(255,133,25,0.28)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,133,25,0.28)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(74.01% 0.1798 53.67 / 0.28)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(74.01% 0.1798 53.67 / 0.28)</span></div></div></div>
+      <div class="swatch" onclick="cptok('orange/300')"><div class="sw-block"><div class="sw-color" style="background:rgba(255,133,25,.16)"></div></div><span class="sw-name">orange/300</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#FF851929')"><span class="sv-k">hex</span><span class="sv-v">#FF851929</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(255,133,25,0.16)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,133,25,0.16)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(74.01% 0.1798 53.67 / 0.16)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(74.01% 0.1798 53.67 / 0.16)</span></div></div></div>
+      <div class="swatch" onclick="cptok('orange/200')"><div class="sw-block"><div class="sw-color" style="background:rgba(255,133,25,.08)"></div></div><span class="sw-name">orange/200</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#FF851914')"><span class="sv-k">hex</span><span class="sv-v">#FF851914</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(255,133,25,0.08)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(255,133,25,0.08)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(74.01% 0.1798 53.67 / 0.08)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(74.01% 0.1798 53.67 / 0.08)</span></div></div></div>
+    </div>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Green -->
+  <div class="pal-group">
+    <div class="group-title">Green</div>
+    <div class="swatches">
+      <div class="swatch" onclick="cptok('green/1000')"><div class="sw-block"><div class="sw-color" style="background:#EFF8EF"></div></div><span class="sw-name">green/1000</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#EFF8EF')"><span class="sv-k">hex</span><span class="sv-v">#EFF8EF</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(239,248,239,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(239,248,239,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(96.99% 0.0152 145.46)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(96.99% 0.0152 145.46)</span></div></div></div>
+      <div class="swatch" onclick="cptok('green/700')"><div class="sw-block"><div class="sw-color" style="background:#2C942C"></div></div><span class="sw-name">green/700</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#2C942C')"><span class="sv-k">hex</span><span class="sv-v">#2C942C</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(44,148,44,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(44,148,44,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(58.62% 0.1698 143.03)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(58.62% 0.1698 143.03)</span></div></div></div>
+      <div class="swatch" onclick="cptok('green/600')"><div class="sw-block"><div class="sw-color" style="background:#349D34"></div></div><span class="sw-name">green/600</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#349D34')"><span class="sv-k">hex</span><span class="sv-v">#349D34</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(52,157,52,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(52,157,52,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(61.39% 0.1722 143.12)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(61.39% 0.1722 143.12)</span></div></div></div>
+      <div class="swatch" onclick="cptok('green/500')"><div class="sw-block"><div class="sw-color" style="background:#3CAA3C"></div></div><span class="sw-name">green/500</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#3CAA3C')"><span class="sv-k">hex</span><span class="sv-v">#3CAA3C</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(60,170,60,1)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(60,170,60,1)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(65.21% 0.1793 143.18)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(65.21% 0.1793 143.18)</span></div></div></div>
+      <div class="swatch" onclick="cptok('green/400')"><div class="sw-block"><div class="sw-color" style="background:rgba(60,170,60,.28)"></div></div><span class="sw-name">green/400</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#3CAA3C47')"><span class="sv-k">hex</span><span class="sv-v">#3CAA3C47</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(60,170,60,0.28)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(60,170,60,0.28)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(65.21% 0.1793 143.18 / 0.28)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(65.21% 0.1793 143.18 / 0.28)</span></div></div></div>
+      <div class="swatch" onclick="cptok('green/300')"><div class="sw-block"><div class="sw-color" style="background:rgba(60,170,60,.16)"></div></div><span class="sw-name">green/300</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#3CAA3C29')"><span class="sv-k">hex</span><span class="sv-v">#3CAA3C29</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(60,170,60,0.16)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(60,170,60,0.16)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(65.21% 0.1793 143.18 / 0.16)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(65.21% 0.1793 143.18 / 0.16)</span></div></div></div>
+      <div class="swatch" onclick="cptok('green/200')"><div class="sw-block"><div class="sw-color" style="background:rgba(60,170,60,.08)"></div></div><span class="sw-name">green/200</span><div class="sw-vals"><div class="sw-val" data-f="hex" onclick="stopcp(event,'#3CAA3C14')"><span class="sv-k">hex</span><span class="sv-v">#3CAA3C14</span></div><div class="sw-val" data-f="rgba" onclick="stopcp(event,'rgba(60,170,60,0.08)')"><span class="sv-k">rgba</span><span class="sv-v">rgba(60,170,60,0.08)</span></div><div class="sw-val" data-f="oklch" onclick="stopcp(event,'oklch(65.21% 0.1793 143.18 / 0.08)')"><span class="sv-k">oklch</span><span class="sv-v">oklch(65.21% 0.1793 143.18 / 0.08)</span></div></div></div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ════════════════════════════════
+  PAGE: SEMANTIC
+════════════════════════════════ -->
+<div class="page" id="pg-semantic">
+<div class="container">
+  <h1 class="sec-title">Semantic</h1>
+  <p class="sec-meta">semantic · colors</p>
+
+  <script>
+  function semR(bg,tok,ref,hex,rgba,ok){
+    const ok_ = ok ? `<div class="rt"><span class="rt-k">oklch</span><span>${ok}</span></div>` : '';
+    return `<tr>
+      <td><div class="mini-sw"><span style="background:${bg}"></span></div></td>
+      <td class="tok-name" onclick="cptok('${tok}')">${tok}</td>
+      <td><div class="ref-wrap"><span class="ref-lbl">${ref}</span>
+        <div class="ref-tip">
+          <div class="rt"><span class="rt-k">hex</span><span>${hex}</span></div>
+          <div class="rt"><span class="rt-k">rgba</span><span>${rgba}</span></div>
+          ${ok_}
+        </div>
+      </div></td>
+    </tr>`;
+  }
+  </script>
+
+  <!-- Surface -->
+  <div class="sem-group">
+    <div class="group-title">Surface</div>
+    <table class="sem-table">
+      <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+      <tbody><script>document.write(
+        semR('#FFFFFF','surface/cover','white/400','#FFFFFF','rgba(255,255,255,1)','oklch(100.00% 0.0000 89.88)')+
+        semR('#F6F7F9','surface/core','navy/1000','#F6F7F9','rgba(246,247,249,1)','oklch(97.59% 0.0029 264.54)')+
+        semR('#FDF0EF','surface/danger','red/1000','#FDF0EF','rgba(253,240,239,1)','oklch(96.51% 0.0141 22.76)')+
+        semR('#FFF5ED','surface/warning','orange/1000','#FFF5ED','rgba(255,245,237,1)','oklch(97.58% 0.0151 61.35)')+
+        semR('#EFF8EF','surface/success','green/1000','#EFF8EF','rgba(239,248,239,1)','oklch(96.99% 0.0152 145.46)')+
+        semR('#EBF5FF','surface/brand','brand/1000','#EBF5FF','rgba(235,245,255,1)','oklch(96.56% 0.0171 248.01)')
+      );</script></tbody>
+    </table>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Content -->
+  <div class="sem-group">
+    <div class="group-title">Content</div>
+    <table class="sem-table">
+      <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+      <tbody><script>document.write(
+        semR('#222934','content/primary','black/500','#222934','rgba(34,41,52,1)','oklch(27.91% 0.0227 259.35)')+
+        semR('rgba(37,52,71,.84)','content/secondary','black/300','#253447D6','rgba(37,52,71,0.84)','oklch(32.06% 0.0396 254.68 / 0.84)')+
+        semR('rgba(13,45,94,.56)','content/ghost','navy/600','#0D2D5E8F','rgba(13,45,94,0.56)','oklch(30.54% 0.0952 259.07 / 0.56)')+
+        semR('rgba(13,45,94,.28)','content/disabled','navy/400','#0D2D5E47','rgba(13,45,94,0.28)','oklch(30.54% 0.0952 259.07 / 0.28)')+
+        semR('#007FFF','content/brand','brand/500','#007FFF','rgba(0,127,255,1)','oklch(61.31% 0.2120 256.33)')+
+        semR('#0070E1','content/brand-hover','brand/600','#0070E1','rgba(0,112,225,1)','oklch(55.93% 0.1920 256.14)')+
+        semR('#EC3F39','content/danger','red/500','#EC3F39','rgba(236,63,57,1)','oklch(62.59% 0.2105 27.26)')+
+        semR('#FF8519','content/warning','orange/500','#FF8519','rgba(255,133,25,1)','oklch(74.01% 0.1798 53.67)')+
+        semR('#3CAA3C','content/success','green/500','#3CAA3C','rgba(60,170,60,1)','oklch(65.21% 0.1793 143.18)')+
+        semR('#FFFFFF','content/invert-fill','white/400','#FFFFFF','rgba(255,255,255,1)','oklch(100.00% 0.0000 89.88)')+
+        semR('rgba(255,255,255,.08)','content/invert-alpha','white/200','#FFFFFF14','rgba(255,255,255,0.08)','oklch(100.00% 0.0000 89.88 / 0.08)')
+      );</script></tbody>
+    </table>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Border -->
+  <div class="sem-group">
+    <div class="group-title">Border</div>
+    <table class="sem-table">
+      <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+      <tbody><script>document.write(
+        semR('rgba(13,45,94,.04)','border/subtle','navy/100','#0D2D5E0A','rgba(13,45,94,0.04)','oklch(30.54% 0.0952 259.07 / 0.04)')+
+        semR('rgba(13,45,94,.16)','border/primary','navy/300','#0D2D5E29','rgba(13,45,94,0.16)','oklch(30.54% 0.0952 259.07 / 0.16)')+
+        semR('rgba(13,45,94,.4)','border/hover','navy/500','#0D2D5E66','rgba(13,45,94,0.4)','oklch(30.54% 0.0952 259.07 / 0.4)')+
+        semR('#007FFF','border/selected','brand/500','#007FFF','rgba(0,127,255,1)','oklch(61.31% 0.2120 256.33)')+
+        semR('#EC3F39','border/danger','red/500','#EC3F39','rgba(236,63,57,1)','oklch(62.59% 0.2105 27.26)')+
+        semR('#3CAA3C','border/success','green/500','#3CAA3C','rgba(60,170,60,1)','oklch(65.21% 0.1793 143.18)')
+      );</script></tbody>
+    </table>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Background Base -->
+  <div class="sem-group">
+    <div class="group-title">Background · Base</div>
+    <table class="sem-table">
+      <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+      <tbody><script>document.write(
+        semR('#FFFFFF','background/base/cover','surface/cover → white/400','#FFFFFF','rgba(255,255,255,1)','')+
+        semR('#F6F7F9','background/base/core','surface/core → navy/1000','#F6F7F9','rgba(246,247,249,1)','')+
+        semR('#222934','background/base/primary','black/500','#222934','rgba(34,41,52,1)','')+
+        semR('#3E4756','background/base/primary-hover','black/400','#3E4756','rgba(62,71,86,1)','')+
+        semR('rgba(37,52,71,.84)','background/base/primary-selected','black/300','#253447D6','rgba(37,52,71,0.84)','')+
+        semR('rgba(13,45,94,.08)','background/base/secondary','navy/200','#0D2D5E14','rgba(13,45,94,0.08)','')+
+        semR('rgba(13,45,94,.16)','background/base/secondary-hover','navy/300','#0D2D5E29','rgba(13,45,94,0.16)','')+
+        semR('rgba(13,45,94,.28)','background/base/secondary-selected','navy/400','#0D2D5E47','rgba(13,45,94,0.28)','')+
+        semR('rgba(13,45,94,.04)','background/base/ghost-hover','navy/100','#0D2D5E0A','rgba(13,45,94,0.04)','')+
+        semR('rgba(13,45,94,.08)','background/base/ghost-selected','navy/200','#0D2D5E14','rgba(13,45,94,0.08)','')+
+        semR('rgba(13,45,94,.04)','background/base/disabled','navy/100','#0D2D5E0A','rgba(13,45,94,0.04)','')
+      );</script></tbody>
+    </table>
+  </div>
+
+  <hr class="sec-rule">
+
+  <!-- Background Brand / Danger / Warning / Success — condensed in 2 cols -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:56px;">
+    <div>
+      <div class="group-title">Background · Brand</div>
+      <table class="sem-table">
+        <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+        <tbody><script>document.write(
+          semR('#007FFF','background/brand/primary','brand/500','#007FFF','rgba(0,127,255,1)','')+
+          semR('#0070E1','background/brand/primary-hover','brand/600','#0070E1','rgba(0,112,225,1)','')+
+          semR('#0066CE','background/brand/primary-selected','brand/700','#0066CE','rgba(0,102,206,1)','')+
+          semR('rgba(0,127,255,.08)','background/brand/secondary','brand/200','#007FFF14','rgba(0,127,255,0.08)','')+
+          semR('rgba(0,127,255,.16)','background/brand/secondary-hover','brand/300','#007FFF29','rgba(0,127,255,0.16)','')+
+          semR('rgba(0,127,255,.28)','background/brand/secondary-selected','brand/400','#007FFF47','rgba(0,127,255,0.28)','')+
+          semR('rgba(0,127,255,.08)','background/brand/ghost-hover','brand/200','#007FFF14','rgba(0,127,255,0.08)','')+
+          semR('rgba(0,127,255,.16)','background/brand/ghost-selected','brand/300','#007FFF29','rgba(0,127,255,0.16)','')
+        );</script></tbody>
+      </table>
+    </div>
+    <div>
+      <div class="group-title">Background · Danger</div>
+      <table class="sem-table">
+        <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+        <tbody><script>document.write(
+          semR('#EC3F39','background/danger/primary','red/500','#EC3F39','rgba(236,63,57,1)','')+
+          semR('#DE3B36','background/danger/primary-hover','red/600','#DE3B36','rgba(222,59,54,1)','')+
+          semR('#D13833','background/danger/primary-selected','red/700','#D13833','rgba(209,56,51,1)','')+
+          semR('rgba(236,63,57,.08)','background/danger/secondary','red/200','#EC3F3914','rgba(236,63,57,0.08)','')+
+          semR('rgba(236,63,57,.16)','background/danger/secondary-hover','red/300','#EC3F3929','rgba(236,63,57,0.16)','')+
+          semR('rgba(236,63,57,.28)','background/danger/secondary-selected','red/400','#EC3F3947','rgba(236,63,57,0.28)','')+
+          semR('rgba(236,63,57,.08)','background/danger/ghost-hover','red/200','#EC3F3914','rgba(236,63,57,0.08)','')+
+          semR('rgba(236,63,57,.16)','background/danger/ghost-selected','red/300','#EC3F3929','rgba(236,63,57,0.16)','')
+        );</script></tbody>
+      </table>
+    </div>
+    <div>
+      <div class="group-title">Background · Warning</div>
+      <table class="sem-table">
+        <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+        <tbody><script>document.write(
+          semR('#FF8519','background/warning/primary','orange/500','#FF8519','rgba(255,133,25,1)','')+
+          semR('#F27E18','background/warning/primary-hover','orange/600','#F27E18','rgba(242,126,24,1)','')+
+          semR('#E57817','background/warning/primary-selected','orange/700','#E57817','rgba(229,120,23,1)','')+
+          semR('rgba(255,133,25,.08)','background/warning/secondary','orange/200','#FF851914','rgba(255,133,25,0.08)','')+
+          semR('rgba(255,133,25,.16)','background/warning/secondary-hover','orange/300','#FF851929','rgba(255,133,25,0.16)','')+
+          semR('rgba(255,133,25,.28)','background/warning/secondary-selected','orange/400','#FF851947','rgba(255,133,25,0.28)','')+
+          semR('rgba(255,133,25,.08)','background/warning/ghost-hover','orange/200','#FF851914','rgba(255,133,25,0.08)','')+
+          semR('rgba(255,133,25,.16)','background/warning/ghost-selected','orange/300','#FF851929','rgba(255,133,25,0.16)','')
+        );</script></tbody>
+      </table>
+    </div>
+    <div>
+      <div class="group-title">Background · Success</div>
+      <table class="sem-table">
+        <thead><tr><th></th><th>Token</th><th style="text-align:right">Ref</th></tr></thead>
+        <tbody><script>document.write(
+          semR('#3CAA3C','background/success/primary','green/500','#3CAA3C','rgba(60,170,60,1)','')+
+          semR('#349D34','background/success/primary-hover','green/600','#349D34','rgba(52,157,52,1)','')+
+          semR('#2C942C','background/success/primary-selected','green/700','#2C942C','rgba(44,148,44,1)','')+
+          semR('rgba(60,170,60,.08)','background/success/secondary','green/200','#3CAA3C14','rgba(60,170,60,0.08)','')+
+          semR('rgba(60,170,60,.16)','background/success/secondary-hover','green/300','#3CAA3C29','rgba(60,170,60,0.16)','')+
+          semR('rgba(60,170,60,.28)','background/success/secondary-selected','green/400','#3CAA3C47','rgba(60,170,60,0.28)','')+
+          semR('rgba(60,170,60,.08)','background/success/ghost-hover','green/200','#3CAA3C14','rgba(60,170,60,0.08)','')+
+          semR('rgba(60,170,60,.16)','background/success/ghost-selected','green/300','#3CAA3C29','rgba(60,170,60,0.16)','')
+        );</script></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ════════════════════════════════
+  PAGE: PRIMITIVES
+════════════════════════════════ -->
+<div class="page" id="pg-primitives">
+<div class="container">
+  <h1 class="sec-title">Primitives</h1>
+  <p class="sec-meta">primitive · spacing · radius · size-media</p>
+
+  <!-- Spacing -->
+  <div style="margin-bottom:64px;">
+    <div class="group-title">Spacing</div>
+    <table class="sp-table">
+      <thead>
+        <tr>
+          <th>Token</th>
+          <th>Scale</th>
+          <th class="tc">px</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr onclick="cpv('0')">     <td class="sp-tok">none</td><td class="sp-bar-td"><div class="sp-bar" style="width:0"></div></td>    <td class="sp-px">0</td></tr>
+        <tr onclick="cpv('2px')">   <td class="sp-tok">xs</td>  <td class="sp-bar-td"><div class="sp-bar" style="width:2px"></div></td>   <td class="sp-px">2</td></tr>
+        <tr onclick="cpv('4px')">   <td class="sp-tok">s</td>   <td class="sp-bar-td"><div class="sp-bar" style="width:4px"></div></td>   <td class="sp-px">4</td></tr>
+        <tr onclick="cpv('8px')">   <td class="sp-tok">m</td>   <td class="sp-bar-td"><div class="sp-bar" style="width:8px"></div></td>   <td class="sp-px">8</td></tr>
+        <tr onclick="cpv('12px')">  <td class="sp-tok">l</td>   <td class="sp-bar-td"><div class="sp-bar" style="width:12px"></div></td>  <td class="sp-px">12</td></tr>
+        <tr onclick="cpv('16px')">  <td class="sp-tok">xl</td>  <td class="sp-bar-td"><div class="sp-bar" style="width:16px"></div></td>  <td class="sp-px">16</td></tr>
+        <tr onclick="cpv('24px')">  <td class="sp-tok">2xl</td> <td class="sp-bar-td"><div class="sp-bar" style="width:24px"></div></td>  <td class="sp-px">24</td></tr>
+        <tr onclick="cpv('32px')">  <td class="sp-tok">3xl</td> <td class="sp-bar-td"><div class="sp-bar" style="width:32px"></div></td>  <td class="sp-px">32</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <hr class="sec-rule" style="margin-top:0">
+
+  <!-- Radius -->
+  <div style="margin-bottom:64px;">
+    <div class="group-title">Radius</div>
+    <div class="radius-grid">
+      <div class="r-item" onclick="cpv('4px')"> <div class="r-box" style="--rr:4px;border-radius:4px"></div>   <span class="r-name">xs</span>  <span class="r-val">4px</span>  </div>
+      <div class="r-item" onclick="cpv('6px')"> <div class="r-box" style="--rr:6px;border-radius:6px"></div>   <span class="r-name">s</span>   <span class="r-val">6px</span>  </div>
+      <div class="r-item" onclick="cpv('8px')"> <div class="r-box" style="--rr:8px;border-radius:8px"></div>   <span class="r-name">m</span>   <span class="r-val">8px</span>  </div>
+      <div class="r-item" onclick="cpv('12px')"><div class="r-box" style="--rr:12px;border-radius:12px"></div>  <span class="r-name">l</span>   <span class="r-val">12px</span> </div>
+      <div class="r-item" onclick="cpv('16px')"><div class="r-box" style="--rr:16px;border-radius:16px"></div>  <span class="r-name">xl</span>  <span class="r-val">16px</span> </div>
+      <div class="r-item" onclick="cpv('24px')"><div class="r-box" style="--rr:24px;border-radius:24px"></div>  <span class="r-name">2xl</span> <span class="r-val">24px</span> </div>
+    </div>
+  </div>
+
+  <hr class="sec-rule" style="margin-top:0">
+
+  <!-- Media -->
+  <div>
+    <div class="group-title">Size / Media</div>
+    <div class="media-list">
+      <div class="m-item" onclick="cpv('24px')"> <div class="m-box" style="width:24px;height:24px"></div>   <span class="m-name">2xs</span> <span class="m-val">24px</span>  </div>
+      <div class="m-item" onclick="cpv('32px')"> <div class="m-box" style="width:32px;height:32px"></div>   <span class="m-name">xs</span>  <span class="m-val">32px</span>  </div>
+      <div class="m-item" onclick="cpv('64px')"> <div class="m-box" style="width:64px;height:64px"></div>   <span class="m-name">s</span>   <span class="m-val">64px</span>  </div>
+      <div class="m-item" onclick="cpv('80px')"> <div class="m-box" style="width:80px;height:80px"></div>   <span class="m-name">m</span>   <span class="m-val">80px</span>  </div>
+      <div class="m-item" onclick="cpv('120px')"><div class="m-box" style="width:120px;height:120px"></div>  <span class="m-name">l</span>   <span class="m-val">120px</span> </div>
+      <div class="m-item" onclick="cpv('136px')"><div class="m-box" style="width:136px;height:136px"></div>  <span class="m-name">xl</span>  <span class="m-val">136px</span> </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+
+<!-- ════════════════════════════════
+  PAGE: TYPOGRAPHY
+════════════════════════════════ -->
+<div class="page" id="pg-typography">
+<div class="container">
+  <h1 class="sec-title">Typography</h1>
+  <p class="sec-meta">primitive · PT Root UI VF · 4 размера · 3 насыщенности</p>
+
+  <!-- Weight + LH controls -->
+  <div class="ty-controls">
+    <span class="ty-ctrl-label">Weight</span>
+    <div class="seg" id="wt-seg">
+      <button class="seg-btn on" data-w="700" onclick="setFw(700)">Bold · 700</button>
+      <button class="seg-btn"    data-w="500" onclick="setFw(500)">Medium · 500</button>
+      <button class="seg-btn"    data-w="400" onclick="setFw(400)">Regular · 400</button>
+    </div>
+    <span class="ty-ctrl-label" style="margin-left:16px;">Line-height</span>
+    <div class="seg" id="lh-seg">
+      <button class="seg-btn on" data-lh="tight"    onclick="setLH('tight')">Tight</button>
+      <button class="seg-btn"    data-lh="standard" onclick="setLH('standard')">Standard</button>
+      <button class="seg-btn"    data-lh="loose"    onclick="setLH('loose')">Loose</button>
+    </div>
+  </div>
+
+  <!-- All sizes table -->
+  <table class="ty-table" id="ty-table">
+    <thead>
+      <tr>
+        <th>Size</th>
+        <th>Sample</th>
+        <th style="text-align:right">Properties</th>
+      </tr>
+    </thead>
+    <tbody id="ty-tbody"></tbody>
+  </table>
+
+</div>
+</div>
+
+
+<!-- ════════════════════════════════
+  JS
+════════════════════════════════ -->
+<script>
+// ── COPY
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),1800); }
+function cpv(v)   { navigator.clipboard.writeText(v).then(()=>toast('Скопировано  '+v)).catch(()=>{}); }
+function cptok(t) { navigator.clipboard.writeText(t).then(()=>toast('Скопировано  '+t)).catch(()=>{}); }
+function stopcp(e,v){ e.stopPropagation(); cpv(v); }
+function cpMc(id) { cpv(document.getElementById('mv-'+id.replace('mc-','')).textContent); }
+
+// ── NAV
+document.querySelectorAll('.nav-tabs a').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    document.querySelectorAll('.nav-tabs a').forEach(x=>x.classList.remove('on'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+    a.classList.add('on');
+    document.getElementById('pg-'+a.dataset.pg).classList.add('on');
+    window.scrollTo(0,0);
+  });
+});
+
+// ── FORMAT TOGGLE
+document.querySelectorAll('.fmt-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const f = btn.dataset.f;
+    document.querySelectorAll('.fmt-btn').forEach(b=>b.classList.toggle('on', b.dataset.f===f));
+    document.querySelectorAll('.sw-val').forEach(v=>{
+      v.classList.toggle('vis', f==='all' || v.dataset.f===f);
+    });
+  });
+});
+// init: show hex
+document.querySelectorAll('.sw-val[data-f="hex"]').forEach(v=>v.classList.add('vis'));
+
+// ── TYPOGRAPHY STATE
+const TD = {
+  s:  {fs:12, lh:{tight:12, standard:16, loose:18}, ps:6},
+  m:  {fs:14, lh:{tight:14, standard:16, loose:20}, ps:8},
+  l:  {fs:16, lh:{tight:16, standard:20, loose:24}, ps:10},
+  xl: {fs:20, lh:{tight:20, standard:28, loose:32}, ps:12},
+};
+let tFw=700, tLH='tight';
+
+function renderTyTable(){
+  const sizes = ['s','m','l','xl'];
+  const rows = sizes.map(sz => {
+    const d = TD[sz];
+    const lhv = d.lh[tLH];
+    const css = `font-size:${d.fs}px;font-weight:${tFw};line-height:${lhv}px;`;
+    return `<tr>
+      <td class="ty-td-label">font/${sz}</td>
+      <td class="ty-td-sample">
+        <p style="${css}margin-bottom:${d.ps}px;">Палитра определяет базовые значения без продуктовой роли. Каждый токен имеет явный источник в слое raw — это позволяет отследить полную цепочку зависимостей.</p>
+        <p style="${css}">Семантические токены описывают роль элемента в интерфейсе, а не конкретное значение цвета или размера.</p>
+      </td>
+      <td class="ty-td-meta">
+        <span class="ty-meta-line"><span>${d.fs}px</span> font-size</span>
+        <span class="ty-meta-line"><span>${tFw}</span> font-weight</span>
+        <span class="ty-meta-line"><span>${lhv}px</span> line-height</span>
+        <span class="ty-meta-line"><span>${d.ps}px</span> paragraph-spacing</span>
+      </td>
+    </tr>`;
+  }).join('');
+  document.getElementById('ty-tbody').innerHTML = rows;
+}
+
+function setFw(fw){
+  tFw=fw;
+  document.querySelectorAll('#wt-seg .seg-btn').forEach(b=>b.classList.toggle('on', +b.dataset.w===fw));
+  renderTyTable();
+}
+function setLH(lh){
+  tLH=lh;
+  document.querySelectorAll('#lh-seg .seg-btn').forEach(b=>b.classList.toggle('on', b.dataset.lh===lh));
+  renderTyTable();
+}
+renderTyTable();
+
+
+</script>
+
+</body>
+</html>
