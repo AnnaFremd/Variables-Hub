@@ -942,10 +942,11 @@ body {
     <div class="media-list">
       <div class="m-item" onclick="cpv('24px')"> <div class="m-box" style="width:24px;height:24px"></div>   <span class="m-name">2xs</span> <span class="m-val">24px</span>  </div>
       <div class="m-item" onclick="cpv('32px')"> <div class="m-box" style="width:32px;height:32px"></div>   <span class="m-name">xs</span>  <span class="m-val">32px</span>  </div>
-      <div class="m-item" onclick="cpv('64px')"> <div class="m-box" style="width:64px;height:64px"></div>   <span class="m-name">s</span>   <span class="m-val">64px</span>  </div>
-      <div class="m-item" onclick="cpv('80px')"> <div class="m-box" style="width:80px;height:80px"></div>   <span class="m-name">m</span>   <span class="m-val">80px</span>  </div>
-      <div class="m-item" onclick="cpv('120px')"><div class="m-box" style="width:120px;height:120px"></div>  <span class="m-name">l</span>   <span class="m-val">120px</span> </div>
-      <div class="m-item" onclick="cpv('136px')"><div class="m-box" style="width:136px;height:136px"></div>  <span class="m-name">xl</span>  <span class="m-val">136px</span> </div>
+      <div class="m-item" onclick="cpv('48px')"> <div class="m-box" style="width:48px;height:48px"></div>   <span class="m-name">s</span>   <span class="m-val">48px</span>  </div>
+     <div class="m-item" onclick="cpv('64px')"> <div class="m-box" style="width:64px;height:64px"></div>   <span class="m-name">m</span>   <span class="m-val">64px</span>  </div>
+       <div class="m-item" onclick="cpv('80px')"> <div class="m-box" style="width:80px;height:80px"></div>   <span class="m-name">l</span>   <span class="m-val">80px</span>  </div>
+      <div class="m-item" onclick="cpv('120px')"><div class="m-box" style="width:120px;height:120px"></div>  <span class="m-name">xl</span>   <span class="m-val">120px</span> </div>
+      <div class="m-item" onclick="cpv('136px')"><div class="m-box" style="width:136px;height:136px"></div>  <span class="m-name">2xl</span>  <span class="m-val">136px</span> </div>
     </div>
   </div>
 
@@ -1032,9 +1033,9 @@ document.querySelectorAll('.sw-val[data-f="hex"]').forEach(v=>v.classList.add('v
 // ── TYPOGRAPHY STATE
 const TD = {
   s:  {fs:12, lh:{tight:12, standard:16, loose:18}, ps:6},
-  m:  {fs:14, lh:{tight:14, standard:16, loose:20}, ps:8},
+  m:  {fs:14, lh:{tight:14, standard:18, loose:20}, ps:8},
   l:  {fs:16, lh:{tight:16, standard:20, loose:24}, ps:10},
-  xl: {fs:20, lh:{tight:20, standard:28, loose:32}, ps:12},
+  xl: {fs:20, lh:{tight:20, standard:24, loose:32}, ps:12},
 };
 let tFw=700, tLH='tight';
 
