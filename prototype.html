@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="ru">
 <head>
@@ -821,7 +822,77 @@
   .icon-btn:hover { background: var(--surface-2); }
 
   /* Role select */
-  .role-select-wrap { position: relative; margin-bottom: 6px; }
+  .role-select-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .role-select-wrap { position: relative; }
+  .role-lock-btn {
+    position: relative;
+    width: 38px; height: 38px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .role-lock-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--border-2);
+    color: var(--text-2);
+  }
+  .role-lock-btn.on {
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+  .role-lock-btn.on:hover {
+    background: #e0ecfb;
+  }
+  /* Tooltip на кнопке замочка */
+  .role-lock-btn .tt {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #1f1f1d;
+    color: #fff;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+    z-index: 50;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+  .role-lock-btn .tt::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    right: 12px;
+    border: 4px solid transparent;
+    border-bottom-color: #1f1f1d;
+  }
+  .role-lock-btn:hover .tt { opacity: 1; }
+
+  /* Маленькая подпись-источник под селектом */
+  .role-source-note {
+    font-size: 11px;
+    color: var(--text-3);
+    padding-left: 2px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
   .role-select-btn {
     width: 100%;
     height: 38px;
@@ -1430,6 +1501,14 @@
     <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 3 4 6v6c0 4.5 3.4 8.6 8 9 4.6-.4 8-4.5 8-9V6z"/>
       <path d="m9 12 2 2 4-4"/>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2"/>
+      <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+    </symbol>
+    <symbol id="i-lock-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2"/>
+      <path d="M8 11V8a4 4 0 0 1 7.5-2"/>
     </symbol>
     <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
       <path d="M7 17 17 7M9 7h8v8"/>
@@ -2201,45 +2280,45 @@ function renderFieldDetails() {
     </div>
 
     <div class="form-label">Роль в коммерческом предложении</div>
-    <div class="role-select-wrap">
-      <button class="role-select-btn ${(!field.role && !field.isGhost) ? 'empty' : ''}" id="roleSelectBtn">
-        <span class="text" style="display:flex;align-items:center;gap:8px">
-          ${field.isGhost
-            ? '<span class="role-tag r-ghost"><svg class="icon" width="10" height="10"><use href="#i-eye-off"/></svg>Не передается</span>'
-            : (field.role ? roleBadge : '<span>Не назначена</span>')}
-        </span>
-        <svg class="chev" width="14" height="14"><use href="#i-chevron-down"/></svg>
-      </button>
-      <div class="role-dd" id="roleDd">
-        <div class="role-dd-search">
-          <svg class="ico"><use href="#i-search"/></svg>
-          <input type="text" placeholder="Найти роль" />
-        </div>
-        <div id="roleDdList"></div>
-        <div class="role-dd-divider"></div>
-        <div class="ghost-opt" data-action="ghost">
-          <svg class="icon"><use href="#i-eye-off"/></svg>
-          Не передавать в коммерческое предложение
-        </div>
-        ${(field.role || field.isGhost) ? `
-          <div class="ghost-opt" data-action="clear" style="color:var(--text-2)">
-            <svg class="icon"><use href="#i-x"/></svg>
-            Снять роль
+    <div class="role-select-row">
+      <div class="role-select-wrap">
+        <button class="role-select-btn ${(!field.role && !field.isGhost) ? 'empty' : ''}" id="roleSelectBtn">
+          <span class="text" style="display:flex;align-items:center;gap:8px">
+            ${field.isGhost
+              ? '<span class="role-tag r-ghost"><svg class="icon" width="10" height="10"><use href="#i-eye-off"/></svg>Не передается</span>'
+              : (field.role ? roleBadge : '<span>Не назначена</span>')}
+          </span>
+          <svg class="chev" width="14" height="14"><use href="#i-chevron-down"/></svg>
+        </button>
+        <div class="role-dd" id="roleDd">
+          <div class="role-dd-search">
+            <svg class="ico"><use href="#i-search"/></svg>
+            <input type="text" placeholder="Найти роль" />
           </div>
-        ` : ''}
+          <div id="roleDdList"></div>
+          <div class="role-dd-divider"></div>
+          <div class="ghost-opt" data-action="ghost">
+            <svg class="icon"><use href="#i-eye-off"/></svg>
+            Не передавать в коммерческое предложение
+          </div>
+          ${(field.role || field.isGhost) ? `
+            <div class="ghost-opt" data-action="clear" style="color:var(--text-2)">
+              <svg class="icon"><use href="#i-x"/></svg>
+              Снять роль
+            </div>
+          ` : ''}
+        </div>
       </div>
+      <button class="role-lock-btn ${field.isOverride || field.isGhost ? 'on' : ''}" id="roleLockBtn" aria-label="Защитить роль">
+        <svg width="15" height="15"><use href="#${field.isOverride || field.isGhost ? 'i-lock' : 'i-lock-open'}"/></svg>
+        <span class="tt">${field.isOverride || field.isGhost
+          ? 'Роль защищена от обновлений поставщика'
+          : 'Запретить поставщику менять роль'}</span>
+      </button>
     </div>
 
-    <div class="role-hint">
-      <svg class="ico" width="13" height="13"><use href="#i-info"/></svg>
-      <div>
-        ${field.isGhost
-          ? 'Поле заблокировано от автоматических обновлений поставщика.'
-          : field.role
-            ? 'Поле передается в коммерческое предложение.'
-            : 'Поля без роли не попадают в коммерческое предложение.'}
-        
-      </div>
+    <div class="role-source-note">
+      ${field.isOverride || field.isGhost ? 'Изменено вами' : 'Получено от поставщика'}
     </div>
 
     <div class="section-title">Покрытие разделов</div>
@@ -2347,6 +2426,34 @@ function attachRoleSelectHandlers(field) {
       renderTableHeaders();
     });
   });
+
+  // Клик по кнопке-замочку — переключение override
+  const lockBtn = $('#roleLockBtn');
+  if (lockBtn) {
+    lockBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasProtected = field.isOverride || field.isGhost;
+      if (wasProtected) {
+        // Снимаем защиту: возвращаем к значению поставщика
+        field.isOverride = false;
+        field.isGhost = false;
+        toast('Роль будет обновляться поставщиком');
+      } else {
+        // Включаем защиту
+        if (field.role) {
+          field.isOverride = true;
+          toast('Роль защищена от обновлений');
+        } else {
+          // Нет роли → ставим ghost
+          field.isGhost = true;
+          toast('Поле защищено от автоназначения');
+        }
+      }
+      renderFieldList();
+      renderFieldDetails();
+      renderTableHeaders();
+    });
+  }
 }
 
 function renderRoleOption(role, currentField) {
