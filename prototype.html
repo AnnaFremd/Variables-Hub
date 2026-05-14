@@ -1558,8 +1558,8 @@
 
       <button class="modal-warning-chip page-roles-chip" id="pageRolesChip" type="button">
         <svg width="12" height="12"><use href="#i-warning"/></svg>
-        <span>Не назначено ролей: 6</span>
-        <div class="tt" id="pageRolesChipTt">Откройте настройки полей, чтобы назначить</div>
+        <span>Предложение будет неполным</span>
+        <div class="tt" id="pageRolesChipTt">Не назначены ключевые роли полей каталога для коммерческого предложения</div>
       </button>
 
       <span style="flex:1"></span>
@@ -1674,13 +1674,10 @@
                   </div>
                 </div>
               </th>
-              <!-- 8. Product Overview (Не передается) -->
+              <!-- 8. Product Overview (без роли) -->
               <th data-col="overview">
-                <div class="col-head" data-field="overview" data-role="r-ghost" data-role-label="Не передается">
-                  <span class="role-tag r-ghost">
-                    <svg class="icon" width="10" height="10"><use href="#i-eye-off"/></svg>
-                    Не передается
-                  </span>
+                <div class="col-head" data-field="overview" data-role="r-none">
+                  <div style="height: 17px"></div>
                   <div class="field-row">
                     <span class="type-icon"><svg width="12" height="12"><use href="#i-tag"/></svg></span>
                     <span class="field-name">Product Overview</span>
@@ -1796,8 +1793,8 @@
 
       <div class="modal-warning-chip" id="rolesChip">
         <svg width="12" height="12"><use href="#i-warning"/></svg>
-        <span>Не назначено ролей: 4</span>
-        <div class="tt">Без роли в коммерческое предложение не попадёт</div>
+        <span>Предложение будет неполным</span>
+        <div class="tt">Не назначены ключевые роли полей каталога для коммерческого предложения</div>
       </div>
 
       <button class="modal-close" id="closeFieldSettings"><svg width="14" height="14"><use href="#i-x"/></svg></button>
@@ -1958,7 +1955,7 @@
     <div class="sync-body" data-screen="mapping" style="display:none">
 
       <div class="mapping-info">
-        Только те данные, которые были переопределены и считаются защищенными локально
+        Только данные, переопределённые локально и не принимающие обновления
       </div>
 
       <div class="mapping-table">
@@ -2143,10 +2140,12 @@
 // ДАННЫЕ: поля и системные роли
 //============================================
 
-// Все роли продукта (системные)
+// Все роли продукта (системные). isKey — ключевые роли, без которых
+// коммерческое предложение будет неполным.
 const ROLES = [
-  { key: 'name', label: 'Название', cls: 'r-name', desc: 'Имя товара' },
-  { key: 'price_base', label: 'Базовая цена', cls: 'r-price-base', desc: 'Розничная цена' },
+  { key: 'name', label: 'Название', cls: 'r-name', desc: 'Имя товара', isKey: true },
+  { key: 'price_base', label: 'Цена', cls: 'r-price-base', desc: 'Розничная цена', isKey: true },
+  { key: 'announce', label: 'Анонс', cls: 'r-name', desc: 'Краткое описание', isKey: true },
   { key: 'price_dealer', label: 'Цена опт', cls: 'r-price-dealer', desc: 'Дилерская цена' },
   { key: 'price_sale', label: 'Цена скидка', cls: 'r-price-sale', desc: 'Цена со скидкой' },
   { key: 'sku', label: 'Артикул', cls: 'r-sku', desc: 'Уникальный идентификатор' },
@@ -2182,16 +2181,9 @@ function $$ (sel, ctx = document) { return Array.from(ctx.querySelectorAll(sel))
 function getRole(key) { return ROLES.find(r => r.key === key); }
 
 function getRoleBadgeHtml(field, small = false) {
-  if (field.isGhost) {
-    return `<span class="role-tag r-ghost">
-      <svg class="icon" width="10" height="10"><use href="#i-eye-off"/></svg>
-      Не передается
-    </span>`;
-  }
   if (!field.role) return '';
   const role = getRole(field.role) || { label: 'Роль', cls: 'r-overview' };
-  const overrideIcon = field.isOverride ? `<svg class="icon" width="9" height="9"><use href="#i-pencil"/></svg>` : '';
-  return `<span class="role-tag ${role.cls}">${overrideIcon}${role.label}</span>`;
+  return `<span class="role-tag ${role.cls}">${role.label}</span>`;
 }
 
 function applyFilter(field) {
@@ -2218,13 +2210,9 @@ function renderFieldList() {
     const eyeIcon = f.visible ? 'i-eye' : 'i-eye-off';
     const hiddenCls = !f.visible ? 'hidden-field' : '';
 
-    // Тег с системной ролью над названием поля
+    // Тег с именем поля над названием — только если есть роль
     let roleTagHtml = '';
-    if (f.isGhost) {
-      roleTagHtml = `<span class="field-role-tag ghost">
-        <svg class="icon"><use href="#i-eye-off"/></svg>Не передается
-      </span>`;
-    } else if (f.role) {
+    if (f.role) {
       roleTagHtml = `<span class="field-role-tag">${f.name}</span>`;
     }
 
@@ -2282,11 +2270,9 @@ function renderFieldDetails() {
     <div class="form-label">Роль в коммерческом предложении</div>
     <div class="role-select-row">
       <div class="role-select-wrap">
-        <button class="role-select-btn ${(!field.role && !field.isGhost) ? 'empty' : ''}" id="roleSelectBtn">
+        <button class="role-select-btn ${!field.role ? 'empty' : ''}" id="roleSelectBtn">
           <span class="text" style="display:flex;align-items:center;gap:8px">
-            ${field.isGhost
-              ? '<span class="role-tag r-ghost"><svg class="icon" width="10" height="10"><use href="#i-eye-off"/></svg>Не передается</span>'
-              : (field.role ? roleBadge : '<span>Не назначена</span>')}
+            ${field.role ? roleBadge : '<span>Не назначена</span>'}
           </span>
           <svg class="chev" width="14" height="14"><use href="#i-chevron-down"/></svg>
         </button>
@@ -2296,12 +2282,8 @@ function renderFieldDetails() {
             <input type="text" placeholder="Найти роль" />
           </div>
           <div id="roleDdList"></div>
-          <div class="role-dd-divider"></div>
-          <div class="ghost-opt" data-action="ghost">
-            <svg class="icon"><use href="#i-eye-off"/></svg>
-            Не передавать в коммерческое предложение
-          </div>
           ${(field.role || field.isGhost) ? `
+            <div class="role-dd-divider"></div>
             <div class="ghost-opt" data-action="clear" style="color:var(--text-2)">
               <svg class="icon"><use href="#i-x"/></svg>
               Снять роль
@@ -2309,11 +2291,11 @@ function renderFieldDetails() {
           ` : ''}
         </div>
       </div>
-      <button class="role-lock-btn ${field.isOverride || field.isGhost ? 'on' : ''}" id="roleLockBtn" aria-label="Защитить роль">
+      <button class="role-lock-btn ${field.isOverride || field.isGhost ? 'on' : ''}" id="roleLockBtn" aria-label="Не принимать обновления роли">
         <svg width="15" height="15"><use href="#${field.isOverride || field.isGhost ? 'i-lock' : 'i-lock-open'}"/></svg>
         <span class="tt">${field.isOverride || field.isGhost
-          ? 'Роль защищена от обновлений поставщика'
-          : 'Запретить поставщику менять роль'}</span>
+          ? 'Обновления роли не принимаются'
+          : 'Не принимать обновления роли'}</span>
       </button>
     </div>
 
@@ -2373,10 +2355,23 @@ function attachRoleSelectHandlers(field) {
     html += `<div class="role-dd-label">Подходит по имени поля</div>`;
     html += renderRoleOption(matched, field);
   }
-  html += `<div class="role-dd-label">Все роли · ${ROLES.length}</div>`;
-  ROLES.forEach(r => {
+
+  const keyRoles = ROLES.filter(r => r.isKey);
+  const otherRoles = ROLES.filter(r => !r.isKey);
+
+  html += `<div class="role-dd-label">Ключевые роли</div>`;
+  keyRoles.forEach(r => {
     html += renderRoleOption(r, field);
   });
+
+  if (otherRoles.length) {
+    html += `<div class="role-dd-divider"></div>`;
+    html += `<div class="role-dd-label">Дополнительные роли</div>`;
+    otherRoles.forEach(r => {
+      html += renderRoleOption(r, field);
+    });
+  }
+
   list.innerHTML = html;
 
   btn.addEventListener('click', (e) => {
@@ -2411,12 +2406,9 @@ function attachRoleSelectHandlers(field) {
   $$('#roleDd .ghost-opt').forEach(opt => {
     opt.addEventListener('click', () => {
       const action = opt.dataset.action;
-      if (action === 'ghost') {
-        field.isGhost = true;
-        field.role = null;
-        toast('Поле заблокировано от обновлений');
-      } else if (action === 'clear') {
+      if (action === 'clear') {
         field.isGhost = false;
+        field.isOverride = false;
         field.role = null;
         toast('Роль снята');
       }
@@ -2427,27 +2419,23 @@ function attachRoleSelectHandlers(field) {
     });
   });
 
-  // Клик по кнопке-замочку — переключение override
+  // Клик по кнопке-замочку — переключение защиты от обновлений
   const lockBtn = $('#roleLockBtn');
   if (lockBtn) {
     lockBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const wasProtected = field.isOverride || field.isGhost;
       if (wasProtected) {
-        // Снимаем защиту: возвращаем к значению поставщика
         field.isOverride = false;
         field.isGhost = false;
-        toast('Роль будет обновляться поставщиком');
+        toast('Принимаем обновления роли от поставщика');
       } else {
-        // Включаем защиту
         if (field.role) {
           field.isOverride = true;
-          toast('Роль защищена от обновлений');
         } else {
-          // Нет роли → ставим ghost
           field.isGhost = true;
-          toast('Поле защищено от автоназначения');
         }
+        toast('Не принимаем обновления роли');
       }
       renderFieldList();
       renderFieldDetails();
@@ -2477,14 +2465,15 @@ function renderTableHeaders() {
     if (!field) return;
     const head = th.querySelector('.col-head');
     const role = field.role ? getRole(field.role) : null;
-    // Перерисуем верхнюю строку (бейдж)
+
+    // Перерисуем верхнюю строку (бейдж роли)
     let badge = head.querySelector('.role-tag');
     if (badge) badge.remove();
-    if (field.isGhost) {
-      head.insertAdjacentHTML('afterbegin', `<span class="role-tag r-ghost"><svg class="icon" width="10" height="10"><use href="#i-eye-off"/></svg>Не передается</span>`);
-    } else if (role) {
-      const overrideIcon = field.isOverride ? `<svg class="icon" width="9" height="9"><use href="#i-pencil"/></svg>` : '';
-      head.insertAdjacentHTML('afterbegin', `<span class="role-tag ${role.cls}">${overrideIcon}${role.label}</span>`);
+    const placeholder = head.querySelector(':scope > div[style*="height: 17px"], :scope > div[style*="height:17px"]');
+    if (placeholder) placeholder.remove();
+
+    if (role) {
+      head.insertAdjacentHTML('afterbegin', `<span class="role-tag ${role.cls}">${role.label}</span>`);
     } else {
       head.insertAdjacentHTML('afterbegin', `<div style="height:17px"></div>`);
     }
@@ -2493,42 +2482,38 @@ function renderTableHeaders() {
 }
 
 function updateChip() {
-  // Считаем системные роли, не назначенные ни одному полю
+  // Какие роли уже назначены каким-то полем
   const assignedRoles = new Set(FIELDS.filter(f => f.role).map(f => f.role));
-  const unassigned = ROLES.filter(r => !assignedRoles.has(r.key));
+  // Из ключевых ролей — какие не назначены ни одному полю
+  const missingKey = ROLES.filter(r => r.isKey && !assignedRoles.has(r.key));
+
+  const buildTooltip = () => `
+    <div style="font-size: 11px; color: rgba(255,255,255,0.75); line-height: 1.4; margin-bottom: 8px;">Не назначены ключевые роли полей каталога для коммерческого предложения</div>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 0.04em; margin-bottom: 6px;">НЕ НАЗНАЧЕНЫ</div>
+    ${missingKey.map(r => `<div style="padding: 2px 0; color: #fff;">${r.label}</div>`).join('')}
+  `;
 
   // Чип в модалке настроек
   const chip = $('#rolesChip');
-  const span = chip.querySelector('span:not(.tt)');
-  const tt = chip.querySelector('.tt');
-
-  if (unassigned.length === 0) {
-    chip.style.display = 'none';
-  } else {
-    chip.style.display = 'inline-flex';
-    span.textContent = `Не назначено ролей: ${unassigned.length}`;
-    tt.innerHTML = `
-      <div style="font-size: 10px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; margin-bottom: 6px;">НЕ НАЗНАЧЕНЫ</div>
-      ${unassigned.map(r => `<div style="padding: 2px 0;">${r.label}</div>`).join('')}
-    `;
+  if (chip) {
+    if (missingKey.length === 0) {
+      chip.style.display = 'none';
+    } else {
+      chip.style.display = 'inline-flex';
+      chip.querySelector('span:not(.tt)').textContent = 'Предложение будет неполным';
+      chip.querySelector('.tt').innerHTML = buildTooltip();
+    }
   }
 
-  // Дубликат чипа в шапке страницы каталога
+  // Шильдик в шапке страницы каталога
   const pageChip = $('#pageRolesChip');
   if (pageChip) {
-    const pageSpan = pageChip.querySelector('span:not(.tt)');
-    const pageTt = pageChip.querySelector('.tt');
-    if (unassigned.length === 0) {
+    if (missingKey.length === 0) {
       pageChip.style.display = 'none';
     } else {
       pageChip.style.display = 'inline-flex';
-      pageSpan.textContent = `Не назначено ролей: ${unassigned.length}`;
-      // Tooltip на странице — со списком и подсказкой что клик откроет настройки
-      pageTt.innerHTML = `
-        <div style="font-size: 10px; color: rgba(255,255,255,0.55); letter-spacing: 0.04em; margin-bottom: 6px;">НЕ НАЗНАЧЕНЫ</div>
-        ${unassigned.map(r => `<div style="padding: 2px 0;">${r.label}</div>`).join('')}
-        <div style="font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 8px; padding-top: 8px; border-top: 0.5px solid rgba(255,255,255,0.12);">Кликните, чтобы открыть настройки полей</div>
-      `;
+      pageChip.querySelector('span:not(.tt)').textContent = 'Предложение будет неполным';
+      pageChip.querySelector('.tt').innerHTML = buildTooltip();
     }
   }
 }
