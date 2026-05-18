@@ -1,0 +1,3528 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>Прототип — Системные роли</title>
+<meta name="viewport" content="width=1440" />
+<style>
+  :root {
+    --bg: #fafaf7;
+    --surface: #ffffff;
+    --surface-2: #f5f4ef;
+    --surface-3: #ecebe5;
+    --border: #e6e5dd;
+    --border-2: #d4d3cb;
+    --text: #1f1f1d;
+    --text-2: #5a5a55;
+    --text-3: #8c8c86;
+    --accent: #2563eb;
+    --accent-bg: #eff5fd;
+    --accent-border: #d4e3fa;
+    --warn-bg: #fbf3e0;
+    --warn-text: #815c10;
+    --warn-border: #ecdcb7;
+    --ghost-text: #6b6b66;
+    --success-bg: #e9f3df;
+    --success-text: #3b6b1f;
+    --danger: #c83b3b;
+    --shadow: 0 6px 24px rgba(20, 20, 18, 0.08);
+    --shadow-sm: 0 2px 8px rgba(20, 20, 18, 0.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.4;
+    min-height: 100vh;
+  }
+  button, input, select { font-family: inherit; }
+  button { cursor: pointer; }
+
+  /* ===== App shell ===== */
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  .top-nav {
+    height: 48px;
+    background: #1f1f1d;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 14px;
+    font-size: 13px;
+    border-bottom: 0.5px solid #000;
+  }
+  .top-nav .logo {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #fff;
+    padding-right: 8px;
+  }
+  .top-nav .tn-btn {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.7);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .top-nav .tn-btn.active { background: rgba(255,255,255,0.12); color: #fff; }
+  .top-nav .tn-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+  .top-nav .spacer { flex: 1; }
+  .top-nav .user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.08);
+  }
+  .top-nav .user .ava {
+    width: 22px; height: 22px;
+    border-radius: 4px;
+    background: #5a5a55;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .page-header {
+    padding: 16px 24px 0;
+    background: var(--bg);
+  }
+  .page-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .page-title {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  /* Планета (Центр синхронизации) */
+  .planet-btn {
+    position: relative;
+    width: 24px; height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  .planet-btn:hover { background: var(--surface-2); }
+  .planet-btn .dot {
+    position: absolute;
+    top: 1px; right: 1px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--danger);
+    border: 1.5px solid var(--bg);
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 0.5px solid var(--border);
+    margin-top: 4px;
+    padding: 0 24px;
+    margin-left: -24px;
+    margin-right: -24px;
+  }
+  .tab {
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    font-size: 13px;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .tab.active {
+    color: var(--text);
+    border-bottom-color: var(--text);
+    font-weight: 500;
+  }
+  .tab:hover { color: var(--text); }
+
+  /* ===== Main layout ===== */
+  .main {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Left tree */
+  .tree {
+    padding: 16px 8px 16px 16px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .tree-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .tree-item:hover { background: var(--surface-2); }
+  .tree-item.active { background: var(--surface-2); color: var(--text); font-weight: 500; }
+  .tree-item .chev { width: 14px; opacity: 0.5; }
+  .tree-item.sub { padding-left: 22px; }
+  .tree-item.active .chev { opacity: 1; }
+
+  /* Catalog area */
+  .catalog {
+    padding: 4px 24px 24px;
+    min-width: 0;
+    overflow-x: auto;
+  }
+  .catalog-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .catalog-section-title .toggle {
+    width: 16px; height: 16px;
+    color: var(--text-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Table */
+  .table-wrap {
+    position: relative;
+  }
+  table.catalog-table {
+    border-collapse: collapse;
+    width: 100%;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 0;
+    table-layout: fixed;
+  }
+  table.catalog-table th,
+  table.catalog-table td {
+    border-right: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0;
+    vertical-align: top;
+    background: var(--surface);
+  }
+  table.catalog-table th:last-child,
+  table.catalog-table td:last-child {
+    border-right: none;
+  }
+  table.catalog-table thead th {
+    background: var(--surface);
+    height: 64px;
+    text-align: left;
+    font-weight: normal;
+    position: relative;
+    width: 180px;
+  }
+  .col-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 14px;
+    cursor: pointer;
+    height: 100%;
+  }
+  .col-head:hover { background: var(--surface-2); }
+
+  /* Бейджи ролей в шапке таблицы */
+  .role-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    line-height: 1;
+    padding: 3px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+    width: max-content;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Унифицированная палитра: все роли — серые, оранжевый — только Не передается */
+  .role-tag.r-name,
+  .role-tag.r-price-base,
+  .role-tag.r-price-dealer,
+  .role-tag.r-price-custom,
+  .role-tag.r-price-sale,
+  .role-tag.r-price-preferred,
+  .role-tag.r-sku,
+  .role-tag.r-stock,
+  .role-tag.r-overview {
+    background: var(--surface-2);
+    color: var(--text-2);
+  }
+  .role-tag.r-none {
+    background: transparent;
+    border: 0.5px dashed var(--border-2);
+    color: var(--text-3);
+  }
+  .role-tag.r-ghost {
+    background: transparent;
+    color: #c84b1e;
+    border: 0.5px dashed #ecaa92;
+  }
+  .role-tag .icon { width: 10px; height: 10px; display: inline-flex; }
+
+  .col-head .field-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .col-head .field-row .type-icon {
+    width: 14px; height: 14px;
+    color: var(--text-3);
+    flex-shrink: 0;
+  }
+  .col-head .field-name {
+    font-size: 13px;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Body cells */
+  table.catalog-table tbody td {
+    padding: 10px 14px;
+    height: 44px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  tbody tr:hover td { background: #fafaf6; }
+  tbody td.first {
+    color: var(--accent);
+  }
+  tbody td.first:hover { text-decoration: underline; cursor: pointer; }
+
+  /* Дроп от клика по шапке колонки */
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 6px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgba(20, 20, 18, 0.10), 0 2px 6px rgba(20, 20, 18, 0.04);
+    width: 290px;
+    padding: 8px;
+    z-index: 200;
+  }
+  .dropdown .dd-input-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px 6px 6px;
+    margin-bottom: 8px;
+    border: 0.5px solid var(--border);
+    background: var(--surface-2);
+    border-radius: 8px;
+  }
+  .dropdown .dd-input-row .ico {
+    width: 22px; height: 22px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-3);
+    flex-shrink: 0;
+  }
+  .dropdown .dd-input-row input {
+    flex: 1;
+    min-width: 0;
+    height: 22px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--text);
+    padding: 0;
+    outline: none;
+  }
+  .dropdown .dd-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .dropdown .dd-item:hover { background: var(--surface-2); }
+  .dropdown .dd-item .ico {
+    width: 18px; height: 18px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .dropdown .dd-item .chev-right {
+    margin-left: auto;
+    color: var(--text-3);
+    width: 14px; height: 14px;
+    display: inline-flex;
+    align-items: center;
+  }
+  /* Тонкий разделитель между группами пунктов */
+  .dropdown .dd-sep {
+    height: 0.5px;
+    background: var(--border);
+    margin: 6px 4px;
+  }
+
+  /* ===== Modal overlay ===== */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(17, 17, 15, 0.32);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 24px;
+    z-index: 500;
+  }
+  .overlay.open { display: flex; }
+  .modal {
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: 0 16px 60px rgba(20, 20, 18, 0.14), 0 2px 8px rgba(20, 20, 18, 0.04);
+    width: 100%;
+    max-width: 1080px;
+    max-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .modal-head {
+    padding: 20px 26px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  .modal-create {
+    color: var(--accent);
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .modal-warning-chip {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--warn-bg);
+    border: 0.5px solid var(--warn-border);
+    border-radius: 999px;
+    color: var(--warn-text);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: default;
+    position: relative;
+  }
+  .modal-warning-chip .tt {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f1f1d;
+    color: #fff;
+    font-size: 12px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    min-width: 180px;
+    text-align: left;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+    z-index: 10;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+    line-height: 1.5;
+  }
+  .modal-warning-chip .tt::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-bottom-color: #1f1f1d;
+  }
+  .modal-warning-chip:hover .tt { opacity: 1; }
+
+  /* Вариант чипа на странице каталога — кликабельный */
+  .modal-warning-chip.page-roles-chip {
+    margin-left: 0;
+    cursor: pointer;
+    border: none;
+    transition: background 0.12s;
+  }
+  .modal-warning-chip.page-roles-chip:hover {
+    background: #f6e7c2;
+  }
+  .modal-warning-chip.page-roles-chip .tt {
+    min-width: 220px;
+  }
+  .modal-close {
+    width: 28px; height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    border-radius: 6px;
+  }
+  .modal-close:hover { background: var(--surface-2); }
+
+  .modal-body {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* Left list */
+  .ml-left {
+    border-right: 0.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .ml-search-row {
+    padding: 14px 16px 8px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .ml-search {
+    position: relative;
+    flex: 1;
+  }
+  .ml-search input {
+    width: 100%;
+    height: 36px;
+    border: 0.5px solid var(--border);
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0 32px 0 32px;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .ml-search input::placeholder { color: var(--text-3); }
+  .ml-search input:focus { border-color: var(--border-2); background: var(--surface); }
+  .ml-search .icon-search {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    color: var(--text-3);
+    pointer-events: none;
+  }
+  .ml-search-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px; height: 22px;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    border-radius: 4px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .ml-search-clear:hover { color: var(--text); background: var(--border); }
+  .ml-search.has-text .ml-search-clear { display: inline-flex; }
+
+  /* Иконка-кнопка в стиле "без коробки" */
+  .filter-btn {
+    width: 36px; height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .filter-btn:hover { background: var(--surface-2); color: var(--text); }
+  .filter-dd {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    min-width: 220px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 4px;
+    z-index: 50;
+    display: none;
+  }
+  .filter-dd.open { display: block; }
+  .filter-opt {
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .filter-opt:hover { background: var(--surface-2); }
+  .filter-opt .check {
+    width: 14px; height: 14px;
+    color: var(--accent);
+    opacity: 0;
+  }
+  .filter-opt.on .check { opacity: 1; }
+  .filter-opt .count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .filter-opt.on .count { color: var(--accent); }
+
+  .filter-bar {
+    margin: 10px 12px 0;
+    padding: 8px 10px;
+    background: var(--accent-bg);
+    border: 0.5px solid var(--accent-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-bar .label {
+    font-size: 11px;
+    color: var(--accent);
+    opacity: 0.75;
+    line-height: 1;
+  }
+  .filter-bar .value {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    flex: 1;
+  }
+  .filter-bar .clear {
+    width: 22px; height: 22px;
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .filter-bar .clear:hover { background: rgba(37, 99, 235, 0.12); }
+  .filter-mode-hint {
+    margin: 6px 14px 0;
+    font-size: 11px;
+    color: var(--accent);
+    opacity: 0.7;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* Field list inside modal */
+  .ml-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 8px 16px;
+    min-height: 0;
+  }
+  /* Строка поля в модалке "Настройки полей каталога".
+     Колонки: [иконка типа 32] [блок с тегом-ролью сверху и названием снизу]
+              [иконка глаза 18] [иконка drag 14] */
+  .field-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 20px 14px;
+    gap: 12px;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .field-row:hover { background: var(--surface-2); }
+  .field-row.active {
+    background: var(--accent-bg);
+    box-shadow: 0 1px 2px rgba(20, 20, 18, 0.04);
+  }
+
+  .field-row .type-ico {
+    width: 36px; height: 36px;
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .field-row .field-body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  /* Технический тег (имя поля) — бледная серая капсула */
+  .field-row .field-role-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 400;
+    width: max-content;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: var(--surface-2);
+    color: var(--text-3);
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  }
+  .field-row .field-role-tag.ghost {
+    background: transparent;
+    color: #c84b1e;
+    border: 0.5px dashed #ecaa92;
+  }
+  .field-row .field-role-tag .icon { width: 9px; height: 9px; }
+  /* Человеческая подпись поля — крупнее */
+  .field-row .field-label {
+    font-size: 15px;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.3;
+  }
+  /* Связь с полем поставщика — мелкая строчка ниже с иконкой ссылки */
+  .field-row .supplier-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-3);
+    line-height: 1.2;
+    margin-top: 2px;
+  }
+  .field-row .supplier-link svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+  /* Иконка глаз — просто иконка без квадратной кнопки */
+  .field-row .eye {
+    width: 20px; height: 20px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .field-row .grip {
+    width: 14px; height: 14px;
+    color: var(--text-3);
+    opacity: 0.6;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .field-row:hover .grip { opacity: 1; }
+
+  /* В режиме фильтра drag-grip исчезает */
+  .ml-list.filtered .field-row { cursor: default; grid-template-columns: 36px 1fr 20px 0; }
+  .ml-list.filtered .field-row .grip { display: none; }
+  .ml-list.filtered .field-row:hover { background: transparent; }
+  .ml-list.filtered .field-row.active { background: var(--accent-bg); }
+
+  /* Скрытое поле — приглушено по контенту, глаз тоже тише */
+  .field-row.hidden-field .field-label,
+  .field-row.hidden-field .field-role-tag,
+  .field-row.hidden-field .supplier-link,
+  .field-row.hidden-field .type-ico { opacity: 0.55; }
+  .field-row.hidden-field .eye { color: var(--text-3); }
+
+  /* Right pane */
+  .ml-right {
+    padding: 22px 28px;
+    overflow-y: auto;
+    min-height: 0;
+  }
+  .form-label {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-bottom: 8px;
+  }
+  .form-input-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 22px;
+  }
+  .form-input {
+    flex: 1;
+    height: 38px;
+    border: 0.5px solid var(--border);
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .form-input input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: var(--text);
+    padding: 0;
+    outline: none;
+  }
+  .form-input .input-prefix {
+    color: var(--text-3);
+    flex-shrink: 0;
+  }
+  /* Кнопки-иконки в правой панели — без бордеров, минимальные */
+  .icon-btn {
+    width: 32px; height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: var(--text-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+
+  /* Role select */
+  .role-select-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .role-select-wrap { position: relative; }
+  .role-lock-btn {
+    position: relative;
+    width: 38px; height: 38px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .role-lock-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--border-2);
+    color: var(--text-2);
+  }
+  .role-lock-btn.on {
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+    color: var(--accent);
+  }
+  .role-lock-btn.on:hover {
+    background: #e0ecfb;
+  }
+  /* Tooltip на кнопке замочка */
+  .role-lock-btn .tt {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #1f1f1d;
+    color: #fff;
+    font-size: 11px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+    z-index: 50;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+  .role-lock-btn .tt::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    right: 12px;
+    border: 4px solid transparent;
+    border-bottom-color: #1f1f1d;
+  }
+  .role-lock-btn:hover .tt { opacity: 1; }
+
+  /* Маленькая подпись-источник под селектом */
+  .role-source-note {
+    font-size: 11px;
+    color: var(--text-3);
+    padding-left: 2px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .role-select-btn {
+    width: 100%;
+    height: 38px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .role-select-btn:hover { border-color: var(--border-2); }
+  .role-select-btn.empty .text { color: var(--text-3); }
+  .role-select-btn .chev { color: var(--text-3); }
+
+  .role-dd {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 6px;
+    z-index: 60;
+    display: none;
+    max-height: 360px;
+    overflow-y: auto;
+  }
+  .role-dd.open { display: block; }
+  .role-dd-search {
+    position: relative;
+    padding: 4px 4px 6px;
+  }
+  .role-dd-search input {
+    width: 100%;
+    height: 32px;
+    border: 0.5px solid var(--border);
+    background: var(--surface-2);
+    border-radius: 7px;
+    padding: 0 10px 0 28px;
+    font-size: 12px;
+    outline: none;
+  }
+  .role-dd-search .ico {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 13px; height: 13px;
+    color: var(--text-3);
+    pointer-events: none;
+  }
+  .role-dd-label {
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 10px 10px 4px;
+  }
+  .role-dd-opt {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .role-dd-opt:hover { background: var(--surface-2); }
+  .role-dd-opt .name { font-size: 13px; color: var(--text); }
+  .role-dd-opt .target {
+    font-size: 12px;
+    color: var(--text-3);
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  }
+  .role-dd-opt.current { background: var(--accent-bg); }
+  .role-dd-opt.current .name { color: var(--accent); font-weight: 500; }
+
+  .role-dd-divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 6px 8px;
+  }
+  .ghost-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .ghost-opt:hover { background: var(--surface-2); }
+  .ghost-opt .icon { color: var(--text-3); width: 14px; height: 14px; }
+
+  .role-hint {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.5;
+  }
+  .role-hint .ico {
+    color: var(--text-3);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Section: coverage */
+  .section-title {
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 400;
+    margin: 24px 0 14px;
+  }
+  .coverage-row {
+    display: grid;
+    grid-template-columns: 1fr 110px 22px;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+    padding: 6px 0;
+    color: var(--text);
+  }
+  .coverage-row .pct {
+    font-size: 13px;
+    color: var(--text-3);
+    text-align: left;
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .coverage-row .pct::after {
+    content: '↻';
+    color: var(--text-3);
+    font-size: 12px;
+    margin-left: 6px;
+    opacity: 0.6;
+  }
+  .coverage-row .ck {
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--accent);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .coverage-row.indent { padding-left: 16px; }
+  .coverage-row.indent2 { padding-left: 32px; }
+  .coverage-row.indent3 { padding-left: 48px; }
+  .coverage-row .chev {
+    width: 14px; height: 14px;
+    color: var(--text-3);
+    display: inline-flex;
+    align-items: center;
+    margin-right: 6px;
+  }
+  .coverage-row .label-row {
+    display: flex; align-items: center;
+  }
+
+  /* ===== Center of synchronisation ===== */
+  .sync-modal {
+    max-width: 868px;
+    width: 100%;
+  }
+  .sync-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 24px 14px;
+  }
+  .sync-head .title {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .sync-head .icon-btn-sm {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+  }
+  .sync-head .icon-btn-sm:hover { background: var(--surface-2); }
+  .sync-body {
+    overflow-y: auto;
+    flex: 1;
+    padding: 0 24px 24px;
+  }
+  .sync-supplier {
+    background: var(--surface-2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .sync-supplier .ava {
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    background: #d4e3fa;
+    color: #1a4a99;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .sync-supplier .main { flex: 1; min-width: 0; }
+  .sync-supplier .name { font-weight: 600; font-size: 14px; }
+  .sync-supplier .sub { font-size: 12px; color: var(--text-2); margin-top: 1px; }
+  .sync-supplier .sub a { color: var(--accent); text-decoration: none; }
+  .badge-active {
+    background: var(--success-bg);
+    color: var(--success-text);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .sync-supplier .ext-link {
+    width: 28px; height: 28px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sync-section {
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    margin-top: 16px;
+  }
+  .sync-autoupdate {
+    padding: 14px 16px;
+  }
+  .sync-autoupdate .top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .sync-autoupdate .top .titletext { font-size: 14px; font-weight: 500; }
+  .sync-autoupdate .top .desc { font-size: 12px; color: var(--text-2); margin-top: 2px; line-height: 1.5; }
+  .switch {
+    width: 34px; height: 20px;
+    border-radius: 999px;
+    background: var(--border-2);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .switch .thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    transition: left 0.15s;
+  }
+  .switch.on { background: var(--accent); }
+  .switch.on .thumb { left: 16px; }
+  .sync-autoupdate .divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+  .sync-autoupdate .bottom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sync-autoupdate .bottom .label {
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sync-autoupdate .bottom .label .chev {
+    color: var(--text-2);
+    width: 14px; height: 14px;
+  }
+  .btn-primary {
+    height: 32px;
+    padding: 0 16px;
+    background: var(--text);
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #2c2c29; }
+
+  .sync-protected {
+    margin-top: 20px;
+  }
+  .sync-protected .h {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
+  }
+  .sync-protected .desc {
+    font-size: 12px;
+    color: var(--text-2);
+    margin-bottom: 12px;
+  }
+  .sync-protected-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .sync-prot-item {
+    display: grid;
+    grid-template-columns: 32px 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .sync-prot-item:last-child { border-bottom: none; }
+  .sync-prot-item:hover { background: var(--surface-2); }
+  .sync-prot-item .shield {
+    width: 32px; height: 32px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sync-prot-item .label {
+    font-size: 14px;
+    color: var(--text);
+  }
+  .sync-prot-item .diff {
+    font-size: 12px;
+    color: var(--text-3);
+    padding: 3px 8px;
+    background: var(--surface-2);
+    border-radius: 4px;
+  }
+  .sync-prot-item .arrow {
+    color: var(--text-3);
+    width: 16px;
+  }
+
+  /* === Экран "Маппинг ролей" внутри Центра синхронизации === */
+  .sync-back-btn {
+    width: 28px; height: 28px;
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sync-back-btn:hover { background: var(--surface-2); }
+
+  .mapping-info {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+
+  .mapping-table {
+    width: 100%;
+  }
+  .mapping-table-header {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 24px minmax(180px, 1fr) 24px minmax(180px, 1fr);
+    gap: 10px;
+    padding: 0 4px 12px;
+    font-size: 12px;
+    color: var(--text-3);
+  }
+  .mapping-row {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) 24px minmax(180px, 1fr) 24px minmax(180px, 1fr);
+    gap: 10px;
+    align-items: center;
+    padding: 8px 4px;
+  }
+  .mapping-row .field-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+  .mapping-row .field-cell .type-ico {
+    width: 28px; height: 28px;
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    color: var(--text-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .mapping-row .field-cell .name {
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    font-size: 13px;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mapping-row .arrow {
+    color: var(--text-3);
+    width: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .mapping-select {
+    height: 36px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 0 32px 0 12px;
+    font-size: 13px;
+    color: var(--text);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238c8c86' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mapping-select.empty { color: var(--text-3); }
+  .mapping-select:hover { border-color: var(--border-2); }
+
+  /* Источник значения: голубой = от поставщика (унаследовано),
+     белый + оранжевая полоска слева = переопределено дилером.
+     Применяется к селекту в колонке "Роль у вас". */
+  .mapping-select.from-supplier {
+    background-color: #e9f1ff;
+    border-color: #cfdcf5;
+  }
+  .mapping-select.from-user {
+    background-color: #ffffff;
+    border-left: 3px solid #e08833;
+    padding-left: 9px;
+  }
+
+  /* Новая модалка "Поля для коммерческого предложения" */
+  .mapping-modal {
+    max-width: 1100px;
+    width: 100%;
+  }
+  .mapping-modal .mapping-head {
+    padding: 22px 28px 0;
+  }
+  .mapping-modal .mapping-head-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 4px;
+  }
+  .mapping-modal .mapping-head-title {
+    font-size: 19px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    flex: 1;
+  }
+  .mapping-modal .mapping-head-sub {
+    font-size: 13px;
+    color: var(--text-2);
+    margin-bottom: 18px;
+  }
+  .mapping-modal .mapping-toolbar {
+    display: flex;
+    gap: 16px;
+    padding: 0 28px 16px;
+    align-items: center;
+  }
+  .mapping-modal .mapping-search {
+    flex: 1;
+    position: relative;
+    min-width: 200px;
+  }
+  .mapping-modal .mapping-search input {
+    width: 100%;
+    height: 36px;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    background: transparent;
+    border-radius: 0;
+    padding: 0 24px 0 0;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.12s;
+  }
+  .mapping-modal .mapping-search input::placeholder { color: var(--text-3); }
+  .mapping-modal .mapping-search input:focus { border-bottom-color: var(--text-2); }
+  .mapping-modal .mapping-search .icon-search { display: none; }
+  .mapping-modal .mapping-search-clear {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px; height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    border-radius: 4px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .mapping-modal .mapping-search-clear:hover { color: var(--text); }
+  .mapping-modal .mapping-search.has-text .mapping-search-clear { display: inline-flex; }
+
+  /* Сегментированный фильтр: горизонтальные пункты в одной "капсуле" */
+  .mapping-filter-segments {
+    display: inline-flex;
+    background: var(--surface-2);
+    border: 0.5px solid var(--border);
+    border-radius: 8px;
+    padding: 2px;
+    flex-shrink: 0;
+  }
+  .mapping-filter-segments .seg {
+    border: none;
+    background: transparent;
+    color: var(--text-2);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.12s, color 0.12s;
+  }
+  .mapping-filter-segments .seg:hover { color: var(--text); }
+  .mapping-filter-segments .seg.on {
+    background: var(--surface);
+    color: var(--text);
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(20, 20, 18, 0.06);
+  }
+  .mapping-filter-segments .seg .count {
+    font-size: 11px;
+    color: var(--text-3);
+    background: var(--surface-3);
+    padding: 1px 5px;
+    border-radius: 4px;
+    min-width: 16px;
+    text-align: center;
+  }
+  .mapping-filter-segments .seg.on .count { background: var(--surface-2); }
+
+  /* Тело таблицы маппинга в новой модалке */
+  .mapping-modal .mapping-body {
+    padding: 0 28px 24px;
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+  }
+  .mapping-modal .mapping-table-header {
+    grid-template-columns: minmax(220px, 1.2fr) minmax(180px, 1fr) 24px minmax(220px, 1.4fr);
+  }
+  .mapping-modal .mapping-row {
+    grid-template-columns: minmax(220px, 1.2fr) minmax(180px, 1fr) 24px minmax(220px, 1.4fr);
+    padding: 10px 4px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .mapping-modal .mapping-row:last-child { border-bottom: none; }
+
+  /* Read-only "роль у поставщика" — выглядит как селект, но без интерактива */
+  .mapping-supplier-cell {
+    height: 36px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text);
+  }
+  .mapping-supplier-cell.empty { color: var(--text-3); }
+  .mapping-supplier-cell.excluded { color: #c84b1e; }
+
+  /* Кастомный селект "Роль у вас" — используем существующий role-select-btn */
+  .mapping-role-select {
+    position: relative;
+  }
+  /* Обёртка-комбобокс */
+  .mapping-combo {
+    width: 100%;
+    height: 36px;
+    border: 0.5px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: text;
+    transition: border-color 0.12s, background 0.12s;
+    position: relative;
+  }
+  .mapping-combo:hover { border-color: var(--border-2); }
+  .mapping-combo.focused { border-color: var(--text-2); }
+  /* Окраска по источнику значения */
+  .mapping-combo.from-supplier {
+    background-color: #e9f1ff;
+    border-color: #cfdcf5;
+  }
+  .mapping-combo.from-user {
+    background-color: #ffffff;
+    border-left: 2px solid #e08833;
+  }
+  /* Сам input — без бордера, прозрачный */
+  .mapping-combo input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: none;
+    background: transparent;
+    /* Резервируем место справа под крестик (20) + шеврон (24) + воздух */
+    padding: 0 56px 0 12px;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    font-family: inherit;
+  }
+  .mapping-combo.from-user input { padding-left: 10px; }
+  .mapping-combo input::placeholder { color: var(--text-3); }
+
+  /* Группа кнопок справа: крестик + шеврон */
+  .mapping-combo-actions {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  /* Крестик-очистка */
+  .mapping-combo-clear {
+    width: 20px; height: 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    border-radius: 4px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+  }
+  .mapping-combo-clear:hover { color: var(--text); }
+  .mapping-combo.has-value .mapping-combo-clear,
+  .mapping-combo.has-text .mapping-combo-clear { display: inline-flex; }
+
+  /* Шеврон — всегда виден, открывает дропдаун */
+  .mapping-combo-chev {
+    width: 22px; height: 22px;
+    border: none;
+    background: transparent;
+    color: var(--text-3);
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.12s;
+  }
+  .mapping-combo-chev:hover { color: var(--text); }
+  .mapping-combo.focused .mapping-combo-chev { transform: rotate(180deg); color: var(--text); }
+
+  /* Выпадашка для "Роль у вас" */
+  .mapping-role-dd {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0; right: 0;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 6px;
+    z-index: 60;
+    display: none;
+    max-height: 360px;
+    overflow-y: auto;
+    min-width: 260px;
+  }
+  .mapping-role-dd.open { display: block; }
+  .mapping-role-dd .role-dd-label {
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 8px 10px 4px;
+  }
+  .mapping-role-dd .role-dd-divider {
+    height: 0.5px;
+    background: var(--border);
+    margin: 6px 8px;
+  }
+  .mapping-role-dd .role-dd-opt {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .mapping-role-dd .role-dd-opt:hover,
+  .mapping-role-dd .role-dd-opt.highlighted { background: var(--surface-2); }
+  .mapping-role-dd .role-dd-opt.current { background: var(--accent-bg); color: var(--accent); font-weight: 500; }
+  .mapping-role-dd .role-dd-opt .target {
+    font-size: 12px;
+    color: var(--text-3);
+    font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+  }
+  .mapping-role-dd .ghost-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .mapping-role-dd .ghost-opt:hover { background: var(--surface-2); }
+  .mapping-role-dd .ghost-opt.current { background: var(--accent-bg); color: var(--accent); }
+  .mapping-role-dd .dd-empty {
+    padding: 12px 10px;
+    font-size: 12px;
+    color: var(--text-3);
+    text-align: center;
+  }
+
+  .sync-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 14px 24px;
+    border-top: 0.5px solid var(--border);
+    background: var(--surface);
+  }
+
+  /* Toast */
+  .toast-area {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    pointer-events: none;
+  }
+  .toast {
+    background: #1f1f1d;
+    color: #fff;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: auto;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Utilities */
+  .row { display: flex; align-items: center; gap: 8px; }
+  .icon-inline { display: inline-flex; align-items: center; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<!-- ICON DEFINITIONS as <symbol> -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12L12 3l9 9M5 10v10h14V10"/>
+    </symbol>
+    <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+    </symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="7" height="7"/>
+      <rect x="13" y="4" width="7" height="7"/>
+      <rect x="4" y="13" width="7" height="7"/>
+      <rect x="13" y="13" width="7" height="7"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="m20 20-3-3"/>
+    </symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 19h12l-1.5-2V11a4.5 4.5 0 1 0-9 0v6L6 19z"/>
+      <path d="M10 22h4"/>
+    </symbol>
+    <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .6-1.5 1.2-1.5 2"/>
+      <circle cx="12" cy="17" r="0.5"/>
+    </symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.7 1.7 0 0 0 .4 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.4 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .4-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.4-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.4h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.4l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.4 1.9v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6 6 18M6 6l12 12"/>
+    </symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14M5 12h14"/>
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m6 9 6 6 6-6"/>
+    </symbol>
+    <symbol id="i-chevron-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m9 6 6 6-6 6"/>
+    </symbol>
+    <symbol id="i-chevron-left" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m15 6-6 6 6 6"/>
+    </symbol>
+    <symbol id="i-chevron-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m6 15 6-6 6 6"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 12l5 5 11-11"/>
+    </symbol>
+    <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/>
+      <path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>
+    </symbol>
+    <symbol id="i-dot" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-dots" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>
+    </symbol>
+    <symbol id="i-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 3l18 18"/>
+      <path d="M10.6 6.2A9.5 9.5 0 0 1 12 6c5 0 9 4 10 6-.4.7-1.3 2-2.8 3.4M6.6 6.6C4.6 8 3.4 9.7 2.8 11c0 0 4 6 9.2 6 1.4 0 2.7-.3 3.8-.8"/>
+      <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 5h16l-6 8v6l-4-2v-4z"/>
+    </symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="7" x2="9" y2="7"/>
+      <line x1="14" y1="7" x2="20" y2="7"/>
+      <circle cx="11.5" cy="7" r="2.2"/>
+      <line x1="4" y1="17" x2="13" y2="17"/>
+      <line x1="18" y1="17" x2="20" y2="17"/>
+      <circle cx="15.5" cy="17" r="2.2"/>
+    </symbol>
+    <symbol id="i-grip" viewBox="0 0 24 24" fill="currentColor">
+      <circle cx="9" cy="6" r="1.3"/><circle cx="15" cy="6" r="1.3"/>
+      <circle cx="9" cy="12" r="1.3"/><circle cx="15" cy="12" r="1.3"/>
+      <circle cx="9" cy="18" r="1.3"/><circle cx="15" cy="18" r="1.3"/>
+    </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12a9 9 0 0 1 15.5-6.3L21 8"/>
+      <path d="M21 3v5h-5"/>
+      <path d="M21 12a9 9 0 0 1-15.5 6.3L3 16"/>
+      <path d="M3 21v-5h5"/>
+    </symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 12V4h8l10 10-8 8z"/>
+      <circle cx="7" cy="8" r="1.5"/>
+    </symbol>
+    <symbol id="i-badge-tag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3l7 4v6c0 4-3 7-7 8-4-1-7-4-7-8V7z"/>
+      <path d="M9 12l2 2 4-4"/>
+    </symbol>
+    <symbol id="i-tag-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 3l18 18"/>
+      <path d="M3 12V4h8l10 10-3 3"/>
+    </symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 4l6 6L8 22H2v-6z"/>
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3 6h18"/>
+      <path d="M19 6 18 21H6L5 6"/>
+      <path d="M10 11v6M14 11v6"/>
+      <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/>
+    </symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M12 11v6M12 7h.01"/>
+    </symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4 2 20h20z"/>
+      <path d="M12 10v5M12 18h.01"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3 4 6v6c0 4.5 3.4 8.6 8 9 4.6-.4 8-4.5 8-9V6z"/>
+      <path d="m9 12 2 2 4-4"/>
+    </symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2"/>
+      <path d="M8 11V8a4 4 0 0 1 8 0v3"/>
+    </symbol>
+    <symbol id="i-lock-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="5" y="11" width="14" height="10" rx="2"/>
+      <path d="M8 11V8a4 4 0 0 1 7.5-2"/>
+    </symbol>
+    <symbol id="i-arrow-up-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7 17 17 7M9 7h8v8"/>
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12h14M13 6l6 6-6 6"/>
+    </symbol>
+    <symbol id="i-money" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M9 14c0 1.1 1.3 2 3 2s3-.9 3-2-1.3-2-3-2-3-.9-3-2 1.3-2 3-2 3 .9 3 2"/>
+      <path d="M12 6v12"/>
+    </symbol>
+  </defs>
+</svg>
+
+
+<div class="app">
+  <!-- ============= ГЛОБАЛЬНАЯ НАВИГАЦИЯ ============= -->
+  <header class="top-nav">
+    <span class="logo">Quotalogic</span>
+    <button class="tn-btn" title="Главная"><svg width="14" height="14"><use href="#i-home"/></svg></button>
+    <button class="tn-btn active" title="Каталоги"><svg width="14" height="14"><use href="#i-grid"/></svg></button>
+    <button class="tn-btn" title="Папки"><svg width="14" height="14"><use href="#i-folder"/></svg></button>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-tag"/></svg></button>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-grid"/></svg></button>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-folder"/></svg></button>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-grid"/></svg></button>
+    <span class="spacer"></span>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-search"/></svg></button>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-bell"/></svg></button>
+    <button class="tn-btn"><svg width="14" height="14"><use href="#i-help"/></svg></button>
+    <div class="user">
+      <div class="ava">EP</div>
+      <span>Engine Pro</span>
+      <svg width="12" height="12"><use href="#i-chevron-down"/></svg>
+    </div>
+  </header>
+
+  <!-- ============= ШАПКА СТРАНИЦЫ КАТАЛОГА ============= -->
+  <div class="page-header">
+    <div class="page-title-row">
+      <div class="page-title">Auto Service Tools</div>
+      <button class="planet-btn" id="openSync" title="Центр синхронизации">
+        <svg width="18" height="18"><use href="#i-globe"/></svg>
+        <span class="dot"></span>
+      </button>
+
+      <button class="modal-warning-chip page-roles-chip" id="pageRolesChip" type="button">
+        <svg width="12" height="12"><use href="#i-warning"/></svg>
+        <span>Предложение будет неполным</span>
+        <div class="tt" id="pageRolesChipTt">Не назначены ключевые роли полей каталога для коммерческого предложения</div>
+      </button>
+
+      <span style="flex:1"></span>
+      <button class="icon-btn" title="Удалить" style="border-color: transparent;">
+        <svg width="16" height="16"><use href="#i-trash"/></svg>
+      </button>
+    </div>
+    <div class="tabs">
+      <button class="tab active">Товары</button>
+      <button class="tab">Настройки</button>
+      <button class="tab">Доступ</button>
+      <button class="tab">Импорт и экспорт</button>
+    </div>
+  </div>
+
+  <!-- ============= ОСНОВНОЙ КОНТЕНТ ============= -->
+  <div class="main">
+
+    <!-- Дерево разделов -->
+    <aside class="tree">
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Diagnostic Equipment</div>
+      <div class="tree-item sub active"><svg class="chev" width="12" height="12"><use href="#i-chevron-down"/></svg>OBD-II Scanners</div>
+      <div class="tree-item sub"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Engine Analyzers</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Battery Testers</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Emission Testers</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Car Jacks</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Air &amp; Power Tools</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Oil &amp; Fluids Equipment</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Fluid Pumps</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Workshop Accessories</div>
+      <div class="tree-item"><svg class="chev" width="12" height="12"><use href="#i-chevron-right"/></svg>Storage Cabinets</div>
+    </aside>
+
+    <!-- Таблица товаров -->
+    <main class="catalog">
+      <div class="catalog-section-title">
+        <span class="toggle"><svg width="14" height="14"><use href="#i-chevron-down"/></svg></span>
+        OBD-II Scanners
+      </div>
+
+      <div class="table-wrap">
+        <table class="catalog-table" id="catalogTable">
+          <thead>
+            <tr>
+              <!-- 1. Product Name -->
+              <th data-col="name">
+                <div class="col-head" data-field="name" data-role="r-name" data-role-label="Название">
+                  <span class="role-tag r-name">Название</span>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-tag"/></svg></span>
+                    <span class="field-name">Product Name</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 2. Retail Price -->
+              <th data-col="retail">
+                <div class="col-head" data-field="retail" data-role="r-price-base" data-role-label="Базовая цена">
+                  <span class="role-tag r-price-base">Базовая цена</span>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-money"/></svg></span>
+                    <span class="field-name">Retail Price</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 3. Dealer Price (Цена опт) -->
+              <th data-col="dealer">
+                <div class="col-head" data-field="dealer" data-role="r-price-dealer" data-role-label="Цена опт">
+                  <span class="role-tag r-price-dealer">Цена опт</span>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-money"/></svg></span>
+                    <span class="field-name">Dealer Price +10%</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 4. HeCustom price 1 -->
+              <th data-col="hecustom">
+                <div class="col-head" data-field="hecustom" data-role="r-none">
+                  <div style="height: 17px"></div>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-money"/></svg></span>
+                    <span class="field-name">HeCustom price 1</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 5. Sale Price (Цена скидка) -->
+              <th data-col="sale">
+                <div class="col-head" data-field="sale" data-role="r-price-sale" data-role-label="Цена скидка">
+                  <span class="role-tag r-price-sale">Цена скидка</span>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-money"/></svg></span>
+                    <span class="field-name">Sale Price +10% (-10%)</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 6. Custom Price 2 -->
+              <th data-col="custom2">
+                <div class="col-head" data-field="custom2" data-role="r-none">
+                  <div style="height: 17px"></div>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-money"/></svg></span>
+                    <span class="field-name">Custom Price 2</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 7. Preferred Price 1 -->
+              <th data-col="preferred">
+                <div class="col-head" data-field="preferred" data-role="r-price-preferred" data-role-label="Цена скидка">
+                  <span class="role-tag r-price-preferred">Цена скидка</span>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-money"/></svg></span>
+                    <span class="field-name">Preferred Price 1 +15%</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 8. Product Overview (без роли) -->
+              <th data-col="overview">
+                <div class="col-head" data-field="overview" data-role="r-none">
+                  <div style="height: 17px"></div>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-tag"/></svg></span>
+                    <span class="field-name">Product Overview</span>
+                  </div>
+                </div>
+              </th>
+              <!-- 9. Tech Specs (Артикул) -->
+              <th data-col="tech">
+                <div class="col-head" data-field="tech" data-role="r-sku" data-role-label="Артикул">
+                  <span class="role-tag r-sku">Артикул</span>
+                  <div class="field-row">
+                    <span class="type-icon"><svg width="12" height="12"><use href="#i-tag"/></svg></span>
+                    <span class="field-name">Tech Specs</span>
+                  </div>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="first">Sprinter 3500 (Gas Engine 2.7L)</td>
+              <td>100</td>
+              <td></td>
+              <td>+10%</td>
+              <td>2,200,000.00</td>
+              <td>+15%</td>
+              <td>1,200,000.00</td>
+              <td>Sprinter 3500 (Gas Engine 2.7L)</td>
+              <td>Kenworth T800 (Diesel Engine 6…</td>
+            </tr>
+            <tr>
+              <td class="first">Peterbilt 389 (V8 Engine)</td>
+              <td>1,900,000.00</td>
+              <td></td>
+              <td>+10%</td>
+              <td>3,500,000.00</td>
+              <td>+24%</td>
+              <td>2,200,000.00</td>
+              <td>Sprinter 3500 (Gas Engine 2.7L)</td>
+              <td>Kenworth T800 (Diesel Engine 6…</td>
+            </tr>
+            <tr>
+              <td class="first">Sprinter 2400 (Gas Engine 2.4L)</td>
+              <td>2,200,000.00</td>
+              <td></td>
+              <td>+10%</td>
+              <td></td>
+              <td>+15%</td>
+              <td>1,200,000.00</td>
+              <td>Sprinter 3500 (Gas Engine 2.7L)</td>
+              <td>Kenworth T800 (Diesel Engine 6…</td>
+            </tr>
+            <tr>
+              <td class="first">Sprinter 1700 (Gas Engine 1.7L)</td>
+              <td>2,200,000.00</td>
+              <td></td>
+              <td>+10%</td>
+              <td></td>
+              <td>+10%</td>
+              <td>1,200,000.00</td>
+              <td>Sprinter 3500 (Gas Engine 2.7L)</td>
+              <td>Kenworth T800 (Diesel Engine 6…</td>
+            </tr>
+            <tr>
+              <td class="first">Sprinter 1200 (Gas Engine 1.2L)</td>
+              <td>2,200,000.00</td>
+              <td>+10%</td>
+              <td>1,900,000.00</td>
+              <td>+10%</td>
+              <td>1,200,000.00</td>
+              <td>+15%</td>
+              <td>Sprinter 3500 (Gas Engine 2.7L)</td>
+              <td>Kenworth T800 (Diesel Engine 6…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============= ДРОПДАУН ОТ КЛИКА ПО ШАПКЕ КОЛОНКИ ============= -->
+<div class="dropdown" id="colDropdown" style="display:none">
+  <div class="dd-input-row">
+    <span class="ico"><svg width="13" height="13"><use href="#i-money"/></svg></span>
+    <input type="text" id="colDropdownInput" value="" />
+  </div>
+  <div class="dd-item">
+    <span class="ico"><svg width="16" height="16"><use href="#i-link"/></svg></span>
+    Добавить зависимое поле
+    <span class="chev-right"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span>
+  </div>
+  <div class="dd-sep"></div>
+  <div class="dd-item" id="openFieldSettings">
+    <span class="ico"><svg width="16" height="16"><use href="#i-settings"/></svg></span>
+    Настройки полей каталога
+  </div>
+  <div class="dd-item" id="openMapping">
+    <span class="ico"><svg width="16" height="16"><use href="#i-badge-tag"/></svg></span>
+    Поля для КП
+  </div>
+  <div class="dd-sep"></div>
+  <div class="dd-item">
+    <span class="ico"><svg width="16" height="16"><use href="#i-x"/></svg></span>
+    Удалить из раздела и подразделов
+  </div>
+  <div class="dd-item">
+    <span class="ico"><svg width="16" height="16"><use href="#i-trash"/></svg></span>
+    Удалить из каталога
+  </div>
+</div>
+
+<!-- ============= МОДАЛКА НАСТРОЕК ПОЛЕЙ КАТАЛОГА ============= -->
+<div class="overlay" id="fieldSettingsOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Настройки полей каталога</div>
+      <button class="modal-create"><svg width="13" height="13"><use href="#i-plus"/></svg>Создать поле</button>
+      <span style="flex:1"></span>
+      <button class="modal-close" id="closeFieldSettings"><svg width="14" height="14"><use href="#i-x"/></svg></button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Левая панель: список полей -->
+      <div class="ml-left">
+        <div class="ml-search-row">
+          <div class="ml-search">
+            <svg class="icon-search"><use href="#i-search"/></svg>
+            <input type="text" placeholder="Поиск" id="fieldSearch" />
+            <button class="ml-search-clear" id="fieldSearchClear" type="button" aria-label="Очистить поиск">
+              <svg width="12" height="12"><use href="#i-x"/></svg>
+            </button>
+          </div>
+          <button class="filter-btn" id="fieldsLink" title="Скопировать ссылку на этот экран" style="margin-left:auto">
+            <svg width="17" height="17"><use href="#i-link"/></svg>
+          </button>
+        </div>
+
+        <!-- Сам список -->
+        <div class="ml-list" id="fieldList"></div>
+      </div>
+
+      <!-- Правая панель: детали выбранного поля -->
+      <div class="ml-right" id="fieldDetails"></div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ============= МОДАЛКА "ПОЛЯ ДЛЯ КОММЕРЧЕСКОГО ПРЕДЛОЖЕНИЯ" ============= -->
+<div class="overlay" id="mappingOverlay">
+  <div class="modal mapping-modal">
+    <div class="mapping-head">
+      <div class="mapping-head-top">
+        <div class="mapping-head-title">Поля для коммерческого предложения</div>
+        <button class="modal-close" id="closeMapping"><svg width="14" height="14"><use href="#i-x"/></svg></button>
+      </div>
+      <div class="mapping-head-sub">Привяжите поля каталога к ролям в коммерческом предложении</div>
+    </div>
+    <div class="mapping-toolbar">
+      <div class="mapping-search">
+        <input type="text" id="mappingSearch" placeholder="Поиск по полю или роли" autocomplete="off" />
+        <button class="mapping-search-clear" id="mappingSearchClear" type="button" aria-label="Очистить">
+          <svg width="12" height="12"><use href="#i-x"/></svg>
+        </button>
+      </div>
+      <div class="mapping-filter-segments" id="mappingFilterSegments">
+        <button class="seg on" data-mfilter="all" type="button">
+          Все<span class="count" data-count="all">0</span>
+        </button>
+        <button class="seg" data-mfilter="unassigned" type="button">
+          Не назначены<span class="count" data-count="unassigned">0</span>
+        </button>
+        <button class="seg" data-mfilter="conflict" type="button">
+          Расходятся<span class="count" data-count="conflict">0</span>
+        </button>
+      </div>
+    </div>
+    <div class="mapping-body" id="mappingBody"></div>
+  </div>
+</div>
+
+<!-- ============= ЦЕНТР СИНХРОНИЗАЦИИ ============= -->
+<div class="overlay" id="syncOverlay">
+  <div class="modal sync-modal" id="syncModal" data-screen="main">
+
+    <!-- Шапка главного экрана -->
+    <div class="sync-head" data-screen="main">
+      <button class="icon-btn-sm" id="closeSync"><svg width="14" height="14"><use href="#i-x"/></svg></button>
+      <div class="title">Центр синхронизации</div>
+      <button class="icon-btn-sm" title="Обновить"><svg width="14" height="14"><use href="#i-refresh"/></svg></button>
+      <button class="icon-btn-sm"><svg width="14" height="14"><use href="#i-dots"/></svg></button>
+    </div>
+
+    <!-- Шапка экрана Маппинг ролей (показывается в режиме mapping) -->
+    <div class="sync-head" data-screen="mapping" style="display:none">
+      <button class="sync-back-btn" id="backFromMapping"><svg width="14" height="14"><use href="#i-chevron-left"/></svg></button>
+      <div class="title">Защищенные данные — Маппинг ролей</div>
+      <button class="icon-btn-sm" title="Обновить"><svg width="14" height="14"><use href="#i-refresh"/></svg></button>
+      <button class="icon-btn-sm"><svg width="14" height="14"><use href="#i-dots"/></svg></button>
+    </div>
+
+    <!-- Главное содержимое -->
+    <div class="sync-body" data-screen="main">
+
+      <div class="sync-supplier">
+        <div class="ava">AB</div>
+        <div class="main">
+          <div class="name">Проктор и Гэмбл</div>
+          <div class="sub">Текущая версия от 23.02.2343 · <a href="#" onclick="return false">История</a></div>
+        </div>
+        <span class="badge-active">Активно</span>
+        <button class="ext-link"><svg width="13" height="13"><use href="#i-arrow-up-right"/></svg></button>
+      </div>
+
+      <div class="sync-section sync-autoupdate">
+        <div class="top">
+          <div>
+            <div class="titletext">Автоматический прием безопасных обновлений</div>
+            <div class="desc">Локальные правки и спорные случаи не будут применяться автоматически</div>
+          </div>
+          <div class="switch" id="autoSwitch"><div class="thumb"></div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="bottom">
+          <div class="label">
+            Доступны обновления от 24.05.2024
+            <svg class="chev"><use href="#i-chevron-down"/></svg>
+          </div>
+          <button class="btn-primary">Принять</button>
+        </div>
+      </div>
+
+      <div class="sync-protected">
+        <div class="h">Защищенные данные</div>
+        <div class="desc">Данные, которые были переопределены вручную и не будут изменены апдейтом</div>
+
+        <div class="sync-protected-list">
+          <div class="sync-prot-item" data-screen-target="mapping" id="openMappingInSync">
+            <span class="shield"><svg width="14" height="14"><use href="#i-shield"/></svg></span>
+            <span class="label">Маппинг ролей</span>
+            <span class="diff">различий: 12</span>
+            <span class="arrow"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span>
+          </div>
+          <div class="sync-prot-item">
+            <span class="shield"><svg width="14" height="14"><use href="#i-shield"/></svg></span>
+            <span class="label">Свойства полей</span>
+            <span class="diff">различий: 3</span>
+            <span class="arrow"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span>
+          </div>
+          <div class="sync-prot-item">
+            <span class="shield"><svg width="14" height="14"><use href="#i-shield"/></svg></span>
+            <span class="label">Настройки каталога</span>
+            <span class="diff">различий: 1</span>
+            <span class="arrow"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span>
+          </div>
+          <div class="sync-prot-item">
+            <span class="shield"><svg width="14" height="14"><use href="#i-shield"/></svg></span>
+            <span class="label">Товары</span>
+            <span class="diff">различий: 47</span>
+            <span class="arrow"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span>
+          </div>
+          <div class="sync-prot-item">
+            <span class="shield"><svg width="14" height="14"><use href="#i-shield"/></svg></span>
+            <span class="label">Разделы</span>
+            <span class="diff">различий: 2</span>
+            <span class="arrow"><svg width="14" height="14"><use href="#i-chevron-right"/></svg></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Экран Маппинг ролей -->
+    <div class="sync-body" data-screen="mapping" style="display:none">
+
+      <div class="mapping-info">
+        Только данные, переопределённые локально и не принимающие обновления
+      </div>
+
+      <div class="mapping-table">
+        <div class="mapping-table-header">
+          <div>Поле</div>
+          <div></div>
+          <div>Системная роль у поставщика</div>
+          <div></div>
+          <div>Системная роль у вас</div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico">T</span>
+            <span class="name">name</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select">
+              <option>Имя</option>
+              <option>Название</option>
+              <option>Описание</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select">
+              <option>Описание</option>
+              <option>Имя</option>
+              <option>Анонс</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico">#</span>
+            <span class="name">vendor_code</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select empty">
+              <option>Не назначена</option>
+              <option>Артикул</option>
+              <option>SKU</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select">
+              <option>Артикул</option>
+              <option>SKU</option>
+              <option>Идентификатор</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico">T</span>
+            <span class="name">long_Description</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select">
+              <option>Описание</option>
+              <option>Анонс</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select">
+              <option>Анонс</option>
+              <option>Описание</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico">#</span>
+            <span class="name">product_name</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select">
+              <option>Описание продукта</option>
+              <option>Имя</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select empty">
+              <option>Не передается</option>
+              <option>Имя</option>
+              <option>Описание</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico" style="background:transparent"><svg width="14" height="14"><use href="#i-money"/></svg></span>
+            <span class="name">price_usd</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select empty">
+              <option>Не назначена</option>
+              <option>Стоимость</option>
+              <option>Базовая цена</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select">
+              <option>Стоимость</option>
+              <option>Базовая цена</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico">#</span>
+            <span class="name">stock_quantity</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select empty">
+              <option>Не назначена</option>
+              <option>Остаток</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select">
+              <option>Остаток</option>
+              <option>Количество на складе</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mapping-row">
+          <div class="field-cell">
+            <span class="type-ico">T</span>
+            <span class="name">supplier_name</span>
+          </div>
+          <div></div>
+          <div>
+            <select class="mapping-select">
+              <option>Поставщик товара</option>
+              <option>Бренд</option>
+            </select>
+          </div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          <div>
+            <select class="mapping-select empty">
+              <option>Не передается</option>
+              <option>Бренд</option>
+              <option>Поставщик</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Подвал с кнопкой Синхронизировать (только на экране mapping) -->
+    <div class="sync-footer" data-screen="mapping" style="display:none">
+      <button class="btn-primary">Синхронизировать все</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-area" id="toastArea"></div>
+
+<script>
+//============================================
+// ДАННЫЕ: поля и системные роли
+//============================================
+
+// Все роли продукта (системные). isKey — ключевые роли, без которых
+// коммерческое предложение будет неполным.
+const ROLES = [
+  { key: 'name', label: 'Название', cls: 'r-name', desc: 'Имя товара', isKey: true },
+  { key: 'price_base', label: 'Цена', cls: 'r-price-base', desc: 'Розничная цена', isKey: true },
+  { key: 'announce', label: 'Анонс', cls: 'r-name', desc: 'Краткое описание', isKey: true },
+  { key: 'price_dealer', label: 'Цена опт', cls: 'r-price-dealer', desc: 'Дилерская цена' },
+  { key: 'price_sale', label: 'Цена скидка', cls: 'r-price-sale', desc: 'Цена со скидкой' },
+  { key: 'sku', label: 'Артикул', cls: 'r-sku', desc: 'Уникальный идентификатор' },
+  { key: 'stock', label: 'Остаток', cls: 'r-stock', desc: 'Количество на складе' },
+  { key: 'brand', label: 'Бренд', cls: 'r-overview', desc: 'Производитель' },
+  { key: 'weight', label: 'Вес', cls: 'r-overview', desc: 'Вес товара' },
+  { key: 'category', label: 'Категория', cls: 'r-overview', desc: 'Раздел каталога' },
+];
+
+// Поля каталога — в порядке колонок таблицы
+let FIELDS = [
+  // supplierRole = роль, которую поставщик прислал на этом поле. Может быть:
+  //  - конкретная роль (например, 'name') → если у вас тоже эта роль и !isOverride, значит унаследовали
+  //  - null → поставщик не назначил роль (либо локальный каталог)
+  //  - 'excluded' → поставщик пометил «не передавать» (редкий кейс)
+  { id: 'name', name: 'name', label: 'Название', type: 'T', icon: 'i-tag', role: 'name', supplierRole: 'name', visible: true, isOverride: false, isGhost: false, supplierField: 'name' },
+  { id: 'retail', name: 'retailPrice', label: 'Базовая цена', type: '#', icon: 'i-money', role: 'price_base', supplierRole: 'price_base', visible: true, isOverride: false, isGhost: false, supplierField: 'retailPrice' },
+  { id: 'dealer', name: 'dealerPrice', label: 'Цена опт +10%', type: '#', icon: 'i-money', role: 'price_dealer', supplierRole: 'price_base', visible: true, isOverride: true, isGhost: false, supplierField: 'Dealer Price' },
+  { id: 'hecustom', name: 'heCustomPrice1', label: 'HeCustom price 1', type: '#', icon: 'i-money', role: null, supplierRole: null, visible: true, isOverride: false, isGhost: false, supplierField: null },
+  { id: 'sale', name: 'salePrice', label: 'Цена скидка +10%', type: '#', icon: 'i-money', role: 'price_sale', supplierRole: 'price_sale', visible: true, isOverride: false, isGhost: false, supplierField: 'salePrice' },
+  { id: 'custom2', name: 'customPrice2', label: 'Custom Price 2', type: '#', icon: 'i-money', role: null, supplierRole: null, visible: true, isOverride: false, isGhost: false, supplierField: null },
+  { id: 'preferred', name: 'preferredPrice', label: 'Preferred Price 1 +15%', type: '#', icon: 'i-money', role: 'price_sale_2', supplierRole: 'price_sale', visible: true, isOverride: true, isGhost: false, supplierField: 'price.preferred' },
+  { id: 'overview', name: 'productOverview', label: 'Product Overview', type: 'T', icon: 'i-tag', role: 'excluded', supplierRole: 'announce', visible: false, isOverride: true, isGhost: false, supplierField: 'productOverview' },
+  { id: 'tech', name: 'techSpecs', label: 'Tech Specs', type: 'T', icon: 'i-tag', role: 'sku', supplierRole: 'sku', visible: true, isOverride: false, isGhost: false, supplierField: 'techSpecs' },
+];
+
+// Текущее состояние
+let currentFilter = 'all';
+let selectedFieldId = 'dealer';
+
+//============================================
+// HELPERS
+//============================================
+function $ (sel, ctx = document) { return ctx.querySelector(sel); }
+function $$ (sel, ctx = document) { return Array.from(ctx.querySelectorAll(sel)); }
+
+function getRole(key) { return ROLES.find(r => r.key === key); }
+
+function getRoleBadgeHtml(field, small = false) {
+  if (!field.role) return '';
+  const role = getRole(field.role) || { label: 'Роль', cls: 'r-overview' };
+  return `<span class="role-tag ${role.cls}">${role.label}</span>`;
+}
+
+function applyFilter(field) {
+  if (currentFilter === 'all') return true;
+  if (currentFilter === 'hidden') return !field.visible;
+  return true;
+}
+
+//============================================
+// РЕНДЕР списка полей в модалке
+//============================================
+function renderFieldList() {
+  const list = $('#fieldList');
+  const filtered = currentFilter !== 'all';
+  list.classList.toggle('filtered', filtered);
+
+  const fields = FIELDS.filter(applyFilter);
+
+  list.innerHTML = fields.map(f => {
+    const isActive = f.id === selectedFieldId;
+    const eyeIcon = f.visible ? 'i-eye' : 'i-eye-off';
+    const hiddenCls = !f.visible ? 'hidden-field' : '';
+
+    // Техническое имя поля над названием — показываем всегда
+    const roleTagHtml = `<span class="field-role-tag">${f.name}</span>`;
+
+    // Связь с полем поставщика (если есть)
+    const supplierHtml = f.supplierField
+      ? `<div class="supplier-link"><svg><use href="#i-link"/></svg>${f.supplierField}</div>`
+      : '';
+
+    return `
+      <div class="field-row ${isActive ? 'active' : ''} ${hiddenCls}" data-field="${f.id}">
+        <span class="type-ico"><svg width="14" height="14"><use href="#${f.icon}"/></svg></span>
+        <div class="field-body">
+          ${roleTagHtml}
+          <div class="field-label">${f.label}</div>
+          ${supplierHtml}
+        </div>
+        <span class="eye"><svg width="14" height="14"><use href="#${eyeIcon}"/></svg></span>
+        <span class="grip"><svg width="12" height="12"><use href="#i-grip"/></svg></span>
+      </div>
+    `;
+  }).join('');
+
+  $$('#fieldList .field-row').forEach(row => {
+    row.addEventListener('click', () => {
+      if (filtered) return;
+      selectedFieldId = row.dataset.field;
+      renderFieldList();
+      renderFieldDetails();
+    });
+  });
+}
+
+//============================================
+// РЕНДЕР правой панели с деталями
+//============================================
+function renderFieldDetails() {
+  const field = FIELDS.find(f => f.id === selectedFieldId);
+  if (!field) return;
+
+  $('#fieldDetails').innerHTML = `
+    <div class="form-label">Тип и название поля</div>
+    <div class="form-input-row">
+      <div class="form-input">
+        <span class="input-prefix"><svg width="14" height="14" style="color:var(--text-3)"><use href="#${field.icon}"/></svg></span>
+        <input type="text" value="${field.label}" />
+      </div>
+      <button class="icon-btn"><svg width="14" height="14"><use href="#i-refresh"/></svg></button>
+      <button class="icon-btn"><svg width="14" height="14"><use href="#i-dots"/></svg></button>
+    </div>
+
+    <div class="section-title">Покрытие разделов</div>
+    <div class="coverage-row">
+      <div class="label-row"><span class="chev"><svg width="12" height="12"><use href="#i-chevron-down"/></svg></span>Название каталога</div>
+      <span class="pct">25%</span>
+      <span class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></span>
+    </div>
+    <div class="coverage-row indent">
+      <div class="label-row"><span class="chev"><svg width="12" height="12"><use href="#i-chevron-down"/></svg></span>Diagnostic Equipment</div>
+      <span class="pct">25%</span>
+      <span class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></span>
+    </div>
+    <div class="coverage-row indent2">
+      <div class="label-row"><span class="chev"><svg width="12" height="12"><use href="#i-chevron-down"/></svg></span>OBD-II Scanners</div>
+      <span class="pct">100%</span>
+      <span class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></span>
+    </div>
+    <div class="coverage-row indent3">
+      <div>Engine Analyzers</div>
+      <span class="pct">24%</span>
+      <span class="ck" style="background:var(--surface-2);color:var(--text-3)"><svg width="11" height="11"><use href="#i-check"/></svg></span>
+    </div>
+    <div class="coverage-row indent2">
+      <div class="label-row"><span class="chev"><svg width="12" height="12"><use href="#i-chevron-right"/></svg></span>Battery Testers</div>
+      <span class="pct">—</span>
+      <span class="ck" style="background:transparent;border:0.5px solid var(--border-2);color:transparent">—</span>
+    </div>
+    <div class="coverage-row indent">
+      <div class="label-row"><span class="chev"><svg width="12" height="12"><use href="#i-chevron-right"/></svg></span>Emission Testers</div>
+      <span class="pct">25%</span>
+      <span class="ck"><svg width="11" height="11"><use href="#i-check"/></svg></span>
+    </div>
+  `;
+}
+
+//============================================
+// (старый attachRoleSelectHandlers больше не вызывается из renderFieldDetails)
+// Оставим определение, чтобы не ломать другие места — он сейчас не подвязан ни к чему.
+//============================================
+function attachRoleSelectHandlers(field) {
+  const btn = $('#roleSelectBtn');
+  const dd = $('#roleDd');
+  const list = $('#roleDdList');
+
+  // Подходящая по имени поля (упрощённая эвристика)
+  const matched = ROLES.find(r => field.name.toLowerCase().includes(r.key.replace(/_/g, '').slice(0,4)) || (r.label.toLowerCase().includes(field.label.toLowerCase().slice(0, 4))));
+
+  let html = '';
+  if (matched && field.role !== matched.key) {
+    html += `<div class="role-dd-label">Подходит по имени поля</div>`;
+    html += renderRoleOption(matched, field);
+  }
+
+  const keyRoles = ROLES.filter(r => r.isKey);
+  const otherRoles = ROLES.filter(r => !r.isKey);
+
+  html += `<div class="role-dd-label">Ключевые роли</div>`;
+  keyRoles.forEach(r => {
+    html += renderRoleOption(r, field);
+  });
+
+  if (otherRoles.length) {
+    html += `<div class="role-dd-divider"></div>`;
+    html += `<div class="role-dd-label">Дополнительные роли</div>`;
+    otherRoles.forEach(r => {
+      html += renderRoleOption(r, field);
+    });
+  }
+
+  list.innerHTML = html;
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!dd.contains(e.target) && e.target !== btn) {
+      dd.classList.remove('open');
+    }
+  });
+
+  $$('#roleDd .role-dd-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const newRole = opt.dataset.role;
+      const usedByOther = FIELDS.find(f => f.id !== field.id && f.role === newRole);
+      if (usedByOther) {
+        if (!confirm(`Роль уже на поле "${usedByOther.label}". Перенести её сюда?`)) return;
+        usedByOther.role = null;
+      }
+      field.role = newRole;
+      field.isGhost = false;
+      dd.classList.remove('open');
+      renderFieldList();
+      renderFieldDetails();
+      renderTableHeaders();
+      toast(`Назначено: ${getRole(newRole).label}`);
+    });
+  });
+
+  $$('#roleDd .ghost-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      const action = opt.dataset.action;
+      if (action === 'clear') {
+        field.isGhost = false;
+        field.isOverride = false;
+        field.role = null;
+        toast('Роль снята');
+      }
+      dd.classList.remove('open');
+      renderFieldList();
+      renderFieldDetails();
+      renderTableHeaders();
+    });
+  });
+
+  // Клик по кнопке-замочку — переключение защиты от обновлений
+  const lockBtn = $('#roleLockBtn');
+  if (lockBtn) {
+    lockBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasProtected = field.isOverride || field.isGhost;
+      if (wasProtected) {
+        field.isOverride = false;
+        field.isGhost = false;
+        toast('Принимаем обновления роли от поставщика');
+      } else {
+        if (field.role) {
+          field.isOverride = true;
+        } else {
+          field.isGhost = true;
+        }
+        toast('Не принимаем обновления роли');
+      }
+      renderFieldList();
+      renderFieldDetails();
+      renderTableHeaders();
+    });
+  }
+}
+
+function renderRoleOption(role, currentField) {
+  const usedBy = FIELDS.find(f => f.role === role.key);
+  const isCurrent = currentField.role === role.key;
+  return `
+    <div class="role-dd-opt ${isCurrent ? 'current' : ''}" data-role="${role.key}">
+      <span class="name">${role.label}</span>
+      <span class="target">${usedBy ? usedBy.name : ''}</span>
+    </div>
+  `;
+}
+
+//============================================
+// Перерисовка шапок таблицы (после изменений ролей)
+//============================================
+function renderTableHeaders() {
+  $$('#catalogTable thead th').forEach(th => {
+    const colId = th.dataset.col;
+    const field = FIELDS.find(f => f.id === colId);
+    if (!field) return;
+    const head = th.querySelector('.col-head');
+
+    // Бейдж в шапке колонки
+    let badge = head.querySelector('.role-tag');
+    if (badge) badge.remove();
+    const placeholder = head.querySelector(':scope > div[style*="height: 17px"], :scope > div[style*="height:17px"]');
+    if (placeholder) placeholder.remove();
+
+    if (field.role === 'excluded') {
+      // Поле помечено как "не передавать в КП"
+      head.insertAdjacentHTML('afterbegin',
+        `<span class="role-tag r-ghost">Не передаётся</span>`);
+    } else if (field.role) {
+      const role = getRole(field.role);
+      if (role) {
+        head.insertAdjacentHTML('afterbegin', `<span class="role-tag ${role.cls}">${role.label}</span>`);
+      } else {
+        head.insertAdjacentHTML('afterbegin', `<div style="height:17px"></div>`);
+      }
+    } else {
+      head.insertAdjacentHTML('afterbegin', `<div style="height:17px"></div>`);
+    }
+  });
+  updateChip();
+}
+
+function updateChip() {
+  // Какие роли уже назначены каким-то полем
+  // Исключаем 'excluded' — это не настоящая роль, а явное "не передавать"
+  const assignedRoles = new Set(
+    FIELDS.filter(f => f.role && f.role !== 'excluded').map(f => f.role)
+  );
+  // Из ключевых ролей — какие не назначены ни одному полю
+  const missingKey = ROLES.filter(r => r.isKey && !assignedRoles.has(r.key));
+
+  const buildTooltip = () => `
+    <div style="font-size: 11px; color: rgba(255,255,255,0.75); line-height: 1.4; margin-bottom: 8px;">Не назначены ключевые роли полей каталога для коммерческого предложения</div>
+    <div style="font-size: 10px; color: rgba(255,255,255,0.45); letter-spacing: 0.04em; margin-bottom: 6px;">НЕ НАЗНАЧЕНЫ</div>
+    ${missingKey.map(r => `<div style="padding: 2px 0; color: #fff;">${r.label}</div>`).join('')}
+  `;
+
+  // Чип в модалке настроек
+  const chip = $('#rolesChip');
+  if (chip) {
+    if (missingKey.length === 0) {
+      chip.style.display = 'none';
+    } else {
+      chip.style.display = 'inline-flex';
+      chip.querySelector('span:not(.tt)').textContent = 'Предложение будет неполным';
+      chip.querySelector('.tt').innerHTML = buildTooltip();
+    }
+  }
+
+  // Шильдик в шапке страницы каталога
+  const pageChip = $('#pageRolesChip');
+  if (pageChip) {
+    if (missingKey.length === 0) {
+      pageChip.style.display = 'none';
+    } else {
+      pageChip.style.display = 'inline-flex';
+      pageChip.querySelector('span:not(.tt)').textContent = 'Предложение будет неполным';
+      pageChip.querySelector('.tt').innerHTML = buildTooltip();
+    }
+  }
+}
+
+//============================================
+// Toast
+//============================================
+function toast(text) {
+  const area = $('#toastArea');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = text;
+  area.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 250);
+  }, 2200);
+}
+
+//============================================
+// Открыть/закрыть модалки
+//============================================
+function openFieldSettings(focusFieldId) {
+  if (focusFieldId) selectedFieldId = focusFieldId;
+  renderFieldList();
+  renderFieldDetails();
+  updateChip();
+  $('#fieldSettingsOverlay').classList.add('open');
+}
+function closeFieldSettings() {
+  $('#fieldSettingsOverlay').classList.remove('open');
+}
+
+function openSyncCenter() {
+  setSyncScreen('main');
+  $('#syncOverlay').classList.add('open');
+}
+function closeSyncCenter() {
+  $('#syncOverlay').classList.remove('open');
+  // Гасим красную пупырку на планете после первого открытия
+  const dot = $('.planet-btn .dot');
+  if (dot) dot.style.display = 'none';
+}
+function setSyncScreen(name) {
+  const modal = $('#syncModal');
+  modal.setAttribute('data-screen', name);
+  // Показываем/скрываем элементы по их data-screen
+  $$('[data-screen]', modal).forEach(el => {
+    if (el === modal) return;
+    el.style.display = (el.dataset.screen === name) ? '' : 'none';
+  });
+}
+
+//============================================
+// МОДАЛКА "Поля для коммерческого предложения"
+//============================================
+let mappingFilter = 'all';
+let mappingSearch = '';
+// Меняется ли каталог локальный или с поставщиком (для скрытия колонки "Роль у поставщика")
+const HAS_SUPPLIER = true;
+
+function openMappingModal() {
+  mappingFilter = 'all';
+  mappingSearch = '';
+  $('#mappingSearch').value = '';
+  $$('#mappingFilterSegments .seg').forEach(s => s.classList.toggle('on', s.dataset.mfilter === 'all'));
+  syncMappingSearchUI();
+  updateMappingFilterCounts();
+  renderMapping();
+  $('#mappingOverlay').classList.add('open');
+}
+function closeMappingModal() {
+  $('#mappingOverlay').classList.remove('open');
+}
+
+function applyMappingFilter(field) {
+  if (mappingFilter === 'all') return true;
+  if (mappingFilter === 'unassigned') {
+    // "Не назначено" = роль не выбрана. excluded - это явное решение дилера, не считаем
+    return field.role == null;
+  }
+  if (mappingFilter === 'conflict') {
+    // Расхождение с поставщиком — нормализуем null/undefined
+    const yours = field.role == null ? null : field.role;
+    const theirs = field.supplierRole == null ? null : field.supplierRole;
+    return yours !== theirs;
+  }
+  return true;
+}
+
+function applyMappingSearch(field) {
+  if (!mappingSearch) return true;
+  const q = mappingSearch.toLowerCase();
+  if (field.name.toLowerCase().includes(q)) return true;
+  if (field.label.toLowerCase().includes(q)) return true;
+  if (field.role) {
+    const r = getRole(field.role);
+    if (r && r.label.toLowerCase().includes(q)) return true;
+  }
+  if (field.supplierRole) {
+    const r = getRole(field.supplierRole);
+    if (r && r.label.toLowerCase().includes(q)) return true;
+  }
+  return false;
+}
+
+function getRoleLabelForCell(roleKey) {
+  if (roleKey === 'excluded') return 'Не передаётся';
+  if (!roleKey) return 'Не назначена';
+  const r = getRole(roleKey);
+  return r ? r.label : roleKey;
+}
+
+function renderMapping() {
+  // Счётчики фильтра обновляем при каждом рендере — данные могли измениться
+  updateMappingFilterCounts();
+  const body = $('#mappingBody');
+  const fields = FIELDS.filter(f => applyMappingFilter(f) && applyMappingSearch(f));
+
+  // Шапка таблицы
+  const showSupplier = HAS_SUPPLIER;
+  let html = '';
+
+  if (showSupplier) {
+    html += `
+      <div class="mapping-table-header">
+        <div>Поле</div>
+        <div>Роль у поставщика</div>
+        <div></div>
+        <div>Роль у вас</div>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="mapping-table-header" style="grid-template-columns: minmax(220px, 1.2fr) minmax(220px, 1.4fr);">
+        <div>Поле</div>
+        <div>Роль у вас</div>
+      </div>
+    `;
+  }
+
+  if (fields.length === 0) {
+    html += `
+      <div style="text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 13px;">
+        Нет полей по выбранному фильтру
+      </div>
+    `;
+    body.innerHTML = html;
+    return;
+  }
+
+  fields.forEach(f => {
+    const yourRoleLabel = getRoleLabelForCell(f.role);
+    const supplierRoleLabel = getRoleLabelForCell(f.supplierRole);
+    const hasValue = f.role != null;
+
+    // Источник значения:
+    //   * если значение у вас и у поставщика совпадают → пришло "от поставщика" (голубая подсветка)
+    //   * если различаются → "ваше переопределение" (оранжевая полоска 2px слева)
+    //   * если оба пустые (null) → нейтрально (это базовое состояние, ни голубого, ни оранжевого)
+    //   * для локальных каталогов (нет поставщика) → всё нейтрально
+    const yours = f.role == null ? null : f.role;
+    const theirs = f.supplierRole == null ? null : f.supplierRole;
+    const sameAsSupplier = yours === theirs;
+    const bothNull = yours === null && theirs === null;
+
+    const fromSupplier = HAS_SUPPLIER && !bothNull && sameAsSupplier;
+    const fromUser     = HAS_SUPPLIER && !sameAsSupplier;
+
+    const comboCls = [
+      'mapping-combo',
+      hasValue ? 'has-value' : '',
+      fromSupplier ? 'from-supplier' : '',
+      fromUser     ? 'from-user'     : ''
+    ].filter(Boolean).join(' ');
+
+    const supplierCls = [
+      'mapping-supplier-cell',
+      !f.supplierRole ? 'empty' : '',
+      f.supplierRole === 'excluded' ? 'excluded' : ''
+    ].filter(Boolean).join(' ');
+
+    const inputVal = hasValue ? yourRoleLabel : '';
+    const inputPlaceholder = hasValue ? '' : 'Не назначена';
+
+    const comboHtml = `
+      <div class="mapping-role-select">
+        <div class="${comboCls}" data-field="${f.id}">
+          <input
+            type="text"
+            value="${inputVal}"
+            placeholder="${inputPlaceholder}"
+            data-combo-input="${f.id}"
+            autocomplete="off"
+          />
+          <div class="mapping-combo-actions">
+            <button type="button" class="mapping-combo-clear" data-combo-clear="${f.id}" aria-label="Очистить">
+              <svg width="12" height="12"><use href="#i-x"/></svg>
+            </button>
+            <button type="button" class="mapping-combo-chev" data-combo-chev="${f.id}" aria-label="Открыть список">
+              <svg width="12" height="12"><use href="#i-chevron-down"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (showSupplier) {
+      html += `
+        <div class="mapping-row" data-field="${f.id}">
+          <div class="field-cell">
+            <span class="type-ico">${f.type}</span>
+            <span class="name">${f.name}</span>
+          </div>
+          <div class="${supplierCls}">${supplierRoleLabel}</div>
+          <div class="arrow"><svg width="14" height="14"><use href="#i-arrow-right"/></svg></div>
+          ${comboHtml}
+        </div>
+      `;
+    } else {
+      html += `
+        <div class="mapping-row" data-field="${f.id}" style="grid-template-columns: minmax(220px, 1.2fr) minmax(220px, 1.4fr);">
+          <div class="field-cell">
+            <span class="type-ico">${f.type}</span>
+            <span class="name">${f.name}</span>
+          </div>
+          ${comboHtml}
+        </div>
+      `;
+    }
+  });
+
+  body.innerHTML = html;
+
+  // Привязка обработчиков ко всем комбобоксам
+  $$('#mappingBody [data-combo-input]').forEach(input => {
+    const fieldId = input.dataset.comboInput;
+    bindCombo(fieldId, input);
+  });
+}
+
+// Привязка обработчиков одного комбобокса
+function bindCombo(fieldId, input) {
+  const combo = input.closest('.mapping-combo');
+  const clearBtn = combo.querySelector('.mapping-combo-clear');
+
+  // Состояние has-text — есть ли непустой текст в инпуте
+  function syncHasText() {
+    const hasText = input.value.length > 0 && input.value !== getRoleLabelForCell(getField().role);
+    combo.classList.toggle('has-text', hasText);
+  }
+
+  function getField() {
+    return FIELDS.find(f => f.id === fieldId);
+  }
+
+  // Открыть/перерисовать дропдаун с фильтрацией
+  function reopenDd(filterText) {
+    closeAllRoleDds();
+    openComboDd(combo, fieldId, filterText);
+  }
+
+  // Фокус: открыть дропдаун, выделить весь текст (для редактирования)
+  input.addEventListener('focus', () => {
+    combo.classList.add('focused');
+    // Если есть выбранное значение — стираем его при фокусе и открываем полный список,
+    // чтобы дилер мог печатать. При blur без выбора — вернём.
+    const f = getField();
+    if (f.role != null) {
+      input.value = '';
+      combo.classList.remove('has-value');
+      combo.classList.add('has-text'); // показать крестик для очистки
+    }
+    reopenDd('');
+  });
+
+  input.addEventListener('blur', () => {
+    // Небольшой таймаут, чтобы клик по опции успел сработать
+    setTimeout(() => {
+      combo.classList.remove('focused');
+      // Если ничего не выбрано через клик — вернуть прежнее значение
+      const f = getField();
+      if (f.role != null && !input.value) {
+        input.value = getRoleLabelForCell(f.role);
+        combo.classList.add('has-value');
+        combo.classList.remove('has-text');
+      }
+      // Закроем дропы, если ничего не выбрано
+      // (закрытие по клику-вне сделает это через document handler)
+    }, 150);
+  });
+
+  input.addEventListener('input', () => {
+    syncHasText();
+    reopenDd(input.value);
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllRoleDds();
+      input.blur();
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Выбираем первую видимую опцию
+      const dd = combo.parentElement.querySelector('.mapping-role-dd');
+      const first = dd && dd.querySelector('.role-dd-opt:not([hidden]), .ghost-opt:not([hidden])');
+      if (first) first.click();
+    }
+  });
+
+  // Крестик: контекстная очистка
+  clearBtn.addEventListener('mousedown', (e) => {
+    // mousedown, чтобы сработало до blur
+    e.preventDefault();
+    e.stopPropagation();
+    const f = getField();
+    const hasText = combo.classList.contains('has-text');
+
+    if (hasText) {
+      // Просто стираем текст поиска
+      input.value = '';
+      syncHasText();
+      reopenDd('');
+      input.focus();
+    } else if (f.role != null) {
+      // Снять выбранное значение
+      f.role = null;
+      f.isOverride = (f.supplierRole != null);
+      f.isGhost = false;
+      input.value = '';
+      combo.classList.remove('has-value', 'has-text');
+      closeAllRoleDds();
+      renderMapping();
+      renderTableHeaders();
+      toast('Роль снята');
+    }
+  });
+
+  // Шеврон: переключает фокус (открыть/закрыть дроп)
+  const chevBtn = combo.querySelector('.mapping-combo-chev');
+  if (chevBtn) {
+    chevBtn.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (combo.classList.contains('focused')) {
+        input.blur();
+        closeAllRoleDds();
+      } else {
+        input.focus();
+      }
+    });
+  }
+}
+
+// Закрыть все открытые дропы маппинга
+function closeAllRoleDds() {
+  $$('#mappingBody .mapping-role-dd').forEach(dd => dd.remove());
+}
+
+// Открыть дропдаун опций для конкретного комбобокса
+function openComboDd(comboEl, fieldId, filterText) {
+  const field = FIELDS.find(f => f.id === fieldId);
+  if (!field) return;
+
+  const wrap = comboEl.closest('.mapping-role-select');
+  // Создаём новый дроп
+  const dd = document.createElement('div');
+  dd.className = 'mapping-role-dd open';
+
+  const q = (filterText || '').toLowerCase().trim();
+  function matchRole(r) {
+    if (!q) return true;
+    return r.label.toLowerCase().includes(q);
+  }
+
+  const keyRoles = ROLES.filter(r => r.isKey && matchRole(r));
+  const otherRoles = ROLES.filter(r => !r.isKey && matchRole(r));
+
+  function renderRow(role) {
+    const usedBy = FIELDS.find(f => f.id !== field.id && f.role === role.key);
+    const isCurrent = field.role === role.key;
+    return `
+      <div class="role-dd-opt ${isCurrent ? 'current' : ''}" data-role="${role.key}">
+        <span>${role.label}</span>
+        <span class="target">${usedBy ? usedBy.name : ''}</span>
+      </div>
+    `;
+  }
+
+  let html = '';
+
+  if (keyRoles.length === 0 && otherRoles.length === 0 && q) {
+    html += `<div class="dd-empty">Ничего не найдено</div>`;
+  } else {
+    if (keyRoles.length > 0) {
+      html += `<div class="role-dd-label">Ключевые роли</div>`;
+      keyRoles.forEach(r => { html += renderRow(r); });
+    }
+    if (otherRoles.length > 0) {
+      if (keyRoles.length > 0) html += `<div class="role-dd-divider"></div>`;
+      html += `<div class="role-dd-label">Дополнительные роли</div>`;
+      otherRoles.forEach(r => { html += renderRow(r); });
+    }
+  }
+
+  // "Не передавать в КП" — всегда внизу, не фильтруется
+  if (keyRoles.length > 0 || otherRoles.length > 0 || !q) {
+    html += `<div class="role-dd-divider"></div>`;
+  }
+  html += `
+    <div class="ghost-opt ${field.role === 'excluded' ? 'current' : ''}" data-action="excluded">
+      <svg class="icon" width="14" height="14"><use href="#i-eye-off"/></svg>
+      Не передавать в КП
+    </div>
+  `;
+
+  dd.innerHTML = html;
+  wrap.appendChild(dd);
+
+  const input = comboEl.querySelector('input');
+
+  // Клик по строке роли
+  $$('.role-dd-opt', dd).forEach(opt => {
+    opt.addEventListener('mousedown', (e) => {
+      e.preventDefault(); // не блюрить input до того как выберем
+      const newRole = opt.dataset.role;
+      const usedByOther = FIELDS.find(f => f.id !== field.id && f.role === newRole);
+      if (usedByOther) {
+        if (!confirm(`Роль уже на поле "${usedByOther.label}". Перенести её сюда?`)) return;
+        usedByOther.role = null;
+        usedByOther.isOverride = false;
+      }
+      field.role = newRole;
+      field.isOverride = (newRole !== field.supplierRole);
+      field.isGhost = false;
+      closeAllRoleDds();
+      input.blur();
+      renderMapping();
+      renderTableHeaders();
+      toast(`Назначено: ${getRole(newRole).label}`);
+    });
+  });
+
+  // Клик по "Не передавать в КП"
+  $$('.ghost-opt', dd).forEach(opt => {
+    opt.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      field.role = 'excluded';
+      field.isOverride = (field.supplierRole !== 'excluded');
+      field.isGhost = false;
+      closeAllRoleDds();
+      input.blur();
+      renderMapping();
+      renderTableHeaders();
+      toast('Не передаётся в КП');
+    });
+  });
+}
+
+// Обновим updateChip — пусть учитывает 'excluded' как НЕ закрытую роль
+// (по факту он уже правильно работает — excluded не входит в assignedRoles
+// потому что мы проверяем r.key через .has, а 'excluded' не входит в ROLES)
+// Но дополнительно: поле с role='excluded' не считается "не назначенным" для целей фильтра.
+
+//============================================
+// Дропдаун от клика по шапке колонки
+//============================================
+function openColDropdown(thEl, field) {
+  const dd = $('#colDropdown');
+  const input = $('#colDropdownInput');
+  input.value = field.name;
+  const rect = thEl.getBoundingClientRect();
+  dd.style.display = 'block';
+  dd.style.position = 'absolute';
+  dd.style.left = (rect.left + window.scrollX) + 'px';
+  dd.style.top = (rect.bottom + window.scrollY + 4) + 'px';
+  dd.dataset.field = field.id;
+}
+function closeColDropdown() {
+  $('#colDropdown').style.display = 'none';
+}
+
+//============================================
+// EVENT LISTENERS
+//============================================
+
+// Клик по шапке колонки
+$$('#catalogTable thead .col-head').forEach(head => {
+  head.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const th = head.closest('th');
+    const colId = th.dataset.col;
+    const field = FIELDS.find(f => f.id === colId);
+    if (field) openColDropdown(th, field);
+  });
+});
+
+// Клик по «Настройки полей каталога» в выпадающем меню
+$('#openFieldSettings').addEventListener('click', () => {
+  const dd = $('#colDropdown');
+  const fieldId = dd.dataset.field;
+  closeColDropdown();
+  openFieldSettings(fieldId);
+});
+
+// Закрытие модалок
+$('#closeFieldSettings').addEventListener('click', closeFieldSettings);
+$('#fieldSettingsOverlay').addEventListener('click', (e) => {
+  if (e.target === $('#fieldSettingsOverlay')) closeFieldSettings();
+});
+
+$('#closeSync').addEventListener('click', closeSyncCenter);
+$('#syncOverlay').addEventListener('click', (e) => {
+  if (e.target === $('#syncOverlay')) closeSyncCenter();
+});
+
+// Открыть Центр синхронизации
+$('#openSync').addEventListener('click', openSyncCenter);
+
+// Клик по шильдику на странице — открывает новую модалку маппинга
+$('#pageRolesChip').addEventListener('click', () => {
+  openMappingModal();
+});
+
+// Клик по "Поля для КП" в дропе шапки колонки
+$('#openMapping').addEventListener('click', () => {
+  closeColDropdown();
+  openMappingModal();
+});
+
+// Закрыть модалку маппинга
+$('#closeMapping').addEventListener('click', closeMappingModal);
+$('#mappingOverlay').addEventListener('click', (e) => {
+  if (e.target === $('#mappingOverlay')) closeMappingModal();
+});
+
+// Поиск в маппинге
+const mappingSearchEl = $('#mappingSearch');
+const mappingSearchWrap = mappingSearchEl.closest('.mapping-search');
+const mappingSearchClearEl = $('#mappingSearchClear');
+
+function syncMappingSearchUI() {
+  const hasText = mappingSearchEl.value.length > 0;
+  mappingSearchWrap.classList.toggle('has-text', hasText);
+}
+mappingSearchEl.addEventListener('input', (e) => {
+  mappingSearch = e.target.value;
+  syncMappingSearchUI();
+  updateMappingFilterCounts();
+  renderMapping();
+});
+mappingSearchClearEl.addEventListener('click', () => {
+  mappingSearchEl.value = '';
+  mappingSearch = '';
+  syncMappingSearchUI();
+  updateMappingFilterCounts();
+  renderMapping();
+  mappingSearchEl.focus();
+});
+
+// Сегментированный фильтр
+$$('#mappingFilterSegments .seg').forEach(seg => {
+  seg.addEventListener('click', () => {
+    const key = seg.dataset.mfilter;
+    mappingFilter = key;
+    $$('#mappingFilterSegments .seg').forEach(s => s.classList.toggle('on', s.dataset.mfilter === key));
+    renderMapping();
+  });
+});
+
+// Обновление счётчиков рядом с каждым сегментом фильтра.
+// Считаем по всем полям (без учёта поиска), чтобы счётчики были стабильны.
+function updateMappingFilterCounts() {
+  const counts = { all: 0, unassigned: 0, conflict: 0 };
+  FIELDS.forEach(f => {
+    counts.all++;
+    if (f.role == null) counts.unassigned++;
+    const yours = f.role == null ? null : f.role;
+    const theirs = f.supplierRole == null ? null : f.supplierRole;
+    if (yours !== theirs) counts.conflict++;
+  });
+  $$('#mappingFilterSegments .seg .count').forEach(el => {
+    const k = el.dataset.count;
+    el.textContent = counts[k] ?? 0;
+  });
+}
+
+// Открыть экран Маппинг ролей в Центре синхронизации (старый поток)
+$('#openMappingInSync').addEventListener('click', () => setSyncScreen('mapping'));
+// Вернуться на главный экран Центра
+$('#backFromMapping').addEventListener('click', () => setSyncScreen('main'));
+
+// Глобальное закрытие дропдауна по клику вне
+document.addEventListener('click', (e) => {
+  if (!$('#colDropdown').contains(e.target) && !e.target.closest('.col-head')) {
+    closeColDropdown();
+  }
+  // Закрытие выпадашек ролей в модалке маппинга
+  if (!e.target.closest('.mapping-role-select')) {
+    $$('#mappingBody .mapping-role-dd.open').forEach(dd => dd.remove());
+  }
+});
+
+// Поиск по полям в модалке настроек: показываем крестик при тексте, гасим при пустом
+const fieldSearchEl = $('#fieldSearch');
+const fieldSearchWrap = fieldSearchEl.closest('.ml-search');
+const fieldSearchClearEl = $('#fieldSearchClear');
+
+function syncFieldSearchUI() {
+  const hasText = fieldSearchEl.value.length > 0;
+  fieldSearchWrap.classList.toggle('has-text', hasText);
+}
+
+fieldSearchEl.addEventListener('input', () => {
+  syncFieldSearchUI();
+  // (рендер списка по поиску можно подключить позже)
+});
+
+fieldSearchClearEl.addEventListener('click', () => {
+  fieldSearchEl.value = '';
+  syncFieldSearchUI();
+  fieldSearchEl.focus();
+});
+
+// Кнопка-ссылка "копировать ссылку на этот экран"
+$('#fieldsLink').addEventListener('click', () => {
+  toast('Ссылка на экран скопирована');
+});
+
+// Автоапдейт свитч
+$('#autoSwitch').addEventListener('click', (e) => {
+  e.currentTarget.classList.toggle('on');
+});
+
+// Escape — закрыть всё; на экране Маппинга — вернуться в главный Центр
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    // Если Центр открыт на экране mapping — сначала возвращаемся, потом закрываем
+    const syncOpen = $('#syncOverlay').classList.contains('open');
+    if (syncOpen && $('#syncModal').getAttribute('data-screen') === 'mapping') {
+      setSyncScreen('main');
+      return;
+    }
+    closeFieldSettings();
+    closeSyncCenter();
+    closeMappingModal();
+    closeColDropdown();
+  }
+});
+
+// Стартовая отрисовка
+renderTableHeaders();
+updateChip();
+
+</script>
+
+</body>
+</html>
